@@ -24,7 +24,6 @@ body {
 .container {
   background: white;
   border-radius: 24px;
-  padding: 2rem;
   width: 100%;
   max-width: 1000px;
   position: relative;
@@ -33,21 +32,11 @@ body {
 }
 
 .logo {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-family: "Skate", sans-serif;
   font-weight: 600;
   color: #4154f1;
-}
-
-.logo::before {
-  content: "";
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 0.6rem;
-  width: 20px;
-  height: 20px;
-  background: #4154f1;
-  border-radius: 50%;
+  width: fit-content;
 }
 
 .logo::after {
@@ -60,18 +49,9 @@ body {
   color: #4154f1;
 }
 
-.sign-up-btn {
-  background: #4154f1;
-  color: white;
-  padding: 0.5rem 1.5rem;
-  border-radius: 8px;
-  text-decoration: none;
-}
-
-.login-form {
+form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
 }
 
 .input-container {
@@ -81,32 +61,28 @@ body {
 }
 
 .input {
-  background-color: #acb4fd;
   border-radius: 12px;
-  border: 1px solid #eee;
+  border: 1px solid #4154f1;
   box-sizing: border-box;
   color: #222;
   font-size: 1rem;
   height: 100%;
   outline: 0;
-  padding: 4px 20px 0;
+  padding: 5px 15px 3px;
   width: 100%;
 }
 
 .cut {
   background-color: #fff;
   border-radius: 15px;
+  border-bottom: 2px solid transparent;
   height: 20px;
   left: 20px;
   position: absolute;
   top: -20px;
   transform: translateY(0);
-  transition: transform 0.4s ease;
+  transition: all 0.4s ease;
   width: 75px;
-}
-
-.cut-short {
-  width: 50px;
 }
 
 .iLabel {
@@ -123,6 +99,7 @@ body {
 
 .input:focus ~ .cut,
 .input:not(:placeholder-shown) ~ .cut {
+  border-color: #4154f1;
   transform: translateY(8px);
 }
 
@@ -132,7 +109,8 @@ body {
   transform: translateY(-30px) translateX(10px) scale(0.75);
 }
 
-.login-btn {
+.login-btn,
+.next-btn {
   background: #4154f1;
   color: white;
   padding: 10px;
@@ -142,14 +120,14 @@ body {
   transition: 0.3s;
 }
 
-.login-btn:hover {
+.login-btn:hover,
+.next-btn:hover {
   background: #3445d0;
 }
 
 .social-login {
   display: flex;
   gap: 1rem;
-  margin-top: 1rem;
 }
 
 .social-login > button {
@@ -170,20 +148,32 @@ body {
   background: #f8f9ff;
 }
 
+/* Welcome Section Styles */
 .welcome-section {
+  padding: 0 2.5rem;
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  position: relative;
+  overflow: hidden;
 }
 
 .welcome-section h1 {
-  font-size: 2.5rem;
+  font-size: 3rem;
   color: #333;
+  margin-bottom: 1rem;
 }
 
 .welcome-section p {
   color: #666;
   line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.welcome-section img {
+  max-width: 300px;
+  margin: 0 auto;
+  display: block;
 }
 
 .decorative-shape {
@@ -259,3 +249,5 @@ h1 span::after {
   background: #4154f1;
   border-radius: 50%;
 }
+
+

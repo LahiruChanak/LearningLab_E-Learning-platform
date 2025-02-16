@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Login - LearnWave</title>
     <link rel="icon" href="assets/images/logo.png" />
 
     <link
@@ -21,21 +21,21 @@
     <link rel="stylesheet" href="assets/css/auth.css" />
   </head>
   <body>
-    <div class="container">
-      <div class="logo mb-4">LearnWave</div>
+    <div class="container p-2">
+      <div class="logo mb-3 ms-5">LearnWave</div>
 
-      <div class="row justify-content-around gap-3">
-        <div class="col-md-4 mb-4">
-          <form class="login-form">
-            <h2>Login.</h2>
+      <div class="row justify-content-around gap-3 p-4">
+        <div class="col-md-4 mb-3">
+          <form>
+            <h2 class="text-center mb-4">Login.</h2>
 
-            <div class="input-container">
+            <div class="input-container mb-4">
               <input placeholder="" type="text" class="input" id="username" />
               <div class="cut"></div>
               <label class="iLabel" for="username">Username</label>
             </div>
 
-            <div class="input-container">
+            <div class="input-container mb-2">
               <input
                 placeholder=""
                 type="password"
@@ -46,7 +46,7 @@
               <label class="iLabel" for="password">Password</label>
             </div>
 
-            <div class="d-flex justify-content-end">
+            <div class="d-flex justify-content-end mb-3">
               <a
                 href="forgot-password.html"
                 class="nav-links text-decoration-none"
@@ -55,19 +55,21 @@
               </a>
             </div>
 
-            <label class="form-check">
-              <input type="checkbox" />
-              <svg viewBox="0 0 64 64">
-                <path
-                  d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
-                  pathLength="575.0541381835938"
-                  class="path"
-                ></path>
-              </svg>
-              <span class="ms-2">Remember me</span>
-            </label>
+            <div class="mb-4">
+              <label class="form-check">
+                <input type="checkbox" />
+                <svg viewBox="0 0 64 64">
+                  <path
+                    d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                    pathLength="575.0541381835938"
+                    class="path"
+                  ></path>
+                </svg>
+                <span class="ms-2">Remember me</span>
+              </label>
+            </div>
 
-            <button class="login-btn">Login</button>
+            <button class="login-btn w-100">Login</button>
           </form>
         </div>
 
@@ -79,6 +81,8 @@
               have an account,
               <a href="signup.html" class="nav-links">Sign Up</a>
             </p>
+            <p class="text-center m-0">Or signup with</p>
+
             <div class="social-login">
               <button class="btn google">
                 <svg
