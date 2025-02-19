@@ -90,8 +90,6 @@ body {
   transform: rotate(180deg);
 }
 
-/* Show tooltips only in collapsed state */
-
 .course-card {
   background-color: var(--secondary-color);
   border-radius: 16px;

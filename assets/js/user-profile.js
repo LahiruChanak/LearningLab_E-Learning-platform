@@ -206,8 +206,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const isEditMode = editSkillsBtn.getAttribute("data-state") === "edit";
 
     if (isEditMode) {
-      editSkillsBtn.innerHTML = `<span class="text-body-tertiary">Cancel</span>`;
-      editSkillsBtn.setAttribute("data-state", "cancel");
+      editSkillsBtn.innerHTML = `<span class="text-body-tertiary">Done</span>`;
+      editSkillsBtn.setAttribute("data-state", "done");
 
       // Add "x" mark to each existing tag
       const skillTags = skillTagsContainer.querySelectorAll(
@@ -287,3 +287,54 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+// Two Factor Authentication
+function moveToNext(currentInput) {
+  const inputs = document.querySelectorAll(".code-input");
+  const currentIndex = Array.from(inputs).indexOf(currentInput);
+
+  if (currentInput.value.length === 1 && currentIndex < inputs.length - 1) {
+    inputs[currentIndex + 1].focus();
+  }
+}
+
+// Enable 2FA functionality
+function enable2FA() {
+  const inputs = document.querySelectorAll(".code-input");
+  let code = "";
+  inputs.forEach((input) => {
+    code += input.value;
+  });
+
+  const errorMessage = document.getElementById("error-message");
+
+  // Simulated valid code (e.g., "123456")
+  if (code === "123456") {
+    errorMessage.textContent = "";
+    alert("2FA has been successfully enabled!");
+    // Close the modal
+    const modal = bootstrap.Modal.getInstance(
+      document.getElementById("twoFactorModal")
+    );
+    modal.hide();
+  } else {
+    errorMessage.textContent = "Invalid verification code. Please try again.";
+  }
+}
+
+// Function to copy the code to clipboard
+function copyCode() {
+  const codeInput = document.getElementById("codeInput");
+  const code = codeInput.value;
+
+  // Use the Clipboard API to copy the text
+  navigator.clipboard
+    .writeText(code)
+    .then(() => {
+      alert("Code copied to clipboard.");
+    })
+    .catch((error) => {
+      console.error("Failed to copy code:", error);
+      alert("Failed to copy code. Please try again.");
+    });
+}
