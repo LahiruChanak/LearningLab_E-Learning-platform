@@ -85,9 +85,10 @@ body {
 }
 
 .sub-navigation-menu li {
-  padding: 12px 15px;
+  padding: 8px 20px;
   margin: 5px 0;
-  border-radius: 5px;
+  border-radius: 25px;
+  width: fit-content;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -100,18 +101,26 @@ body {
 }
 
 .sub-navigation-menu li.active {
-  background-color: #f0f5ff;
-  color: #2563eb;
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
   font-weight: bold;
 }
 
 .sub-navigation-menu li:last-child {
-  color: #dc2626;
+  color: #ef4444;
+}
+
+.sub-navigation-menu li:last-child.active {
+  background-color: #fde8e8;
+}
+
+.sub-navigation-menu li:last-child:hover {
+  background-color: #fde8e8 !important;
 }
 
 .main-content {
   flex: 1;
-  padding: 30px;
+  padding: 15px;
   background-color: #f5f5f5;
   height: 90vh;
   overflow: scroll;
@@ -150,14 +159,14 @@ body {
   background: none;
   border: none;
   cursor: pointer;
-  color: #666;
-  font-size: 16px;
-  transition: color 0.3s ease;
+  color: #ffc322;
+  font-size: 1rem;
+  transition: color 0.4s ease;
 }
 
-.edit-btn:hover {
+/* .edit-btn:hover {
   color: #2563eb;
-}
+} */
 
 .form-group {
   display: grid;
@@ -230,6 +239,12 @@ body {
   opacity: 1;
 }
 
+.profile-info-wrapper {
+  display: flex;
+  align-items: center;
+  max-width: 60%;
+}
+
 .profile-info h2 {
   margin: 0;
   color: #333;
@@ -241,10 +256,74 @@ body {
   margin: 5px 0;
 }
 
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  max-width: 75%;
+}
+
+/* -------------------------- skill tags -------------------------- */
+.skills-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  max-width: 50%;
+}
+
+.skill-tags {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.skill-tag {
+  background-color: #f0f5ff;
+  color: var(--primary-color);
+  padding: 5px 12px;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.skill-tag .remove-skill {
+  display: none;
+  cursor: pointer;
+}
+
+.skill-tag.edit-mode .remove-skill {
+  display: inline-block;
+}
+
+.skill-tag.empty-skill {
+  background-color: #fff;
+  border: 1px dashed #ccc;
+  color: #666;
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.skill-tag.empty-skill input {
+  border: none;
+  outline: none;
+  width: 80px;
+}
+
+.save-tick-input {
+  font-size: 1rem;
+  color: green;
+  cursor: pointer;
+}
+
 /* Security Page */
 .security-list {
   background: white;
-  border-radius: 8px;
+  border-radius: 15px;
   padding: 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
@@ -253,7 +332,7 @@ body {
   display: flex;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 2px solid #eee;
 }
 
 .security-item:last-child {
@@ -261,8 +340,8 @@ body {
 }
 
 .security-icon {
-  font-size: 24px;
-  margin-right: 20px;
+  font-size: 1.8rem;
+  margin-right: 15px;
 }
 
 .security-info {
@@ -272,29 +351,29 @@ body {
 .security-info h3 {
   margin: 0;
   color: #333;
-  font-size: 18px;
+  font-size: 1.1rem;
 }
 
 .security-info p {
   margin: 5px 0 0;
   color: #666;
+  font-size: 0.9rem;
 }
 
 .link-button {
-  color: #2563eb;
+  color: var(--primary-color);
   background: none;
   border: none;
-  cursor: pointer;
-  font-size: 14px;
-  transition: color 0.3s ease;
+  font-size: 0.95rem;
+  transition: color 0.4s ease;
 }
 
 .link-button:hover {
-  color: #1e4bb6;
+  color: #5f32ff;
 }
 
 .enable-2fa {
-  background-color: #2563eb;
+  background-color: var(--primary-color);
   color: white;
   border: none;
   padding: 8px 16px;
@@ -305,7 +384,7 @@ body {
 }
 
 .enable-2fa:hover {
-  background-color: #1e4bb6;
+  background-color: #7a5be5;
 }
 
 /* Achievements Page */
@@ -429,19 +508,26 @@ body {
 }
 
 /* Delete Account Page */
-.btn-delete {
-  background-color: #dc2626;
-  color: white;
+.delete-warning-icon {
+  font-size: 1.8rem;
+  color: #ef4444;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.delete-btn {
+  background-color: #ef4444;
+  color: white !important;
   border: none;
   padding: 8px 16px;
-  border-radius: 4px;
+  border-radius: 10px;
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.3s ease;
 }
 
-.btn-delete:hover {
-  background-color: #b91c1c;
+.delete-btn:hover {
+  background-color: #f12121;
 }
 
 .close {
@@ -453,14 +539,6 @@ body {
 
 .close:hover {
   color: #333;
-}
-
-.btn {
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s ease;
 }
 
 .btn-save {
@@ -502,6 +580,7 @@ body {
   border: 3px solid #bbb;
   overflow: hidden;
   margin: 10px auto;
+  padding: 2px;
   position: relative;
 }
 

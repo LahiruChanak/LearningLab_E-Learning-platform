@@ -147,33 +147,68 @@
         <div class="main-content pt-0">
           <!-- Profile Page -->
           <div id="profile" class="page active">
-            <div class="d-flex section">
-              <div
-                class="profile-pic-wrapper me-3"
-                data-bs-toggle="modal"
-                data-bs-target="#profileModal"
-              >
-                <img
-                  id="profilePreview"
-                  src="assets/images/user.jpg"
-                  alt="Profile"
-                  class="profile-image"
-                />
-                <div class="overlay">
-                  <i class="hgi-stroke hgi-camera-01 fs-5 text-white"></i>
+            <div class="d-flex justify-content-between gap-3 section">
+              <div class="profile-info-wrapper">
+                <div
+                  class="profile-pic-wrapper me-3"
+                  data-bs-toggle="modal"
+                  data-bs-target="#profileModal"
+                >
+                  <img
+                    id="profilePreview"
+                    src="assets/images/user.jpg"
+                    alt="Profile"
+                    class="profile-image"
+                  />
+                  <div class="overlay">
+                    <i class="hgi-stroke hgi-camera-01 fs-5 text-white"></i>
+                  </div>
+                </div>
+                <div class="profile-info">
+                  <h2>Esther Howard</h2>
+                  <p>Student</p>
+                  <p>
+                    Hey I'm Software Engineer from New York. I've been coding
+                    for 3 years. I've worked on a lot of projects. I'm currently
+                    working on a project called "Project X". I'm also a student
+                    at New York University.
+                  </p>
                 </div>
               </div>
-              <div class="profile-info">
-                <h2>Esther Howard</h2>
-                <p>Student</p>
-                <p>bio description</p>
+              <!-- Skills Section -->
+              <div class="skills-section ms-3">
+                <button class="edit-btn mb-3" data-state="edit">
+                  <i
+                    class="hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"
+                  ></i>
+                  Edit
+                </button>
+                <div class="skill-tags">
+                  <span class="skill-tag">JavaScript</span>
+                  <span class="skill-tag">HTML</span>
+                  <span class="skill-tag">CSS</span>
+                  <span class="skill-tag">React</span>
+                  <span class="skill-tag">JavaScript</span>
+                  <span class="skill-tag">HTML</span>
+                  <span class="skill-tag">CSS</span>
+                  <span class="skill-tag">React</span>
+                  <span class="skill-tag">JavaScript</span>
+                  <span class="skill-tag">HTML</span>
+                  <span class="skill-tag">CSS</span>
+                  <span class="skill-tag">React</span>
+                </div>
               </div>
             </div>
 
             <div class="section">
               <div class="section-header">
                 <h3>Personal Information</h3>
-                <button class="edit-btn">✎ Edit</button>
+                <button class="edit-btn">
+                  <i
+                    class="hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"
+                  ></i>
+                  Edit
+                </button>
               </div>
               <div class="form-group">
                 <div class="form-field">
@@ -204,7 +239,12 @@
             <div class="section">
               <div class="section-header">
                 <h3>Address</h3>
-                <button class="edit-btn">✎ Edit</button>
+                <button class="edit-btn">
+                  <i
+                    class="hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"
+                  ></i>
+                  Edit
+                </button>
               </div>
               <div class="form-group">
                 <div class="form-field">
@@ -234,7 +274,7 @@
             <h2 class="page-title">Security Settings</h2>
             <div class="security-list">
               <div class="security-item">
-                <div class="security-icon">🔒</div>
+                <i class="hgi-stroke hgi-lock-password security-icon"></i>
                 <div class="security-info">
                   <h3>Password</h3>
                   <p>Last changed 2 months ago</p>
@@ -243,7 +283,7 @@
               </div>
 
               <div class="security-item">
-                <div class="security-icon">✉️</div>
+                <i class="hgi-stroke hgi-mail-at-sign-02 security-icon"></i>
                 <div class="security-info">
                   <h3>Email verification</h3>
                   <p>rafiqurrahman51@gmail.com</p>
@@ -252,7 +292,7 @@
               </div>
 
               <div class="security-item">
-                <div class="security-icon">🛡️</div>
+                <i class="hgi-stroke hgi-shield-01 security-icon"></i>
                 <div class="security-info">
                   <h3>Two-factor authentication</h3>
                   <p>Add an extra layer of security</p>
@@ -342,10 +382,78 @@
             <h2 class="page-title">Delete Account</h2>
             <div class="section">
               <p>
-                ⚠️ Deleting your account is irreversible. All data will be lost.
+                <i class="hgi-stroke hgi-alert-02 delete-warning-icon"></i>
+                Are you sure you want to delete your account?
               </p>
-              <button class="btn btn-delete">Delete Account</button>
+              <button
+                class="btn delete-btn"
+                data-bs-target="#deleteModal"
+                data-bs-toggle="modal"
+              >
+                Delete Account
+              </button>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Account Modal -->
+    <div
+      class="modal fade"
+      id="deleteModal"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="deleteModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 rounded-4">
+          <div class="modal-body p-4 pb-0">
+            <div>
+              <h1
+                class="modal-title fs-4 text-center mb-3"
+                id="deleteModalLabel"
+              >
+                <i class="hgi-stroke hgi-alert-02 fs-2 text-danger"></i><br />
+                Delete Account
+              </h1>
+              <p class="text-danger text-center small">
+                <strong>WARNING</strong> this is permanent and cannot be undone!
+              </p>
+              <p class="text-muted small">
+                Permanently remove your Personal Account and all of its
+                contents. This action is not reversible, so please continue with
+                caution.
+              </p>
+            </div>
+            <div>
+              <label for="password" class="form-label small"
+                >Enter Password</label
+              >
+              <input
+                type="password"
+                class="form-control shadow-none"
+                placeholder="Enter your password"
+              />
+            </div>
+          </div>
+          <div class="modal-footer border-0 gap-2 m-2">
+            <button
+              type="button"
+              class="border-0 bg-transparent"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn delete-btn"
+              data-bs-dismiss="modal"
+            >
+              Delete Account
+            </button>
           </div>
         </div>
       </div>
@@ -379,7 +487,7 @@
               <div class="profile-preview">
                 <img
                   id="imagePreview"
-                  src="/api/placeholder/150/150"
+                  src="assets/images/user.jpg"
                   alt="Profile Preview"
                   class="rounded-circle"
                 />

@@ -135,31 +135,40 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
 
-  // Edit Section System
+  // Edit button functionality
   const editButtons = document.querySelectorAll(".edit-btn");
+
   editButtons.forEach((button) => {
     button.addEventListener("click", function () {
       const section = this.closest(".section");
       const inputs = section.querySelectorAll("input");
 
-      // Toggle input disabled state
       inputs.forEach((input) => {
         input.disabled = !input.disabled;
       });
 
-      // Change button text based on state
       if (inputs[0].disabled) {
-        this.textContent = "✎ Edit";
+        this.innerHTML = `
+          <i class="hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i>
+          Edit
+        `;
 
-        // Remove any previously added action buttons
+        // Remove action buttons
         const actionButtons = section.querySelector(".action-buttons");
         if (actionButtons) {
           actionButtons.remove();
         }
-      } else {
-        this.textContent = "Cancel";
 
-        // Add save button if not already present
+        inputs.forEach((input) => {
+          input.value = input.dataset.originalValue || input.value;
+        });
+      } else {
+        this.innerHTML = '<span class="text-body-tertiary">Cancel</span>';
+
+        inputs.forEach((input) => {
+          input.dataset.originalValue = input.value;
+        });
+
         if (!section.querySelector(".action-buttons")) {
           const actionDiv = document.createElement("div");
           actionDiv.className =
@@ -169,25 +178,112 @@ document.addEventListener("DOMContentLoaded", function () {
           `;
           section.appendChild(actionDiv);
 
-          // Add event listener to the new save button
           const saveBtn = actionDiv.querySelector(".save-changes-btn");
           saveBtn.addEventListener("click", function () {
-            // Here you would normally save the data to a server
             alert("Changes saved successfully!");
 
-            // Disable inputs again
             inputs.forEach((input) => {
               input.disabled = true;
             });
 
-            // Remove action buttons
             actionDiv.remove();
 
-            // Reset edit button text
-            button.textContent = "✎ Edit";
+            button.innerHTML = `
+              <i class="hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i>
+              Edit
+            `;
           });
         }
       }
     });
+  });
+
+  // Skill tag system
+  const editSkillsBtn = document.querySelector(".edit-btn");
+  const skillTagsContainer = document.querySelector(".skill-tags");
+
+  editSkillsBtn.addEventListener("click", function () {
+    const isEditMode = editSkillsBtn.getAttribute("data-state") === "edit";
+
+    if (isEditMode) {
+      editSkillsBtn.innerHTML = `<span class="text-body-tertiary">Cancel</span>`;
+      editSkillsBtn.setAttribute("data-state", "cancel");
+
+      // Add "x" mark to each existing tag
+      const skillTags = skillTagsContainer.querySelectorAll(
+        ".skill-tag:not(.empty-skill)"
+      );
+      skillTags.forEach((tag) => {
+        tag.classList.add("edit-mode");
+        if (!tag.querySelector(".remove-skill")) {
+          const removeIcon = document.createElement("span");
+          removeIcon.className = "remove-skill";
+          removeIcon.innerHTML = "&times;";
+          removeIcon.addEventListener("click", function () {
+            tag.remove(); // Remove the skill tag
+          });
+          tag.appendChild(removeIcon);
+        }
+      });
+
+      // Add an empty skill tag for new skills
+      const emptySkillTag = document.createElement("span");
+      emptySkillTag.className = "skill-tag empty-skill";
+      emptySkillTag.innerHTML = `
+        <input type="text" placeholder="Add skill" />
+        <i class="hgi-stroke hgi-tick-01 save-tick-input"></i>
+      `;
+      skillTagsContainer.appendChild(emptySkillTag);
+
+      // Handle saving a new skill
+      const inputField = emptySkillTag.querySelector("input");
+      const saveTick = emptySkillTag.querySelector(".save-tick-input");
+
+      saveTick.addEventListener("click", function () {
+        if (inputField.value.trim() !== "") {
+          const newSkillTag = document.createElement("span");
+          newSkillTag.className = "skill-tag edit-mode"; // Ensure "x" mark is visible
+          newSkillTag.textContent = inputField.value.trim();
+
+          // Add "x" mark for the new skill
+          const removeIcon = document.createElement("span");
+          removeIcon.className = "remove-skill";
+          removeIcon.innerHTML = "&times;";
+          removeIcon.addEventListener("click", function () {
+            newSkillTag.remove();
+          });
+          newSkillTag.appendChild(removeIcon);
+
+          // Insert the new skill before the empty skill tag
+          skillTagsContainer.insertBefore(newSkillTag, emptySkillTag);
+
+          // Clear the input field
+          inputField.value = "";
+        }
+      });
+    } else {
+      // Switch back to Edit state
+      editSkillsBtn.innerHTML = `
+        <i class="hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i>
+        Edit
+      `;
+      editSkillsBtn.setAttribute("data-state", "edit");
+
+      // Remove "x" marks from tags
+      const skillTags = skillTagsContainer.querySelectorAll(".skill-tag");
+      skillTags.forEach((tag) => {
+        tag.classList.remove("edit-mode");
+        const removeIcon = tag.querySelector(".remove-skill");
+        if (removeIcon) {
+          removeIcon.remove();
+        }
+      });
+
+      // Remove the empty skill tag
+      const emptySkillTag = skillTagsContainer.querySelector(".empty-skill");
+      if (emptySkillTag) {
+        emptySkillTag.remove();
+      }
+    }
   });
 });
