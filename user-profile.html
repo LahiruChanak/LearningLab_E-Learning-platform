@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Account Settings</title>
+    <link rel="icon" href="assets/images/logo.png" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.hugeicons.com/font/hgi-stroke-rounded.css"
+    />
+
+    <link rel="stylesheet" href="assets/css/user-profile.css" />
+    <link rel="stylesheet" href="assets/css/header.css" />
+  </head>
+  <body class="overflow-hidden">
+    <div class="container-fluid d-flex gap-1 pt-2">
+      <!-- Sidebar -->
+      <div class="sidebar" id="sidebar">
+        <div class="d-flex justify-content-center align-items-center mt-2 mb-3">
+          <img src="assets/images/user.jpg" alt="Logo" class="logo-image" />
+        </div>
+        <nav class="nav flex-column align-items-center gap-1 mb-4">
+          <a
+            class="nav-link active"
+            href="#"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            data-bs-title="Dashboard"
+          >
+            <i class="hgi-stroke hgi-home-04 fs-5 align-middle"></i>
+          </a>
+          <a
+            class="nav-link"
+            href="#"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            data-bs-title="Courses"
+          >
+            <i class="hgi-stroke hgi-course fs-5 align-middle"></i>
+          </a>
+          <a
+            class="nav-link"
+            href="#"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            data-bs-title="Chats"
+          >
+            <i class="hgi-stroke hgi-chatting-01 fs-5 align-middle"></i>
+          </a>
+          <a
+            class="nav-link"
+            href="#"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            data-bs-title="Grades"
+          >
+            <i class="hgi-stroke hgi-analytics-01 fs-5 align-middle"></i>
+          </a>
+          <a
+            class="nav-link"
+            href="#"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            data-bs-title="Schedule"
+          >
+            <i class="hgi-stroke hgi-calendar-03 fs-5 align-middle"></i>
+          </a>
+          <a
+            class="nav-link"
+            href="#"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            data-bs-title="Settings"
+          >
+            <i class="hgi-stroke hgi-settings-01 fs-5 align-middle"></i>
+          </a>
+          <a
+            class="nav-link"
+            href="index.html"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            data-bs-title="Logout"
+          >
+            <i class="hgi-stroke hgi-logout-01 fs-5 align-middle"></i>
+          </a>
+        </nav>
+      </div>
+
+      <div class="row w-100 py-3">
+        <!-- Header options -->
+        <div
+          class="d-flex justify-content-between align-items-center px-md-5 mb-4"
+        >
+          <h3 class="mb-0">Profile</h3>
+          <div class="d-flex align-items-center gap-3">
+            <!-- Search box -->
+            <div class="search-box">
+              <input type="text" placeholder="Search" />
+              <button class="search-btn">
+                <i class="hgi-stroke hgi-search-01 fs-5"></i>
+              </button>
+            </div>
+            <!-- Notification icon -->
+            <div class="position-relative me-3 notification-icon">
+              <a href="#" class="text-decoration-none text-dark">
+                <i class="hgi-stroke hgi-notification-02 fs-5"></i>
+              </a>
+            </div>
+            <!-- Profile -->
+            <div class="d-flex align-items-center">
+              <img
+                src="assets/images/user.jpg"
+                alt="Profile"
+                class="rounded-circle me-2 header-image"
+              />
+              <div>
+                <h6 class="mb-0">Esther Howard</h6>
+                <small class="text-muted">Elementary</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sub Navigation -->
+        <div class="sub-navigation">
+          <ul class="sub-navigation-menu">
+            <li data-page="profile" class="active">Profile</li>
+            <li data-page="security">Security</li>
+            <li data-page="achievements">Achievements</li>
+            <li data-page="courses">Courses</li>
+            <li data-page="notifications">Notifications</li>
+            <li data-page="billing">Billing</li>
+            <li data-page="delete">Delete Account</li>
+          </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content pt-0">
+          <!-- Profile Page -->
+          <div id="profile" class="page active">
+            <div class="d-flex section">
+              <div
+                class="profile-pic-wrapper me-3"
+                data-bs-toggle="modal"
+                data-bs-target="#profileModal"
+              >
+                <img
+                  id="profilePreview"
+                  src="assets/images/user.jpg"
+                  alt="Profile"
+                  class="profile-image"
+                />
+                <div class="overlay">
+                  <i class="hgi-stroke hgi-camera-01 fs-5 text-white"></i>
+                </div>
+              </div>
+              <div class="profile-info">
+                <h2>Esther Howard</h2>
+                <p>Student</p>
+                <p>bio description</p>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="section-header">
+                <h3>Personal Information</h3>
+                <button class="edit-btn">✎ Edit</button>
+              </div>
+              <div class="form-group">
+                <div class="form-field">
+                  <label>First Name</label>
+                  <input type="text" value="Rafiqur" disabled />
+                </div>
+                <div class="form-field">
+                  <label>Last Name</label>
+                  <input type="text" value="Rahman" disabled />
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-field">
+                  <label>Email Address</label>
+                  <input
+                    type="email"
+                    value="rafiqurrahman51@gmail.com"
+                    disabled
+                  />
+                </div>
+                <div class="form-field">
+                  <label>Phone</label>
+                  <input type="tel" value="+09 345 366 46" disabled />
+                </div>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="section-header">
+                <h3>Address</h3>
+                <button class="edit-btn">✎ Edit</button>
+              </div>
+              <div class="form-group">
+                <div class="form-field">
+                  <label>Country</label>
+                  <input type="text" value="United Kingdom" disabled />
+                </div>
+                <div class="form-field">
+                  <label>City/State</label>
+                  <input type="text" value="Leeds, East London" disabled />
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-field">
+                  <label>Postal Code</label>
+                  <input type="text" value="E8T 2J6A" disabled />
+                </div>
+                <div class="form-field">
+                  <label>Tax ID</label>
+                  <input type="text" value="AS5566756" disabled />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Security Page -->
+          <div id="security" class="page">
+            <h2 class="page-title">Security Settings</h2>
+            <div class="security-list">
+              <div class="security-item">
+                <div class="security-icon">🔒</div>
+                <div class="security-info">
+                  <h3>Password</h3>
+                  <p>Last changed 2 months ago</p>
+                </div>
+                <button class="link-button">Change password</button>
+              </div>
+
+              <div class="security-item">
+                <div class="security-icon">✉️</div>
+                <div class="security-info">
+                  <h3>Email verification</h3>
+                  <p>rafiqurrahman51@gmail.com</p>
+                </div>
+                <button class="link-button">Update email</button>
+              </div>
+
+              <div class="security-item">
+                <div class="security-icon">🛡️</div>
+                <div class="security-info">
+                  <h3>Two-factor authentication</h3>
+                  <p>Add an extra layer of security</p>
+                </div>
+                <button class="enable-2fa">Enable 2FA</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Achievements Page -->
+          <div id="achievements" class="page">
+            <h2 class="page-title">Achievements</h2>
+            <div class="section">
+              <p>🎉 You have unlocked 5 achievements so far!</p>
+              <div class="achievement-list">
+                <div class="achievement-item">
+                  <div class="achievement-icon">🏆</div>
+                  <div class="achievement-info">
+                    <h3>Top Contributor</h3>
+                    <p>Earned for actively participating in discussions.</p>
+                  </div>
+                </div>
+                <div class="achievement-item">
+                  <div class="achievement-icon">🌟</div>
+                  <div class="achievement-info">
+                    <h3>Course Completion</h3>
+                    <p>Completed 10 courses successfully.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Courses Page -->
+          <div id="courses" class="page">
+            <h2 class="page-title">Courses</h2>
+            <div class="section">
+              <p>📚 Your enrolled courses will appear here.</p>
+              <div class="course-list">
+                <div class="course-item">
+                  <h3>Introduction to Web Development</h3>
+                  <p>Progress: 75%</p>
+                  <button class="btn btn-continue">Continue</button>
+                </div>
+                <div class="course-item">
+                  <h3>Advanced JavaScript</h3>
+                  <p>Progress: 50%</p>
+                  <button class="btn btn-continue">Continue</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notifications Page -->
+          <div id="notifications" class="page">
+            <h2 class="page-title">Notifications</h2>
+            <div class="section">
+              <p>🔔 Your notifications will appear here.</p>
+              <div class="notification-list">
+                <div class="notification-item">
+                  <p>Your profile has been updated successfully.</p>
+                  <small>2 hours ago</small>
+                </div>
+                <div class="notification-item">
+                  <p>New course available: "Introduction to Python".</p>
+                  <small>1 day ago</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Billing Page -->
+          <div id="billing" class="page">
+            <h2 class="page-title">Billing</h2>
+            <div class="section">
+              <p>💳 Your billing information will appear here.</p>
+              <div class="billing-info">
+                <p>Current Plan: <strong>Pro Plan</strong></p>
+                <p>Next Billing Date: <strong>October 30, 2023</strong></p>
+                <button class="btn btn-upgrade">Upgrade Plan</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Delete Account Page -->
+          <div id="delete" class="page">
+            <h2 class="page-title">Delete Account</h2>
+            <div class="section">
+              <p>
+                ⚠️ Deleting your account is irreversible. All data will be lost.
+              </p>
+              <button class="btn btn-delete">Delete Account</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Edit Modal -->
+    <div
+      class="modal fade"
+      id="profileModal"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="profileModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="profileModalLabel">
+              Update Profile Picture
+            </h1>
+            <button
+              type="button"
+              class="btn-close shadow-none"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="d-flex flex-column align-items-center">
+              <div class="profile-preview">
+                <img
+                  id="imagePreview"
+                  src="/api/placeholder/150/150"
+                  alt="Profile Preview"
+                  class="rounded-circle"
+                />
+                <div class="fs-5 text-danger position-absolute top-0 end-0 z-3">
+                  <i class="hgi-stroke hgi-multiplication-sign"></i>
+                </div>
+              </div>
+              <div
+                class="d-flex flex-column justify-content-center align-items-center gap-3 mt-3"
+              >
+                <button
+                  type="button"
+                  class="btn-upload"
+                  onclick="document.getElementById('imageUpload').click()"
+                >
+                  <i class="hgi-stroke hgi-image-upload fs-5 me-2"></i> Upload
+                  New Image
+                </button>
+                <button type="button" class="btn-upload" onclick="takePhoto()">
+                  <i class="hgi-stroke hgi-camera-01 fs-5 me-2"></i> Take Photo
+                </button>
+              </div>
+              <input
+                type="file"
+                id="imageUpload"
+                accept="image/jpeg,image/png,image/gif"
+                style="display: none"
+              />
+              <div class="text-muted small text-center mt-3">
+                Supported formats: JPG, PNG, GIF, JPEG (max. 5MB)
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer gap-2 m-2 mt-0">
+            <button
+              type="button"
+              class="border-0 bg-transparent"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary rounded-3"
+              onclick="saveChanges()"
+            >
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script src="assets/js/user-dashboard.js"></script>
+    <script src="assets/js/user-profile.js"></script>
+  </body>
+</html>

@@ -362,12 +362,3 @@ h1 span::after {
 .resendBtn:hover {
   text-decoration: underline;
 }
-
-.modal-content,
-.modal-body {
-  padding: 0;
-  border: none;
-  background-color: transparent;
-  width: fit-content !important;
-  height: fit-content !important;
-}
