@@ -338,3 +338,89 @@ function copyCode() {
       alert("Failed to copy code. Please try again.");
     });
 }
+
+// -------------------------- Achievements --------------------------
+document.addEventListener("DOMContentLoaded", () => {
+  const viewAllBtn = document.getElementById("viewAllBtn");
+  const hiddenItems = document.querySelectorAll(".achievement-item.hidden");
+  const achievementCount = document.getElementById("achievement-count");
+  let showingAll = false;
+
+  viewAllBtn.addEventListener("click", () => {
+    showingAll = !showingAll;
+    hiddenItems.forEach((item) => {
+      item.style.display = showingAll ? "flex" : "none";
+    });
+    viewAllBtn.textContent = showingAll ? "Show Less" : "View All";
+  });
+});
+
+// -------------------------- Courses --------------------------
+document.addEventListener("DOMContentLoaded", () => {
+  const progressCircles = document.querySelectorAll(".progress");
+
+  progressCircles.forEach((circle) => {
+    const progress = circle.getAttribute("data-progress");
+    const circumference = 2 * Math.PI * 45;
+    const offset = circumference - (progress / 100) * circumference;
+
+    circle.style.strokeDasharray = `${circumference} ${circumference}`;
+    circle.style.strokeDashoffset = offset;
+  });
+});
+
+// -------------------------- Notifications --------------------------
+document.addEventListener("DOMContentLoaded", () => {
+  const markAllReadBtn = document.getElementById("markAllRead");
+  const notificationList = document.getElementById("notificationList");
+  const deleteButtons = document.querySelectorAll(".btn-delete");
+
+  // Mark All as Read functionality
+  markAllReadBtn.addEventListener("click", () => {
+    const notifications =
+      notificationList.querySelectorAll(".notification-item");
+    notifications.forEach((item) => {
+      item.classList.add("read");
+    });
+  });
+
+  // Delete individual notification functionality
+  deleteButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const notification = button.closest(".notification-item");
+      notification.remove();
+      // Check if list is empty
+      if (!notificationList.children.length) {
+        notificationList.innerHTML =
+          '<p class="no-notifications">No notifications available.</p>';
+      }
+    });
+  });
+});
+
+// -------------------------- Billing --------------------------
+document.addEventListener("DOMContentLoaded", () => {
+  const viewHistoryBtn = document.getElementById("viewHistory");
+  const billingInfo = document.getElementById("billingInfo");
+  const billingHistory = document.getElementById("billingHistory");
+  let isHistoryVisible = false;
+
+  // Initially hide billing history
+  billingHistory.style.display = "none";
+
+  viewHistoryBtn.addEventListener("click", () => {
+    isHistoryVisible = !isHistoryVisible;
+
+    if (isHistoryVisible) {
+      billingInfo.style.display = "none";
+      billingHistory.style.display = "block";
+      viewHistoryBtn.textContent = "Back";
+      viewHistoryBtn.classList.add("me-5");
+    } else {
+      billingInfo.style.display = "block";
+      billingHistory.style.display = "none";
+      viewHistoryBtn.textContent = "Payment history";
+      viewHistoryBtn.classList.remove("me-5");
+    }
+  });
+});
