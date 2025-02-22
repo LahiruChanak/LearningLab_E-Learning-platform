@@ -860,6 +860,51 @@ body {
   color: black;
 }
 
+.remove-card-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  display: none;
+  transition: all 0.4s ease;
+}
+
+.remove-card-btn:hover {
+  background-color: #f12121;
+}
+
+#newCardInner {
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+#flipCardBtn {
+  position: absolute;
+  top: -5px;
+  right: 80px;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.4s ease;
+}
+
+.card-name,
+.card-number,
+.exp-date,
+.code {
+  box-shadow: none !important;
+}
+
 /* -------------------------- Delete Account Page -------------------------- */
 .delete-warning-icon {
   font-size: 1.8rem;

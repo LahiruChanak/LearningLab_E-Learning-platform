@@ -581,15 +581,26 @@
                   <!-- Payment Method -->
                   <div class="billing-section pe-0" id="paymentMethod">
                     <div
-                      class="d-flex justify-content-between align-items-center"
+                      class="d-flex justify-content-between align-items-center mb-2"
                     >
                       <h3>Payment Method</h3>
-                      <button
-                        class="text-primary border-0 bg-transparent"
-                        id="manageCards"
-                      >
-                        Manage Cards
-                      </button>
+                      <div class="d-flex align-items-center">
+                        <button
+                          class="text-primary border-0 bg-transparent"
+                          id="manageCards"
+                        >
+                          Manage Cards
+                        </button>
+                        <button
+                          class="text-primary border-0 bg-transparent ms-3"
+                          id="addCard"
+                          data-bs-toggle="modal"
+                          data-bs-target="#addCardModal"
+                          style="display: none"
+                        >
+                          Add Card
+                        </button>
+                      </div>
                     </div>
                     <!-- Debit Card -->
                     <div class="flip-card">
@@ -634,6 +645,11 @@
                               />
                             </div>
                           </div>
+                          <button class="remove-card-btn">
+                            <i
+                              class="hgi-stroke hgi-cancel-01 fw-bold small"
+                            ></i>
+                          </button>
                         </div>
                         <div class="flip-card-back">
                           <div class="strip"></div>
@@ -978,6 +994,120 @@
               onclick="enable2FA()"
             >
               Enable 2FA
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add New Card Modal -->
+    <div
+      class="modal fade"
+      id="addCardModal"
+      tabindex="-1"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      aria-labelledby="addCardModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addCardModalLabel">Add New Card</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body mt-3 position-relative">
+            <div class="flip-card mx-auto" id="newCard">
+              <div class="flip-card-inner" id="newCardInner">
+                <div class="flip-card-front">
+                  <div class="card-content">
+                    <div class="flex-row top-row">
+                      <img
+                        src="/assets/images/chip.svg"
+                        alt="Card Chip"
+                        class="chip mt-3"
+                      />
+                      <p class="card-heading">MASTERCARD</p>
+                    </div>
+                    <div class="flex-row middle-row">
+                      <input
+                        type="text"
+                        class="form-control card-number"
+                        id="newCardNumber"
+                        placeholder="Card Number"
+                        maxlength="19"
+                      />
+                      <img
+                        src="assets/images/contactless.svg"
+                        alt="Contactless"
+                        class="contactless"
+                      />
+                    </div>
+                    <div class="flex-row bottom-row">
+                      <input
+                        type="text"
+                        class="form-control card-name"
+                        id="newCardName"
+                        placeholder="Cardholder Name"
+                      />
+                      <div class="validity">
+                        <p class="valid-thru">VALID <br />THRU</p>
+                        <input
+                          type="text"
+                          class="form-control exp-date"
+                          id="newExpDate"
+                          placeholder="MM/YY"
+                          maxlength="5"
+                        />
+                      </div>
+                      <img
+                        src="assets/images/mastercard.svg"
+                        alt="Mastercard logo"
+                        class="card-logo"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="flip-card-back">
+                  <div class="strip"></div>
+                  <div class="mstrip"></div>
+                  <div class="sstrip">
+                    <input
+                      type="text"
+                      class="form-control code"
+                      id="newCvvCode"
+                      placeholder="CVV"
+                      maxlength="3"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button
+              class="btn text-primary"
+              id="flipCardBtn"
+              data-bs-toggle="tooltip"
+              data-bs-title="Flip Card"
+              data-bs-placement="bottom"
+            >
+              <i class="hgi-stroke hgi-flip-horizontal fs-5"></i>
+            </button>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button type="button" class="btn btn-success" id="saveCardBtn">
+              Save Card
             </button>
           </div>
         </div>
