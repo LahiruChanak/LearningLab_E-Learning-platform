@@ -584,7 +584,7 @@
                       class="d-flex justify-content-between align-items-center mb-2"
                     >
                       <h3>Payment Method</h3>
-                      <div class="d-flex align-items-center">
+                      <div class="d-flex align-items-center gap-2">
                         <button
                           class="text-primary border-0 bg-transparent"
                           id="manageCards"
@@ -592,72 +592,84 @@
                           Manage Cards
                         </button>
                         <button
-                          class="text-primary border-0 bg-transparent ms-3"
+                          class="text-success border-0 bg-transparent ms-3"
                           id="addCard"
                           data-bs-toggle="modal"
                           data-bs-target="#addCardModal"
-                          style="display: none"
+                          style="display: none; font-size: 1.4rem"
                         >
-                          Add Card
+                          <i
+                            class="hgi-stroke hgi-credit-card-add"
+                            data-bs-toggle="tooltip"
+                            data-bs-title="Add Card"
+                            data-bs-placement="bottom"
+                          ></i>
                         </button>
                       </div>
                     </div>
                     <!-- Debit Card -->
-                    <div class="flip-card">
-                      <div class="flip-card-inner">
-                        <div class="flip-card-front">
-                          <div class="card-content">
-                            <div class="flex-row top-row">
-                              <img
-                                src="/assets/images/chip.svg"
-                                alt="Card Chip"
-                                class="chip mt-3"
-                              />
-                              <p class="card-heading">MASTERCARD</p>
-                            </div>
-                            <div class="flex-row middle-row">
-                              <p
-                                class="card-number"
-                                id="card-number"
-                                data-original="9759 2484 5269 6576"
-                              >
-                                9759 2484 5269 6576
-                              </p>
-                              <img
-                                src="assets/images/contactless.svg"
-                                alt="Contactless"
-                                class="contactless"
-                              />
-                            </div>
-                            <div class="flex-row bottom-row">
-                              <p class="card-name">BRUCE WAYNE</p>
-                              <div class="validity">
-                                <p class="valid-thru">
-                                  VALID <br />
-                                  THRU
-                                </p>
-                                <p class="exp-date">12/24</p>
+                    <div id="cardContainer" class="d-flex flex-wrap gap-3">
+                      <div class="flip-card">
+                        <div class="flip-card-inner">
+                          <div class="flip-card-front">
+                            <div class="card-content">
+                              <div class="flex-row top-row">
+                                <img
+                                  src="/assets/images/chip.svg"
+                                  alt="Card Chip"
+                                  class="chip mt-3"
+                                />
+                                <p class="card-heading">MASTERCARD</p>
                               </div>
-                              <img
-                                src="assets/images/mastercard.svg"
-                                alt="Mastercard logo"
-                                class="card-logo"
-                              />
+                              <div class="flex-row middle-row">
+                                <p
+                                  class="card-number"
+                                  id="card-number"
+                                  data-original="9759 2484 5269 6576"
+                                >
+                                  9759 2484 5269 6576
+                                </p>
+                                <img
+                                  src="assets/images/contactless.svg"
+                                  alt="Contactless"
+                                  class="contactless"
+                                />
+                              </div>
+                              <div class="flex-row bottom-row">
+                                <p class="card-name">BRUCE WAYNE</p>
+                                <div class="validity">
+                                  <p class="valid-thru">
+                                    VALID <br />
+                                    THRU
+                                  </p>
+                                  <p class="exp-date">12/24</p>
+                                </div>
+                                <img
+                                  src="assets/images/mastercard.svg"
+                                  alt="Mastercard logo"
+                                  class="card-logo"
+                                />
+                              </div>
                             </div>
+                            <button
+                              class="remove-card-btn"
+                              data-bs-toggle="tooltip"
+                              data-bs-title="Remove"
+                              data-bs-placement="bottom"
+                            >
+                              <i
+                                class="hgi-stroke hgi-cancel-01 fw-bold small"
+                              ></i>
+                            </button>
                           </div>
-                          <button class="remove-card-btn">
-                            <i
-                              class="hgi-stroke hgi-cancel-01 fw-bold small"
-                            ></i>
-                          </button>
-                        </div>
-                        <div class="flip-card-back">
-                          <div class="strip"></div>
-                          <div class="mstrip"></div>
-                          <div class="sstrip">
-                            <p class="code" id="cvv-code" data-original="123">
-                              123
-                            </p>
+                          <div class="flip-card-back">
+                            <div class="strip"></div>
+                            <div class="mstrip"></div>
+                            <div class="sstrip">
+                              <p class="code" id="cvv-code" data-original="123">
+                                123
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1016,12 +1028,12 @@
             <h5 class="modal-title" id="addCardModalLabel">Add New Card</h5>
             <button
               type="button"
-              class="btn-close"
+              class="btn-close shadow-none"
               data-bs-dismiss="modal"
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body mt-3 position-relative">
+          <div class="modal-body my-3 position-relative">
             <div class="flip-card mx-auto" id="newCard">
               <div class="flip-card-inner" id="newCardInner">
                 <div class="flip-card-front">

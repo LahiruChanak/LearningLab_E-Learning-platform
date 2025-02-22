@@ -438,102 +438,47 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Manage Cards functionality
+  // Toggle Manage Mode
   document.getElementById("manageCards").addEventListener("click", function () {
-    // Show remove icon on card
-    const removeButton = document.querySelector(".remove-card-btn");
-    if (removeButton) removeButton.style.display = "block";
+    const isManageMode = this.textContent === "Done";
 
-    // Disable card flip
-    const flipCardInner = document.querySelector(".flip-card-inner");
-    if (flipCardInner) {
-      flipCardInner.style.transform = "rotateY(0deg)";
-      flipCardInner.style.transition = "none";
-    }
+    this.style.transition = "none";
 
-    // Get the header container
-    const header = this.parentElement;
+    if (!isManageMode) {
+      // Enter manage mode
+      const removeButton = document.querySelector(".remove-card-btn");
+      if (removeButton) removeButton.style.display = "flex";
 
-    // Hide Manage Cards button
-    this.style.display = "none";
+      const flipCardInner = document.querySelector(".flip-card-inner");
+      if (flipCardInner) {
+        flipCardInner.style.transform = "rotateY(0deg)";
+        flipCardInner.style.transition = "none";
+      }
 
-    // Create Done button
-    const doneBtn = document.createElement("button");
-    doneBtn.className = "text-primary border-0 bg-transparent";
-    doneBtn.id = "doneBtn";
-    doneBtn.textContent = "Done";
-
-    // Show existing Add Card button
-    const addCardBtn = document.getElementById("addCard");
-    addCardBtn.style.display = "block";
-
-    // Append buttons to header
-    header.appendChild(doneBtn);
-    header.appendChild(addCardBtn);
-  });
-
-  // Handle Done button click
-  document.addEventListener("click", function (e) {
-    if (e.target.id === "doneBtn") {
-      // Hide remove icon
+      const addCardBtn = document.getElementById("addCard");
+      addCardBtn.style.display = "block";
+      this.textContent = "Done";
+      this.className = "text-secondary border-0 bg-transparent";
+    } else {
+      // Exit manage mode
       const removeButton = document.querySelector(".remove-card-btn");
       if (removeButton) removeButton.style.display = "none";
 
-      // Restore card flip
       const flipCardInner = document.querySelector(".flip-card-inner");
       if (flipCardInner) {
         flipCardInner.style.transition = "";
         flipCardInner.style.transform = "";
       }
 
-      // Get header and buttons
-      const header = e.target.parentElement;
-      const manageBtn = document.createElement("button");
-      manageBtn.className = "text-primary border-0 bg-transparent";
-      manageBtn.id = "manageCards";
-      manageBtn.textContent = "Manage Cards";
-
       const addCardBtn = document.getElementById("addCard");
       addCardBtn.style.display = "none";
-
-      // Remove Done and Add buttons, restore Manage Cards
-      header.removeChild(e.target); // Remove Done
-      header.insertBefore(manageBtn, addCardBtn);
-
-      // Reattach event listener to new Manage Cards button
-      manageBtn.addEventListener("click", function () {
-        // Show remove icon on card
-        const removeButton = document.querySelector(".remove-card-btn");
-        if (removeButton) removeButton.style.display = "block";
-
-        // Disable card flip
-        const flipCardInner = document.querySelector(".flip-card-inner");
-        if (flipCardInner) {
-          flipCardInner.style.transform = "rotateY(0deg)";
-          flipCardInner.style.transition = "none";
-        }
-
-        // Get the header container
-        const header = this.parentElement;
-
-        // Hide Manage Cards button
-        this.style.display = "none";
-
-        // Create Done button
-        const doneBtn = document.createElement("button");
-        doneBtn.className = "text-primary border-0 bg-transparent";
-        doneBtn.id = "doneBtn";
-        doneBtn.textContent = "Done";
-
-        // Show existing Add Card button
-        const addCardBtn = document.getElementById("addCard");
-        addCardBtn.style.display = "block";
-
-        // Append buttons to header
-        header.appendChild(doneBtn);
-        header.appendChild(addCardBtn);
-      });
+      this.textContent = "Manage Cards";
+      this.className = "text-primary border-0 bg-transparent";
     }
+
+    // Force reflow to ensure immediate change
+    void this.offsetWidth;
+    this.style.transition = "";
   });
 
   // Remove card functionality
@@ -544,21 +489,34 @@ document.addEventListener("DOMContentLoaded", () => {
       const card = this.closest(".flip-card");
       card.remove();
 
-      // If no cards remain, exit manage mode
       const remainingCards = document.querySelector(".flip-card");
-      const doneBtn = document.getElementById("doneBtn");
-      if (!remainingCards && doneBtn) {
-        const header = doneBtn.parentElement;
-        const manageBtn = document.createElement("button");
-        manageBtn.className = "text-primary border-0 bg-transparent";
-        manageBtn.id = "manageCards";
+      const manageBtn = document.getElementById("manageCards");
+      if (!remainingCards && manageBtn.textContent === "Done") {
+        manageBtn.style.transition = "none";
         manageBtn.textContent = "Manage Cards";
-
+        manageBtn.className = "text-primary border-0 bg-transparent";
         const addCardBtn = document.getElementById("addCard");
         addCardBtn.style.display = "none";
+        this.style.display = "none";
 
-        header.removeChild(doneBtn);
-        header.insertBefore(manageBtn, addCardBtn);
+        const flipCardInner = document.querySelector(".flip-card-inner");
+        if (flipCardInner) {
+          flipCardInner.style.transition = "";
+          flipCardInner.style.transform = "";
+        }
+        void manageBtn.offsetWidth;
+        manageBtn.style.transition = "";
+      }
+    });
+
+  // Disable card flip when modal is shown
+  document
+    .getElementById("addCardModal")
+    .addEventListener("shown.bs.modal", function () {
+      const modalCardInner = document.getElementById("newCardInner");
+      if (modalCardInner) {
+        modalCardInner.style.transform = "rotateY(0deg)";
+        modalCardInner.style.transition = "none";
       }
     });
 
@@ -569,58 +527,109 @@ document.addEventListener("DOMContentLoaded", () => {
     const expDate = document.getElementById("newExpDate").value;
     const cvvCode = document.getElementById("newCvvCode").value;
 
-    // Disable card flip
-    const flipCardInner = document.querySelector(".flip-card-inner");
-    if (flipCardInner) {
-      flipCardInner.style.transform = "rotateY(0deg)";
-      flipCardInner.style.transition = "none";
-    }
-
-    if (!cardNumber || !cardName || !expDate || !cvvCode) {
-      alert("Please fill in all card details");
-      return;
-    }
+    // if (!cardNumber || !cardName || !expDate || !cvvCode) {
+    //   alert("Please fill in all card details");
+    //   return;
+    // }
 
     const newCard = document.createElement("div");
     newCard.className = "flip-card";
     newCard.innerHTML = `
       <div class="flip-card-inner">
-          <div class="flip-card-front">
-              <div class="card-content">
-                  <div class="flex-row top-row">
-                      <img src="/assets/images/chip.svg" alt="Card Chip" class="chip mt-3" />
-                      <p class="card-heading">MASTERCARD</p>
-                  </div>
-                  <div class="flex-row middle-row">
-                      <p class="card-number" data-original="${cardNumber}">${cardNumber}</p>
-                      <img src="assets/images/contactless.svg" alt="Contactless" class="contactless" />
-                  </div>
-                  <div class="flex-row bottom-row">
-                      <p class="card-name">${cardName}</p>
-                      <div class="validity">
-                          <p class="valid-thru">VALID <br />THRU</p>
-                          <p class="exp-date">${expDate}</p>
-                      </div>
-                      <img src="assets/images/mastercard.svg" alt="Mastercard logo" class="card-logo" />
-                  </div>
+        <div class="flip-card-front">
+          <div class="card-content">
+            <div class="flex-row top-row">
+              <img
+              src="/assets/images/chip.svg"
+              alt="Card Chip"
+              class="chip mt-3"
+              />
+              <p class="card-heading">MASTERCARD</p>
+            </div>
+            <div class="flex-row middle-row">
+              <p
+                class="card-number"
+                id="card-number"
+                data-original="${cardNumber}"
+              >
+              ${cardNumber}
+              </p>
+              <img
+              src="assets/images/contactless.svg"
+              alt="Contactless"
+              class="contactless"
+              />
+            </div>
+            <div class="flex-row bottom-row">
+              <p class="card-name" data-original="${cardName}">${cardName}</p>
+              <div class="validity">
+                <p class="valid-thru">
+                  VALID <br />
+                  THRU
+                </p>
+                <p class="exp-date" data-original="${expDate}">${expDate}</p>
               </div>
-              <button class="remove-card-btn" style="display: none;">
-                  <i class="hgi-stroke hgi-cancel-01 fw-bold small"></i>
-              </button>
+              <img
+                src="assets/images/mastercard.svg"
+                alt="Mastercard logo"
+                class="card-logo"
+              />
+            </div>
           </div>
-          <div class="flip-card-back">
-              <div class="strip"></div>
-              <div class="mstrip"></div>
-              <div class="sstrip">
-                  <p class="code" data-original="${cvvCode}">${cvvCode}</p>
-              </div>
-          </div>
+          <button
+            class="remove-card-btn"
+            data-bs-toggle="tooltip"
+            data-bs-title="Remove"
+            data-bs-placement="bottom"
+          >
+            <i
+              class="hgi-stroke hgi-cancel-01 fw-bold small"
+            ></i>
+          </button>
+        </div>
+      <div class="flip-card-back">
+        <div class="strip"></div>
+        <div class="mstrip"></div>
+        <div class="sstrip">
+          <p class="code" id="cvv-code" data-original="${cvvCode}">
+            ${cvvCode}
+          </p>
+        </div>
       </div>
+    </div>
   `;
 
-    const paymentMethod = document.getElementById("paymentMethod");
-    paymentMethod.appendChild(newCard);
+    // Append new card to the card container
+    const cardContainer = document.getElementById("cardContainer");
+    if (cardContainer) {
+      cardContainer.appendChild(newCard);
+    } else {
+      console.error("Card container not found!");
+      // Fallback to paymentMethod if container not found
+      document.getElementById("paymentMethod").appendChild(newCard);
+    }
 
+    // Instantly add remove button event listener
+    const newRemoveBtn = newCard.querySelector(".remove-card-btn");
+    newRemoveBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      const card = this.closest(".flip-card");
+      card.remove();
+
+      const remainingCards = document.querySelector(".flip-card");
+      const manageBtn = document.getElementById("manageCards");
+      if (!remainingCards && manageBtn && manageBtn.textContent === "Done") {
+        manageBtn.style.transition = "none";
+        manageBtn.textContent = "Manage Cards";
+        manageBtn.className = "text-primary border-0 bg-transparent";
+        const addCardBtn = document.getElementById("addCard");
+        addCardBtn.style.display = "none";
+        void manageBtn.offsetWidth;
+        manageBtn.style.transition = "";
+      }
+    });
+
+    // Clear form and close modal
     document.getElementById("newCardNumber").value = "";
     document.getElementById("newCardName").value = "";
     document.getElementById("newExpDate").value = "";
