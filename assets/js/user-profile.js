@@ -48,11 +48,34 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Set initial active page
-  if (tabItems.length > 0) {
-    const initialPage = tabItems[0].getAttribute("data-page");
-    showPage(initialPage);
+  // Function to handle hash and show tab
+  function handleHashChange() {
+    const hash = window.location.hash.substring(1); // Remove the '#'
+    if (hash) {
+      // Prevent browser from scrolling to hash
+      history.pushState(
+        "",
+        document.title,
+        window.location.pathname + window.location.search
+      );
+      showPage(hash);
+      window.scrollTo(0, 0);
+    } else if (tabItems.length > 0) {
+      const initialPage = tabItems[0].getAttribute("data-page");
+      showPage(initialPage);
+    }
   }
+
+  // Handle initial page load
+  handleHashChange();
+
+  // Listen for hash changes (ex:-, clicking notification icon on same page)
+  window.addEventListener("hashchange", handleHashChange);
+
+  // lock scroll position on load
+  window.addEventListener("load", () => {
+    window.scrollTo(0, 0);
+  });
 
   // Profile Modal System
   if (profileImage) {

@@ -10,6 +10,9 @@
   padding: 0;
   box-sizing: border-box;
   font-family: "Roboto", sans-serif;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) #eee;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -582,14 +585,12 @@ body {
 
 .notification-item.read {
   background-color: #f8f9fa;
+
 }
 
-.notification-item.read p {
-  color: #7f8c8d;
-}
-
+.notification-item.read p,
 .notification-item.read small {
-  color: #95a5a6;
+  color: #aaa;
 }
 
 .btn-delete {
