@@ -403,7 +403,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const viewHistoryBtn = document.getElementById("viewHistory");
   const billingInfo = document.getElementById("billingInfo");
   const billingHistory = document.getElementById("billingHistory");
+  const cardNumber = document.getElementById("card-number");
+  const cvvCode = document.getElementById("cvv-code");
   let isHistoryVisible = false;
+
+  // Mask card number
+  const cardOriginal = cardNumber.getAttribute("data-original");
+  const cardParts = cardOriginal.split(" ");
+  const maskedParts = cardParts.map((part, index) =>
+    index < 3 ? "****" : part
+  );
+  cardNumber.textContent = maskedParts.join(" ");
+
+  // Mask CVV
+  const cvvOriginal = cvvCode.getAttribute("data-original");
+  cvvCode.textContent = "*".repeat(cvvOriginal.length);
 
   // Initially hide billing history
   billingHistory.style.display = "none";
