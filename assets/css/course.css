@@ -1,0 +1,262 @@
+:root {
+  --primary-color: #6C5DD3;
+  --secondary-color: #F1F4F8;
+}
+
+.course-card {
+  background-color: var(--secondary-color);
+  border-radius: 16px;
+  padding: 20px;
+  height: 100%;
+  transition: transform 0.3s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-5px);
+}
+
+.course-card p {
+  font-size: 14px;
+  color: #333;
+}
+
+.avatar-group {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: -8px;
+  border: 2px solid white;
+}
+
+.discussion-card {
+  transition: transform 0.3s ease;
+}
+
+.discussion-card:hover {
+  transform: translateY(-3px);
+}
+
+.top-course {
+  transition: transform 0.3s ease;
+}
+
+.top-course:hover {
+  transform: translateY(-3px);
+}
+
+.course-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress {
+  position: relative;
+  background-color: #e9ecef;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.progress-bar {
+  position: absolute;
+  height: 100%;
+  background-color: var(--primary-color);
+  transform-origin: left;
+  transform: rotate(-90deg);
+}
+
+.btn-light {
+  background-color: white;
+  border: 1px solid #e9ecef;
+}
+
+.btn-light:hover {
+  background-color: var(--secondary-color);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #5a4dba;
+}
+.filter-section {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.search-bar .input-group {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.search-bar .input-group-text,
+.search-bar .form-control {
+    border: 1px solid #e0e0e0;
+    background-color: #fff;
+}
+
+.search-bar .form-control:focus {
+    box-shadow: none;
+    border-color: #6366f1;
+}
+
+.btn-light {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    color: #4b5563;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.btn-light:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+}
+
+.btn-light.active {
+    background-color: #6366f1;
+    border-color: #6366f1;
+    color: #fff;
+}
+
+.course-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.course-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.course-card p {
+    color: #1f2937;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.course-card .avatar-group {
+    display: flex;
+    align-items: center;
+}
+
+.course-card .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    margin-left: -8px;
+}
+
+.course-card .avatar:first-child {
+    margin-left: 0;
+}
+
+.badge {
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border: 1px solid #e5e7eb;
+}
+
+.badge i {
+    font-size: 0.75rem;
+}
+
+.dropdown-menu {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.form-check-input:checked {
+    background-color: #6366f1;
+    border-color: #6366f1;
+}
+
+.list-view .course-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+}
+
+.list-view .course-card > div:first-child {
+    flex: 1;
+}
+
+.list-view .course-card .avatar-group {
+    margin-right: 1rem;
+}
+
+/* Group Discussion Section */
+.group-discussion {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-left: 2rem;
+}
+
+.group-discussion h6 {
+    color: #1f2937;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.discussion-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s;
+}
+
+.discussion-item:hover {
+    background-color: #f9fafb;
+}
+
+.discussion-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    margin-right: 1rem;
+}
+
+.discussion-item .content {
+    flex: 1;
+}
+
+.discussion-item .title {
+    font-weight: 500;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+}
+
+.discussion-item .category {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.discussion-item .number {
+    font-weight: 600;
+    color: #6366f1;
+}
