@@ -152,19 +152,19 @@
                 <!-- Search Bar -->
                 <div class="search-bar flex-grow-1">
                   <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0">
-                      <i class="hgi-stroke hgi-search-01"></i>
+                    <span class="input-group-text bg-white border-end-0 ms-1">
+                      <i class="hgi-stroke hgi-search-01 fs-5 align-middle"></i>
                     </span>
                     <input
                       type="text"
-                      class="form-control border-start-0"
+                      class="form-control border-start-0 rounded-end-3"
                       id="courseSearch"
                       placeholder="Search courses..."
                     />
                   </div>
                 </div>
 
-                <!-- Filter Dropdowns -->
+                <!-- Sorting Dropdowns -->
                 <div class="dropdown">
                   <button
                     class="btn btn-light dropdown-toggle"
@@ -172,45 +172,53 @@
                     id="sortDropdown"
                     data-bs-toggle="dropdown"
                   >
-                    <i class="hgi-stroke hgi-sort-01 me-2"></i>Sort by
+                    <i class="hgi-stroke hgi-sorting-01 align-middle fs-5 me-2">
+                    </i>
+                    Sort by
                   </button>
-                  <ul class="dropdown-menu">
+                  <ul class="dropdown-menu p-1 py-2 mt-3">
                     <li>
-                      <a class="dropdown-item" href="#" data-sort="name-asc"
-                        >Name (A-Z)</a
-                      >
+                      <a class="dropdown-item" href="#" data-sort="name-asc">
+                        Name (A-Z)
+                      </a>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="#" data-sort="name-desc"
-                        >Name (Z-A)</a
-                      >
+                      <a class="dropdown-item" href="#" data-sort="name-desc">
+                        Name (Z-A)
+                      </a>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="#" data-sort="date-new"
-                        >Newest First</a
-                      >
+                      <a class="dropdown-item" href="#" data-sort="date-new">
+                        Newest First
+                      </a>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="#" data-sort="date-old"
-                        >Oldest First</a
-                      >
+                      <a class="dropdown-item" href="#" data-sort="date-old">
+                        Oldest First
+                      </a>
                     </li>
                     <li>
                       <a
                         class="dropdown-item"
                         href="#"
                         data-sort="enrolled-high"
-                        >Most Enrolled</a
                       >
+                        Most Enrolled
+                      </a>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="#" data-sort="enrolled-low"
-                        >Least Enrolled</a
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        data-sort="enrolled-low"
                       >
+                        Least Enrolled
+                      </a>
                     </li>
                   </ul>
                 </div>
 
+                <!-- Filter Dropdown -->
                 <div class="dropdown">
                   <button
                     class="btn btn-light dropdown-toggle"
@@ -218,10 +226,11 @@
                     id="filterDropdown"
                     data-bs-toggle="dropdown"
                   >
-                    <i class="hgi-stroke hgi-filter-01 me-2"></i>Filter
+                    <i class="hgi-stroke hgi-filter align-middle fs-5 me-2"></i>
+                    Filter
                   </button>
-                  <ul class="dropdown-menu p-3" style="width: 250px">
-                    <li class="mb-3">
+                  <ul class="dropdown-menu p-3 mt-3" style="width: 250px">
+                    <li class="mb-3 border-bottom pb-3">
                       <label class="form-label">Course Level</label>
                       <div class="form-check">
                         <input
@@ -230,9 +239,12 @@
                           value="beginner"
                           id="levelBeginner"
                         />
-                        <label class="form-check-label" for="levelBeginner"
-                          >Beginner</label
+                        <label
+                          class="form-check-label ms-2"
+                          for="levelBeginner"
                         >
+                          Beginner
+                        </label>
                       </div>
                       <div class="form-check">
                         <input
@@ -241,9 +253,12 @@
                           value="intermediate"
                           id="levelIntermediate"
                         />
-                        <label class="form-check-label" for="levelIntermediate"
-                          >Intermediate</label
+                        <label
+                          class="form-check-label ms-2"
+                          for="levelIntermediate"
                         >
+                          Intermediate
+                        </label>
                       </div>
                       <div class="form-check">
                         <input
@@ -252,9 +267,12 @@
                           value="advanced"
                           id="levelAdvanced"
                         />
-                        <label class="form-check-label" for="levelAdvanced"
-                          >Advanced</label
+                        <label
+                          class="form-check-label ms-2"
+                          for="levelAdvanced"
                         >
+                          Advanced
+                        </label>
                       </div>
                     </li>
                     <li class="mb-3">
@@ -266,9 +284,9 @@
                           value="0-2"
                           id="duration1"
                         />
-                        <label class="form-check-label" for="duration1"
-                          >0-2 Hours</label
-                        >
+                        <label class="form-check-label ms-2" for="duration1">
+                          0-2 Hours
+                        </label>
                       </div>
                       <div class="form-check">
                         <input
@@ -277,9 +295,9 @@
                           value="2-5"
                           id="duration2"
                         />
-                        <label class="form-check-label" for="duration2"
-                          >2-5 Hours</label
-                        >
+                        <label class="form-check-label ms-2" for="duration2">
+                          2-5 Hours
+                        </label>
                       </div>
                       <div class="form-check">
                         <input
@@ -288,9 +306,9 @@
                           value="5+"
                           id="duration3"
                         />
-                        <label class="form-check-label" for="duration3"
-                          >5+ Hours</label
-                        >
+                        <label class="form-check-label ms-2" for="duration3">
+                          5+ Hours
+                        </label>
                       </div>
                     </li>
                     <li>
@@ -311,7 +329,9 @@
                     <i class="hgi-stroke hgi-grid-view fs-5"></i>
                   </button>
                   <button type="button" class="btn btn-light" data-view="list">
-                    <i class="hgi-stroke hgi-left-to-right-list-bullet fs-5"></i>
+                    <i
+                      class="hgi-stroke hgi-left-to-right-list-bullet fs-5"
+                    ></i>
                   </button>
                 </div>
               </div>
