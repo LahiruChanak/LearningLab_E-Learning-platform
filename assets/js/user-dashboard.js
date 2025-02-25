@@ -65,17 +65,17 @@ const interval = setInterval(() => {
 const sidebar = document.getElementById("sidebar");
 const toggleBtn = document.getElementById("toggleBtn");
 const toggleIcon = toggleBtn.querySelector("i");
-const logo = document.getElementById("logo");
+const logoContainer = document.getElementById("logo-container");
 
 toggleBtn.addEventListener("click", () => {
   sidebar.classList.toggle("collapsed");
   sidebar.classList.toggle("show");
 
-  // logo hide or show
+  // logo and menu button
   if (sidebar.classList.contains("collapsed")) {
-    logo.style.visibility = "hidden";
+    logoContainer.style.flexDirection = "column-reverse";
   } else {
-    logo.style.visibility = "visible";
+    logoContainer.style.flexDirection = "row"
   }
 
   // Destroy tooltips when sidebar is expanded

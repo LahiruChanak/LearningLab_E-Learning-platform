@@ -25,6 +25,16 @@ body {
   color: var(--primary-color);
 }
 
+#logo-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  transition: all 0.4s ease;
+}
+
 .logo {
   font-size: 1.6rem;
   font-family: "Skate", sans-serif;
@@ -244,9 +254,9 @@ body {
   border: none;
   color: #666;
   border-radius: 10px;
-  position: absolute;
+  /* position: absolute;
   right: 0px;
-  top: 12px;
+  top: 12px; */
   transition: all 0.4s ease;
 }
 
