@@ -1,6 +1,24 @@
+@font-face {
+  font-family: "Skate";
+  src: url("../font/skate.ttf") format("truetype");
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
 :root {
   --primary-color: #6c5dd3;
   --secondary-color: #f1f4f8;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) #eee;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: #f8f9fa;
 }
 
 .course-card {
@@ -8,7 +26,7 @@
   border-radius: 16px;
   padding: 20px;
   height: 100%;
-  transition: transform 0.3s ease;
+  transition: transform 0.4s ease;
 }
 
 .course-card:hover {
@@ -34,7 +52,7 @@
 }
 
 .discussion-card {
-  transition: transform 0.3s ease;
+  transition: transform 0.4s ease;
 }
 
 .discussion-card:hover {
@@ -42,7 +60,7 @@
 }
 
 .top-course {
-  transition: transform 0.3s ease;
+  transition: transform 0.4s ease;
 }
 
 .top-course:hover {
@@ -80,6 +98,7 @@
 .btn-primary:hover {
   background-color: #5a4dba;
 }
+
 .filter-section {
   background-color: #fff;
   border-radius: 12px;
@@ -111,7 +130,7 @@
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
   border-radius: 8px;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 }
 
 .btn-light:hover {
@@ -131,7 +150,7 @@
   padding: 1.5rem;
   margin-bottom: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
 }
 
 .course-card:hover {
@@ -192,8 +211,8 @@
 }
 
 .form-check-input:checked {
-  background-color: #6366f1;
-  border-color: #6366f1;
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
 .list-view .course-card {
@@ -209,58 +228,4 @@
 
 .list-view .course-card .avatar-group {
   margin-right: 1rem;
-}
-
-/* Group Discussion Section */
-.group-discussion {
-  background: #fff;
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-left: 2rem;
-}
-
-.group-discussion h6 {
-  color: #1f2937;
-  font-weight: 600;
-  margin-bottom: 1rem;
-}
-
-.discussion-item {
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 0.5rem;
-  transition: all 0.2s;
-}
-
-.discussion-item:hover {
-  background-color: #f9fafb;
-}
-
-.discussion-item img {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  margin-right: 1rem;
-}
-
-.discussion-item .content {
-  flex: 1;
-}
-
-.discussion-item .title {
-  font-weight: 500;
-  color: #1f2937;
-  margin-bottom: 0.25rem;
-}
-
-.discussion-item .category {
-  color: #6b7280;
-  font-size: 0.875rem;
-}
-
-.discussion-item .number {
-  font-weight: 600;
-  color: #6366f1;
 }
