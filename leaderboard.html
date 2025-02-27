@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Course Leaderboard - LearnWave</title>
+    <link rel="icon" href="assets/images/logo.png" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.hugeicons.com/font/hgi-stroke-rounded.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/apexcharts/dist/apexcharts.css"
+    />
+
+    <link rel="stylesheet" href="./assets/css/leaderboard.css" />
+  </head>
+  <body>
+    <div class="leaderboard-container">
+      <div class="header">
+        <h1>Course Performance Leaderboard</h1>
+        <p>Track and analyze your course performance metrics</p>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="stats-card">
+            <h3>Total Impressions</h3>
+            <p class="fs-4 mb-2">124,892</p>
+            <div class="metric-change positive">
+              <i class="hgi-stroke hgi-trend-up"></i>
+              <span>12.5%</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="stats-card">
+            <h3>Total Clicks</h3>
+            <p class="fs-4 mb-2">28,637</p>
+            <div class="metric-change positive">
+              <i class="hgi-stroke hgi-trend-up"></i>
+              <span>8.3%</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="stats-card">
+            <h3>Total Purchases</h3>
+            <p class="fs-4 mb-2">1,483</p>
+            <div class="metric-change negative">
+              <i class="hgi-stroke hgi-trend-down"></i>
+              <span>2.1%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="d-flex justify-content-between align-items-center actions-bar"
+      >
+        <div class="filter-tabs">
+          <div class="btn-group border rounded-5">
+            <button class="btn border-end active" data-period="all-time">
+              All Time
+            </button>
+            <button class="btn border-end" data-period="this-month">
+              This Month
+            </button>
+            <button class="btn" data-period="this-week">This Week</button>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-outline-primary">
+            <i class="hgi-stroke hgi-download-05 fs-5 align-middle me-1"></i>
+            Export Data
+          </button>
+          <button class="btn btn-primary">
+            <i class="hgi-stroke hgi-refresh fs-5 align-middle me-1"></i>
+            Refresh
+          </button>
+        </div>
+      </div>
+
+      <div class="table-responsive table-container" id="leaderboardTable">
+        <table class="table table-borderless text-center align-middle">
+          <thead>
+            <tr>
+              <th>Course Name</th>
+              <th>Category</th>
+              <th>Ranking</th>
+              <th>Impression</th>
+              <th>Click</th>
+              <th>Purchase</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="assets/js/leaderboard.js"></script>
+  </body>
+</html>

@@ -1,4 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
+  const tooltipTriggerList = document.querySelectorAll(
+    '[data-bs-toggle="tooltip"]'
+  );
+  const tooltipList = [...tooltipTriggerList].map(
+    (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
+  );
+
   // Initialize all required elements
   const tabItems = document.querySelectorAll(".sub-navigation-menu li");
   const pages = document.querySelectorAll(".page");
@@ -10,6 +17,18 @@ document.addEventListener("DOMContentLoaded", function () {
   const imagePreview = document.getElementById("imagePreview");
   const profilePreview = document.getElementById("profilePreview");
   let currentFile = null;
+
+  // Password and Email Modal Initialization
+  const passwordModal = new bootstrap.Modal(
+    document.getElementById("passwordModal")
+  );
+  const emailModal = new bootstrap.Modal(document.getElementById("emailModal"));
+  const passwordForm = document.getElementById("passwordUpdateForm");
+  const emailForm = document.getElementById("emailUpdateForm");
+
+  // Password Strength Elements
+  const newPasswordInput = document.getElementById("newPassword");
+  const confirmNewPasswordInput = document.getElementById("confirmNewPassword");
 
   // Navigation System
   function showPage(pageName) {
@@ -651,3 +670,33 @@ document.addEventListener("DOMContentLoaded", () => {
       : "rotateY(180deg)";
   });
 });
+
+// // Password visibility toggle functionality
+// const passwordFields = document.querySelectorAll(
+//   '.password-container input[type="password"]'
+// );
+// const toggleButtons = document.querySelectorAll(".password-container .btn");
+
+// toggleButtons.forEach((button, index) => {
+//   button.addEventListener("click", () => {
+//     const passwordField = passwordFields[index];
+//     const icon = button.querySelector("i");
+
+//     if (passwordField.type === "password") {
+//       button.setAttribute("data-bs-title", "Hide Password");
+//       passwordField.type = "text";
+//       icon.className = "hgi-stroke hgi-view-off-slash fs-5 align-middle";
+//     } else {
+//       button.setAttribute("data-bs-title", "Show Password");
+//       passwordField.type = "password";
+//       icon.className = "hgi-stroke hgi-view fs-5 align-middle";
+//     }
+
+//     // Update the tooltip
+//     const tooltip = bootstrap.Tooltip.getInstance(button);
+//     if (tooltip) {
+//       tooltip.dispose();
+//       new bootstrap.Tooltip(button);
+//     }
+//   });
+// });

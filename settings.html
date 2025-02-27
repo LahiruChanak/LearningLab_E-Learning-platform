@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings | LMS</title>
+    <link rel="icon" href="assets/images/logo.png" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.hugeicons.com/font/hgi-stroke-rounded.css"
+    />
+
+    <link rel="stylesheet" href="assets/css/user-profile.css" />
+    <link rel="stylesheet" href="assets/css/header.css" />
+    <link rel="stylesheet" href="assets/css/settings.css" />
+  </head>
+  <body class="overflow-hidden">
+    <div class="container-fluid d-flex gap-1 pt-2">
+      <!-- Sidebar -->
+      <div class="sidebar" id="sidebar">
+        <div class="d-flex justify-content-center align-items-center mt-2 mb-3">
+          <img src="assets/images/user.jpg" alt="Logo" class="logo-image" />
+        </div>
+        <nav class="nav flex-column align-items-center gap-1 mb-4">
+          <a
+            class="nav-link"
+            href="user-dashboard.html"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            data-bs-title="Dashboard"
+          >
+            <i class="hgi-stroke hgi-home-04 fs-5 align-middle"></i>
+          </a>
+          <a
+            class="nav-link active"
+            href="settings.html"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            data-bs-title="Settings"
+          >
+            <i class="hgi-stroke hgi-settings-01 fs-5 align-middle"></i>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <h1 class="page-title">Settings</h1>
+        <p class="text-muted mb-4">
+          Manage your account settings and preferences
+        </p>
+
+        <!-- Account Security Section -->
+        <div class="section">
+          <div class="section-header">
+            <h2>Account Security</h2>
+            <button class="edit-btn" onclick="toggleEdit('account')">
+              <i class="hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i>
+            </button>
+          </div>
+          <form id="accountForm" class="settings-form">
+            <div class="form-group">
+              <div class="form-field">
+                <label for="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  value="user@example.com"
+                  disabled
+                />
+              </div>
+              <div class="form-field">
+                <label for="username">Username</label>
+                <input type="text" id="username" value="johndoe" disabled />
+              </div>
+              <div class="form-field">
+                <label for="password">Current Password</label>
+                <input type="password" id="password" disabled />
+              </div>
+              <div class="form-field">
+                <label for="newPassword">New Password</label>
+                <input type="password" id="newPassword" disabled />
+              </div>
+              <div class="form-field">
+                <label for="confirmPassword">Confirm New Password</label>
+                <input type="password" id="confirmPassword" disabled />
+              </div>
+              <div class="form-field">
+                <label for="twoFactor">Two-Factor Authentication</label>
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="twoFactor"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="form-actions" style="display: none">
+              <button type="submit" class="btn btn-save">Save Changes</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Notification Settings Section -->
+        <div class="section">
+          <div class="section-header">
+            <h2>Notification Settings</h2>
+          </div>
+          <div class="settings-list">
+            <div class="settings-item">
+              <div class="settings-info">
+                <h3>Email Notifications</h3>
+                <p>Receive email updates about your account activity</p>
+              </div>
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="emailNotif"
+                  checked
+                />
+              </div>
+            </div>
+            <div class="settings-item">
+              <div class="settings-info">
+                <h3>Push Notifications</h3>
+                <p>Receive push notifications about new messages and updates</p>
+              </div>
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="pushNotif"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Course Notification Settings Section -->
+        <div class="section">
+          <div class="section-header">
+            <h2>Course Notifications</h2>
+          </div>
+          <div class="settings-list">
+            <div class="settings-item">
+              <div class="settings-info">
+                <h3>Assignment Reminders</h3>
+                <p>Get notified about upcoming assignment deadlines</p>
+              </div>
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="assignmentReminders"
+                  checked
+                />
+              </div>
+            </div>
+            <div class="settings-item">
+              <div class="settings-info">
+                <h3>Course Updates</h3>
+                <p>
+                  Receive notifications when new course content is available
+                </p>
+              </div>
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="courseUpdates"
+                  checked
+                />
+              </div>
+            </div>
+            <div class="settings-item">
+              <div class="settings-info">
+                <h3>Discussion Activity</h3>
+                <p>Get notified about replies to your posts and mentions</p>
+              </div>
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="discussionActivity"
+                  checked
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Learning Preferences Section -->
+        <div class="section">
+          <div class="section-header">
+            <h2>Learning Preferences</h2>
+          </div>
+          <div class="settings-list">
+            <div class="settings-item">
+              <div class="settings-info">
+                <h3>Study Schedule</h3>
+                <p>Set your preferred study hours for reminders</p>
+              </div>
+              <select class="form-select" id="studySchedule">
+                <option value="morning">Morning (6 AM - 12 PM)</option>
+                <option value="afternoon">Afternoon (12 PM - 6 PM)</option>
+                <option value="evening">Evening (6 PM - 12 AM)</option>
+                <option value="flexible">Flexible</option>
+              </select>
+            </div>
+            <div class="settings-item">
+              <div class="settings-info">
+                <h3>Content Language</h3>
+                <p>Preferred language for course content when available</p>
+              </div>
+              <select class="form-select" id="contentLanguage">
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress Tracking Section -->
+        <div class="section">
+          <div class="section-header">
+            <h2>Progress Tracking</h2>
+          </div>
+          <div class="settings-list">
+            <div class="settings-item">
+              <div class="settings-info">
+                <h3>Weekly Progress Reports</h3>
+                <p>Receive detailed reports of your learning progress</p>
+              </div>
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="progressReports"
+                  checked
+                />
+              </div>
+            </div>
+            <div class="settings-item">
+              <div class="settings-info">
+                <h3>Learning Goals</h3>
+                <p>Set daily study time goals</p>
+              </div>
+              <select class="form-select" id="studyGoals">
+                <option value="30">30 minutes</option>
+                <option value="60">1 hour</option>
+                <option value="120">2 hours</option>
+                <option value="180">3 hours</option>
+                <option value="custom">Custom</option>
+              </select>
+            </div>
+            <div class="settings-item">
+              <div class="settings-info">
+                <h3>Achievement Badges</h3>
+                <p>Show earned achievement badges on your profile</p>
+              </div>
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="showBadges"
+                  checked
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Privacy Settings Section -->
+        <div class="section">
+          <div class="section-header">
+            <h2>Privacy Settings</h2>
+          </div>
+          <div class="settings-list">
+            <div class="settings-item">
+              <div class="settings-info">
+                <h3>Profile Visibility</h3>
+                <p>Control who can see your profile information</p>
+              </div>
+              <select class="form-select" id="profileVisibility">
+                <option value="public">Public</option>
+                <option value="friends">Friends Only</option>
+                <option value="private">Private</option>
+              </select>
+            </div>
+            <div class="settings-item">
+              <div class="settings-info">
+                <h3>Activity Status</h3>
+                <p>Show when you're active on the platform</p>
+              </div>
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="activityStatus"
+                  checked
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Appearance Settings Section -->
+        <div class="section">
+          <div class="section-header">
+            <h2>Appearance</h2>
+          </div>
+          <div class="settings-list">
+            <div class="settings-item">
+              <div class="settings-info">
+                <h3>Theme</h3>
+                <p>Choose your preferred theme</p>
+              </div>
+              <select class="form-select" id="themeSelect">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+                <option value="system">System Default</option>
+              </select>
+            </div>
+            <div class="settings-item">
+              <div class="settings-info">
+                <h3>Font Size</h3>
+                <p>Adjust the text size</p>
+              </div>
+              <select class="form-select" id="fontSize">
+                <option value="small">Small</option>
+                <option value="medium" selected>Medium</option>
+                <option value="large">Large</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Initialize tooltips
+      const tooltipTriggerList = document.querySelectorAll(
+        '[data-bs-toggle="tooltip"]'
+      );
+      const tooltipList = [...tooltipTriggerList].map(
+        (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
+      );
+
+      // Toggle edit mode for forms
+      function toggleEdit(section) {
+        const form = document.getElementById(section + "Form");
+        const inputs = form.querySelectorAll("input");
+        const actions = form.querySelector(".form-actions");
+
+        inputs.forEach((input) => {
+          input.disabled = !input.disabled;
+        });
+
+        actions.style.display = inputs[0].disabled ? "none" : "block";
+      }
+
+      // Handle form submissions
+      document
+        .getElementById("accountForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          // Add your form submission logic here
+          alert("Changes saved successfully!");
+          toggleEdit("account");
+        });
+
+      // Handle settings changes
+      document
+        .querySelectorAll(".form-check-input, .form-select")
+        .forEach((element) => {
+          element.addEventListener("change", function () {
+            // Add your settings update logic here
+            console.log(
+              `Setting ${this.id} changed to: ${this.value || this.checked}`
+            );
+          });
+        });
+    </script>
+  </body>
+</html>

@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="assets/css/user-dashboard.css" />
     <link rel="stylesheet" href="assets/css/messages.css" />
     <link rel="stylesheet" href="assets/css/call.css" />
+    <link rel="stylesheet" href="assets/css/header.css" />
 
     <link
       rel="stylesheet"
@@ -69,109 +70,153 @@
           </div>
         </div>
 
-        <!-- Chat Area -->
-        <div class="col p-0">
-          <div class="chat-container">
-            <div class="chat-header">
-              <div class="user-info">
+        <div class="col p-3 pe-4">
+          <!-- Header options -->
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">Dashboard</h3>
+            <div class="d-flex align-items-center gap-3">
+              <!-- Search box -->
+              <div class="search-box">
+                <input type="text" placeholder="Search" />
+                <button class="search-btn">
+                  <i class="hgi-stroke hgi-search-01 fs-5"></i>
+                </button>
+              </div>
+              <!-- Notification icon -->
+              <div class="position-relative me-3 notification-icon">
+                <a
+                  href="user-profile.html#notifications"
+                  class="text-decoration-none text-dark"
+                >
+                  <i class="hgi-stroke hgi-notification-02 fs-5"></i>
+                </a>
+              </div>
+              <!-- Profile -->
+              <a
+                href="user-profile.html"
+                class="text-decoration-none text-dark d-flex align-items-center"
+              >
                 <img
                   src="assets/images/user.jpg"
-                  alt="User"
-                  class="user-avatar"
+                  alt="Profile"
+                  class="rounded-circle me-2 header-image"
                 />
                 <div>
-                  <h6 class="mb-0">Alexis Sears</h6>
-                  <span class="online-status">Online</span>
+                  <h6 class="mb-0">Esther Howard</h6>
+                  <small class="text-muted">Elementary</small>
                 </div>
-              </div>
-              <div class="chat-actions">
-                <button
-                  class="action-btn"
-                  data-bs-toggle="tooltip"
-                  onclick="startVideoCall()"
-                >
-                  <i class="hgi-stroke hgi-video-02 fs-4"></i>
-                </button>
-                <button class="action-btn" onclick="startVoiceCall()">
-                  <i class="hgi-stroke hgi-call-02 fs-4"></i>
-                </button>
-                <button class="action-btn">
-                  <i class="hgi-stroke hgi-user-circle fs-4"></i>
-                </button>
-              </div>
-            </div>
-            <div class="chat-messages" id="chatMessages">
-              <!-- Messages will be dynamically added here -->
-            </div>
-            <div class="chat-input">
-              <div class="d-flex align-items-center gap-0">
-                <div class="file-upload position-relative">
-                  <input
-                    type="file"
-                    class="btn border-0 d-none"
-                    id="fileInput"
-                  />
-                  <button
-                    class="btn border-0 rotate"
-                    onclick="document.getElementById('fileInput').click()"
-                  >
-                    <i
-                      class="hgi-stroke hgi-attachment-01 fw-semibold fs-5"
-                    ></i>
-                  </button>
-                </div>
-                <div class="emoji-picker position-relative">
-                  <button class="btn border-0" id="emojiButton">
-                    <i class="hgi-stroke hgi-smile fw-semibold fs-5"></i>
-                  </button>
-                  <div
-                    class="emoji-box d-none"
-                  >
-                    <!-- Emoji list will be populated by JavaScript -->
-                  </div>
-                </div>
-              </div>
-              <input
-                type="text"
-                class="input-field border-dark"
-                id="messageInput"
-                placeholder="Enter your message here"
-              />
-              <button class="send-btn" id="sendButton">Send</button>
+              </a>
             </div>
           </div>
-        </div>
 
-        <!-- Right Sidebar - Contacts -->
-        <div class="col-auto p-0">
-          <div class="contacts-sidebar">
-            <div class="contacts-header">
-              <div
-                class="d-flex justify-content-sm-around align-content-center gap-3"
-              >
-                <button
-                  class="btn btn-link text-dark p-0 active"
-                  data-message-type="all"
-                >
-                  All Message
-                </button>
-                <button
-                  class="btn btn-link text-dark p-0"
-                  data-message-type="group"
-                >
-                  Group
-                </button>
-                <button
-                  class="btn btn-link text-dark p-0"
-                  data-message-type="archived"
-                >
-                  Archived
-                </button>
+          <div class="d-flex col gap-3 px-3">
+            <!-- Chat Area -->
+            <div class="col p-0">
+              <div class="chat-container shadow-sm">
+                <div class="chat-header">
+                  <div class="user-info">
+                    <img
+                      src="assets/images/user.jpg"
+                      alt="User"
+                      class="user-avatar"
+                    />
+                    <div>
+                      <h6 class="mb-0">Alexis Sears</h6>
+                      <span class="online-status">Online</span>
+                    </div>
+                  </div>
+                  <div class="chat-actions">
+                    <button
+                      class="action-btn"
+                      data-bs-toggle="tooltip"
+                      onclick="startVideoCall()"
+                    >
+                      <i class="hgi-stroke hgi-video-02 fs-4"></i>
+                    </button>
+                    <button class="action-btn" onclick="startVoiceCall()">
+                      <i class="hgi-stroke hgi-call-02 fs-4"></i>
+                    </button>
+                    <button class="action-btn">
+                      <i class="hgi-stroke hgi-user-circle fs-4"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                  <!-- Messages will be dynamically added here -->
+                </div>
+                <div class="chat-input">
+                  <div class="d-flex align-items-center gap-0">
+                    <div class="file-upload position-relative">
+                      <input
+                        type="file"
+                        class="btn border-0 d-none"
+                        id="fileInput"
+                      />
+                      <button
+                        class="btn border-0 rotate"
+                        onclick="document.getElementById('fileInput').click()"
+                      >
+                        <i
+                          class="hgi-stroke hgi-attachment-01 fw-semibold fs-5"
+                        ></i>
+                      </button>
+                    </div>
+                    <div class="emoji-picker position-relative">
+                      <button class="btn border-0" id="emojiButton">
+                        <i class="hgi-stroke hgi-smile fw-semibold fs-5"></i>
+                      </button>
+                      <div class="emoji-box d-none">
+                        <!-- Emoji list will be populated by JavaScript -->
+                      </div>
+                    </div>
+                  </div>
+                  <input
+                    type="text"
+                    class="input-field border-dark"
+                    id="messageInput"
+                    placeholder="Enter your message here"
+                  />
+                  <button class="send-btn" id="sendButton">Send</button>
+                </div>
               </div>
             </div>
-            <input type="text" class="search-box" placeholder="Search here" />
-            <div class="contact-list" id="contactList">
-              <!-- Contacts will be dynamically added here -->
+
+            <!-- Right Sidebar - Contacts -->
+            <div class="p-0">
+              <div class="contacts-sidebar">
+                <div class="contacts-header">
+                  <div
+                    class="d-flex justify-content-sm-around align-content-center gap-3"
+                  >
+                    <button
+                      class="btn btn-link text-dark p-0 active"
+                      data-message-type="all"
+                    >
+                      All Message
+                    </button>
+                    <button
+                      class="btn btn-link text-dark p-0"
+                      data-message-type="group"
+                    >
+                      Group
+                    </button>
+                    <button
+                      class="btn btn-link text-dark p-0"
+                      data-message-type="archived"
+                    >
+                      Archived
+                    </button>
+                  </div>
+                </div>
+                <input
+                  type="text"
+                  class="search-box"
+                  placeholder="Search here"
+                />
+                <div class="contact-list" id="contactList">
+                  <!-- Contacts will be dynamically added here -->
+                </div>
+              </div>
             </div>
           </div>
         </div>
