@@ -2,7 +2,7 @@
 
 :root {
   --primary-color: #8b72ee;
-  --secondary-color: #e9e3ff;
+  --secondary-color: #ebedfb;
 }
 
 * {
@@ -126,7 +126,7 @@ body {
   padding: 15px;
   background-color: #f5f5f5;
   height: 90vh;
-  overflow: scroll;
+  overflow: auto;
 }
 
 .page {
@@ -585,7 +585,6 @@ body {
 
 .notification-item.read {
   background-color: #f8f9fa;
-
 }
 
 .notification-item.read p,
@@ -1018,4 +1017,37 @@ body {
   border-radius: 10px;
   border: 2px solid #ccc;
   width: fit-content;
+}
+
+.password-container input {
+  width: 100%;
+  padding: 8px 40px 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.password-container input:focus {
+  border-color: var(--primary-color);
+}
+
+.password-container .password-toggle {
+  border: 0;
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 4px;
+  color: #666;
+  transition: color 0.4s ease;
+}
+
+.password-container .password-toggle:hover {
+  color: var(--primary-color);
+}
+
+.password-container .password-toggle i {
+  font-size: 1.2rem;
+  vertical-align: middle;
 }

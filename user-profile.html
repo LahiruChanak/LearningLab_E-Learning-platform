@@ -20,6 +20,7 @@
 
     <link rel="stylesheet" href="assets/css/user-profile.css" />
     <link rel="stylesheet" href="assets/css/header.css" />
+    <link rel="stylesheet" href="assets/css/password-utils.css" />
   </head>
   <body class="overflow-hidden">
     <div class="container-fluid d-flex gap-1 pt-2">
@@ -282,7 +283,13 @@
                   <h3>Password</h3>
                   <p>Last changed 2 months ago</p>
                 </div>
-                <button class="link-button">Change password</button>
+                <button
+                  class="link-button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#passwordModal"
+                >
+                  Change password
+                </button>
               </div>
 
               <div class="security-item">
@@ -291,7 +298,13 @@
                   <h3>Email verification</h3>
                   <p>rafiqurrahman51@gmail.com</p>
                 </div>
-                <button class="link-button">Update email</button>
+                <button
+                  class="link-button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#emailModal"
+                >
+                  Update email
+                </button>
               </div>
 
               <div class="security-item">
@@ -307,6 +320,147 @@
                 >
                   Enable 2FA
                 </button>
+              </div>
+            </div>
+
+            <!-- Password Update Modal -->
+            <div
+              class="modal fade"
+              id="passwordModal"
+              tabindex="-1"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Change Password</h5>
+                    <button
+                      type="button"
+                      class="btn-close shadow-none"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="modal-body">
+                    <form
+                      id="passwordUpdateForm"
+                      onsubmit="handlePasswordUpdate(event)"
+                    >
+                      <div class="form-field">
+                        <label for="currentPassword">Current Password</label>
+                        <input type="password" id="currentPassword" required />
+                      </div>
+                      <div class="form-field">
+                        <label for="newPassword">New Password</label>
+                        <div class="password-container">
+                          <div class="position-relative">
+                            <input type="password" id="newPassword" required />
+                            <button type="button" class="btn password-toggle">
+                              <i class="hgi-stroke hgi-view"></i>
+                            </button>
+                          </div>
+                          <div class="password-strength-bar"></div>
+                          <div class="password-requirements-card">
+                            <h6>Password Requirements:</h6>
+                            <ul>
+                              <li id="new-length">At least 8 characters</li>
+                              <li id="new-uppercase">
+                                At least 1 uppercase letter
+                              </li>
+                              <li id="new-lowercase">
+                                At least 1 lowercase letter
+                              </li>
+                              <li id="new-number">At least 1 number</li>
+                              <li id="new-special">
+                                At least 1 special character
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-field">
+                        <label for="confirmNewPassword">
+                          Confirm New Password
+                        </label>
+                        <div class="password-container">
+                          <div class="position-relative">
+                            <input
+                              type="password"
+                              id="confirmNewPassword"
+                              required
+                            />
+                            <button type="button" class="btn password-toggle">
+                              <i class="hgi-stroke hgi-view"></i>
+                            </button>
+                          </div>
+                          <div class="password-strength-bar"></div>
+                        </div>
+                      </div>
+                      <div
+                        class="error"
+                        id="passwordError"
+                        style="display: none"
+                      ></div>
+                      <button type="submit" class="btn btn-save w-100 mt-3">
+                        Update Password
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Email Update Modal -->
+            <div
+              class="modal fade"
+              id="emailModal"
+              tabindex="-1"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Update Email</h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="modal-body">
+                    <form
+                      id="emailUpdateForm"
+                      onsubmit="handleEmailUpdate(event)"
+                    >
+                      <div class="form-field">
+                        <label for="currentEmail">Current Email</label>
+                        <input
+                          type="email"
+                          id="currentEmail"
+                          value="rafiqurrahman51@gmail.com"
+                          disabled
+                        />
+                      </div>
+                      <div class="form-field">
+                        <label for="newEmail">New Email</label>
+                        <input type="email" id="newEmail" required />
+                      </div>
+                      <div class="form-field">
+                        <label for="emailPassword">Password</label>
+                        <input type="password" id="emailPassword" required />
+                      </div>
+                      <div
+                        class="error"
+                        id="emailError"
+                        style="display: none"
+                      ></div>
+                      <button type="submit" class="btn btn-save w-100 mt-3">
+                        Send Verification Email
+                      </button>
+                    </form>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1132,7 +1286,9 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <script src="assets/js/jquery-3.7.1.min.js"></script>
     <script src="assets/js/user-dashboard.js"></script>
     <script src="assets/js/user-profile.js"></script>
+    <script src="assets/js/password-utils.js"></script>
   </body>
 </html>
