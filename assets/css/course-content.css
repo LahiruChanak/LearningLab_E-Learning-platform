@@ -1,6 +1,6 @@
 :root {
-  --primary-color: #7f56d9;
-  --secondary-color: #f9f5ff;
+  --primary-color: #8b72ee;
+  --secondary-color: #ebedfb;
   --text-color: #344054;
   --muted-color: #667085;
   --shadow-sm: 0 1px 3px rgba(16, 24, 40, 0.1);
@@ -11,7 +11,7 @@
 body {
   background-color: #f9fafb;
   color: var(--text-color);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
 }
 
 /* Header Styles */
@@ -55,12 +55,12 @@ body {
   border-radius: 16px;
   overflow: hidden;
   box-shadow: var(--shadow-md);
-  transition: transform 0.3s ease;
+  transition: transform 0.4s ease;
 }
 
-.video-container:hover {
+/* .video-container:hover {
   transform: scale(1.01);
-}
+} */
 
 /* Course Content Styles */
 .course-content {
@@ -73,16 +73,15 @@ body {
 /* Tab Navigation */
 .nav-tabs {
   border: none;
-  gap: 8px;
-  margin-bottom: 20px;
 }
 
 .nav-tabs .nav-link {
   border: none;
   color: var(--muted-color);
-  padding: 12px 24px;
-  border-radius: 8px;
-  transition: all 0.2s ease;
+  padding: 10px 20px;
+  border-radius: 8px 8px 0 0;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
 .nav-tabs .nav-link:hover {
@@ -94,6 +93,24 @@ body {
   background: var(--secondary-color);
   color: var(--primary-color);
   font-weight: 500;
+}
+
+.nav-tabs .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -3px;
+  width: 0;
+  height: 3px;
+  border-radius: 8px;
+  background-color: transparent;
+  transform: translateX(-50%);
+  transition: width 0.4s ease, background-color 0.4s ease;
+}
+
+.nav-tabs .nav-link.active::after {
+  width: 100%;
+  background-color: var(--primary-color);
 }
 
 /* Accordion Styles */
@@ -160,8 +177,14 @@ body {
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .tab-pane {
@@ -170,19 +193,19 @@ body {
 
 /* FAQ Accordion */
 #faqAccordion .accordion-button {
-    background: white;
-    border: 1px solid #eaecf0;
+  background: white;
+  border: 1px solid #eaecf0;
 }
 
 #faqAccordion .accordion-button:not(.collapsed) {
-    background: white;
-    border-bottom: none;
+  background: white;
+  border-bottom: none;
 }
 
 #faqAccordion .accordion-body {
-    border: 1px solid #eaecf0;
-    border-top: none;
-    border-radius: 0 0 8px 8px;
+  border: 1px solid #eaecf0;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
 }
 .lesson-item p {
   font-weight: 500;
