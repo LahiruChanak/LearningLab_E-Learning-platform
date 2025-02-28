@@ -100,48 +100,74 @@ body {
 }
 
 .filter-section {
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
   background-color: #fff;
-  border-radius: 12px;
-  padding: 1.5rem;
+  border-radius: 16px;
+  padding: 1.25rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.search-bar .input-group {
-  border-radius: 8px;
+.search-bar {
+  border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: relative;
+  flex-grow: 1;
 }
 
-.search-bar .input-group-text,
 .search-bar .form-control {
   border: 1px solid #e0e0e0;
   background-color: #fff;
+  border-radius: 10px;
+  padding: 0.55rem 1rem 0.55rem 2.5rem;
 }
 
 .search-bar .form-control:focus {
   box-shadow: none;
-  border-color: #6366f1;
+  border-color: var(--primary-color);
 }
 
-.btn-light {
+.search-bar i {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+}
+
+.btn.show {
+  background-color: var(--secondary-color);
+}
+
+.btn-light,
+.layout-btn {
   background-color: white;
-  border: 1px solid #e9ecef;
+  border: 1px solid #e0e0e0 !important;
   color: #4b5563;
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
-  border-radius: 8px;
-  transition: all 0.3s ease;
+  border-radius: 10px;
+  transition: all 0.4s ease;
 }
 
-.btn-light:hover {
+.layout-btn {
+  padding: 6px 12px !important;
+}
+
+.btn-light:hover,
+.layout-btn:hover {
   background-color: var(--secondary-color);
   border-color: #d1d5db;
 }
 
-.btn-light.active {
+.layout-btn.active {
   background-color: var(--primary-color);
   border-color: var(--primary-color);
   color: #fff;
+}
+
+.active-filters {
 }
 
 .course-card {
@@ -185,10 +211,13 @@ body {
   font-weight: 500;
   padding: 0.5rem 1rem;
   border: 1px solid #e5e7eb;
+  margin: 1rem 0.5rem 0 0 !important;
 }
 
 .badge i {
   font-size: 0.75rem;
+  margin-top: 2px;
+  color: #ef4444;
 }
 
 .dropdown-menu {
@@ -208,6 +237,17 @@ body {
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
   border-bottom: 10px solid var(--primary-color);
+}
+
+.dropdown-item {
+  padding: 0.5rem 1rem;
+  color: #4b5563;
+  border-radius: 10px;
+  transition: all 0.4s ease;
+}
+
+.dropdown-toggle i {
+  font-size: 1.1rem;
 }
 
 .form-check-input:checked {

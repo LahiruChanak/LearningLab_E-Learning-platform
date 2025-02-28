@@ -148,20 +148,16 @@
           <div class="row">
             <!-- Filter Section -->
             <div class="filter-section mb-4">
-              <div class="d-flex flex-wrap gap-3 align-items-center">
+              <div class="d-flex align-items-center w-100 flex-wrap gap-3">
                 <!-- Search Bar -->
-                <div class="search-bar flex-grow-1">
-                  <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0 ms-1">
-                      <i class="hgi-stroke hgi-search-01 fs-5 align-middle"></i>
-                    </span>
-                    <input
-                      type="text"
-                      class="form-control border-start-0 rounded-end-3"
-                      id="courseSearch"
-                      placeholder="Search courses..."
-                    />
-                  </div>
+                <div class="search-bar">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="courseSearch"
+                    placeholder="Search courses..."
+                  />
+                  <i class="hgi-stroke hgi-search-01 fs-5 align-middle"></i>
                 </div>
 
                 <!-- Sorting Dropdowns -->
@@ -172,8 +168,7 @@
                     id="sortDropdown"
                     data-bs-toggle="dropdown"
                   >
-                    <i class="hgi-stroke hgi-sorting-01 align-middle fs-5 me-2">
-                    </i>
+                    <i class="hgi-stroke hgi-sorting-01 align-middle me-2"> </i>
                     Sort by
                   </button>
                   <ul class="dropdown-menu p-1 py-2 mt-3">
@@ -226,10 +221,10 @@
                     id="filterDropdown"
                     data-bs-toggle="dropdown"
                   >
-                    <i class="hgi-stroke hgi-filter align-middle fs-5 me-2"></i>
+                    <i class="hgi-stroke hgi-filter align-middle me-2"></i>
                     Filter
                   </button>
-                  <ul class="dropdown-menu p-3 mt-3" style="width: 250px">
+                  <ul class="dropdown-menu p-3 mt-3" style="width: 230px">
                     <li class="mb-3 border-bottom pb-3">
                       <label class="form-label">Course Level</label>
                       <div class="form-check">
@@ -323,12 +318,12 @@
                 <div class="btn-group" role="group">
                   <button
                     type="button"
-                    class="btn btn-light active"
+                    class="btn layout-btn active"
                     data-view="grid"
                   >
                     <i class="hgi-stroke hgi-grid-view fs-5"></i>
                   </button>
-                  <button type="button" class="btn btn-light" data-view="list">
+                  <button type="button" class="btn layout-btn" data-view="list">
                     <i
                       class="hgi-stroke hgi-left-to-right-list-bullet fs-5"
                     ></i>
@@ -337,7 +332,7 @@
               </div>
 
               <!-- Active Filters -->
-              <div class="active-filters mt-3" id="activeFilters">
+              <div class="active-filters" id="activeFilters">
                 <!-- Active filter chips will be added here dynamically -->
               </div>
             </div>
