@@ -1,4 +1,12 @@
 $(document).ready(function () {
+  // Bootstrap Tooltip
+  const tooltipTriggerList = document.querySelectorAll(
+    '[data-bs-toggle="tooltip"]'
+  );
+  const tooltipList = [...tooltipTriggerList].map(
+    (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
+  );
+
   // Track current video
   let currentVideoId = "";
 
@@ -169,7 +177,7 @@ $(document).ready(function () {
         $header
           .find(".duration")
           .before(
-            `<span class="progress-info text-success ms-2">${progress}% complete</span>`
+            `<span class="progress-info ms-2">${progress}% complete</span>`
           );
       } else {
         $progressInfo.text(`${progress}% complete`);
@@ -187,7 +195,7 @@ $(document).ready(function () {
       return;
     }
     if (!$(this).find(".hgi-check").length) {
-      $(this).append('<i class="hgi-stroke hgi-check text-success"></i>');
+      $(this).append('<i class="hgi-stroke hgi-check"></i>');
       updateSectionProgress();
     }
   });
@@ -219,11 +227,29 @@ $(document).ready(function () {
     }
   });
 
-  // Handle star rating
+  // Handle star rating with hover effects
   let selectedRating = 0;
-  $(".rating-input i").on("click", function () {
+  const ratingStars = $(".rating-input i.hgi-star");
+
+  // Add hover effects
+  ratingStars.hover(
+    function () {
+      const hoverRating = $(this).data("rating");
+      ratingStars.removeClass("filled");
+      $(this).prevAll().addBack().addClass("filled");
+    },
+    function () {
+      ratingStars.removeClass("filled");
+      if (selectedRating > 0) {
+        ratingStars.slice(0, selectedRating).addClass("filled");
+      }
+    }
+  );
+
+  // Handle click events
+  ratingStars.on("click", function () {
     selectedRating = $(this).data("rating");
-    $(".rating-input i").removeClass("filled");
+    ratingStars.removeClass("filled");
     $(this).prevAll().addBack().addClass("filled");
   });
 
@@ -238,16 +264,16 @@ $(document).ready(function () {
     if (reviewText) {
       // Add the new review to the list
       const newReview = `
-        <div class="review-item mb-4">
+        <div class="review-item">
           <div class="d-flex align-items-center mb-2">
             <img src="assets/images/user.jpg" alt="User" class="rounded-circle me-2" width="40" height="40">
             <div>
               <h6 class="mb-0">You</h6>
               <div class="stars">
-                ${"<i class='hgi-stroke hgi-star fs-6 align-middle filled'></i>".repeat(
+                ${"<i class='hgi-stroke hgi-star align-middle filled'></i>".repeat(
                   selectedRating
                 )}
-                ${"<i class='hgi-stroke hgi-star fs-6 align-middle'></i>".repeat(
+                ${"<i class='hgi-stroke hgi-star align-middle'></i>".repeat(
                   5 - selectedRating
                 )}
               </div>

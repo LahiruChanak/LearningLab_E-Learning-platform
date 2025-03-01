@@ -15,6 +15,22 @@ body {
 }
 
 /* Header Styles */
+.btn-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--secondary-color);
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  transition: all 0.4s ease;
+}
+
+.btn-back:hover {
+  background-color: var(--primary-color);
+  color: white !important;
+}
+
 .btn-share {
   /* border: 1px solid #e4e7ec; */
   color: var(--text-color);
@@ -177,15 +193,13 @@ textarea:focus {
   background: var(--secondary-color);
 }
 
-.lesson-item.locked {
-}
-
 .lesson-item small {
-  font-size: 12px;
+  font-size: 0.8rem;
 }
 
 .lesson-item p {
   font-weight: 500;
+  font-size: 0.95rem;
 }
 
 /* Author Profile */
@@ -195,13 +209,14 @@ textarea:focus {
 }
 
 /* Reviews Section */
-.stars i.filled {
+i.hgi-star.filled {
   color: #fdb022;
 }
 
-.stars i.half-filled {
+i.hgi-star.half-filled {
   background: linear-gradient(90deg, #fdb022 50%, #d0d5dd 50%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -222,7 +237,10 @@ textarea:focus {
 }
 
 .learning-objectives {
-  padding-left: 15px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-top: 20px;
 }
 
 .learning-objectives li {
@@ -254,7 +272,39 @@ textarea:focus {
   margin: 10px auto 0;
 }
 
-.hgi-tick-01,
-.progress-info {
+.hgi-tick-01 {
   color: #12b76a;
+}
+
+.progress-info {
+  font-size: 0.85rem;
+  color: #12b76a;
+}
+
+.duration {
+  font-size: 0.85rem;
+}
+
+.hgi-play.text-primary {
+  color: var(--primary-color) !important;
+}
+
+.rating-input i {
+  cursor: pointer;
+}
+
+.review-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  border: 1px solid #aaa;
+  padding: 15px 20px;
+  border-radius: 15px;
+}
+
+.stars {
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
