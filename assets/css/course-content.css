@@ -308,3 +308,25 @@ i.hgi-star.half-filled {
   align-items: center;
   gap: 5px;
 }
+
+.review-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.review-actions button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+
+.dropdown-item {
+  padding: 8px 16px;
+  transition: all 0.4s ease;
+}
+
+.dropdown-item:hover {
+  background-color: var(--secondary-color);
+}

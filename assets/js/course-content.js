@@ -267,7 +267,7 @@ $(document).ready(function () {
         <div class="review-item">
           <div class="d-flex align-items-center mb-2">
             <img src="assets/images/user.jpg" alt="User" class="rounded-circle me-2" width="40" height="40">
-            <div>
+            <div class="flex-grow-1">
               <h6 class="mb-0">You</h6>
               <div class="stars">
                 ${"<i class='hgi-stroke hgi-star align-middle filled'></i>".repeat(
@@ -278,11 +278,73 @@ $(document).ready(function () {
                 )}
               </div>
             </div>
+            <div class="dropdown">
+              <button class="btn border-0 p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="hgi-stroke hgi-more-vertical-circle-01 align-middle"></i>
+              </button>
+              <ul class="dropdown-menu p-0">
+                <li>
+                  <button class="dropdown-item edit-review text-warning" type="button">
+                    <i class="hgi-stroke hgi-pencil-edit-02 me-2 align-middle"></i>Edit
+                  </button>
+                </li>
+                <li>
+                  <button class="dropdown-item delete-review text-danger" type="button">
+                    <i class="hgi-stroke hgi-delete-02 me-2 align-middle"></i>Delete
+                  </button>
+                </li>
+              </ul>
+            </div>
           </div>
-          <p class="mb-0">${reviewText}</p>
+          <p class="mb-0 review-text">${reviewText}</p>
+          <div class="edit-form d-none mt-2">
+            <textarea class="form-control edit-review-text">${reviewText}</textarea>
+            <div class="d-flex align-items-center mt-2">
+              <button class="btn border-0 text-success btn-sm save-edit">✔</button>
+              <button class="btn border-0 text-secondary btn-sm cancel-edit">✘</button>
+            </div>
+          </div>
         </div>
       `;
-      $(".review-list").prepend(newReview);
+      const $newReview = $(newReview);
+
+      // Append the new review to the review container
+      $(".reviews-container").append($newReview);
+
+      // Reinitialize Bootstrap tooltips for dynamically added elements
+      $newReview.find('[data-bs-toggle="tooltip"]').tooltip();
+
+      // Handle edit review
+      $newReview.find(".edit-review").on("click", function () {
+        const $reviewItem = $(this).closest(".review-item");
+        $reviewItem.find(".review-text").addClass("d-none");
+        $reviewItem.find(".edit-form").removeClass("d-none");
+      });
+
+      // Handle save edit
+      $newReview.find(".save-edit").on("click", function () {
+        const $reviewItem = $(this).closest(".review-item");
+        const newText = $reviewItem.find(".edit-review-text").val().trim();
+        if (newText) {
+          $reviewItem.find(".review-text").text(newText).removeClass("d-none");
+          $reviewItem.find(".edit-form").addClass("d-none");
+        }
+      });
+
+      // Handle cancel edit
+      $newReview.find(".cancel-edit").on("click", function () {
+        const $reviewItem = $(this).closest(".review-item");
+        $reviewItem.find(".review-text").removeClass("d-none");
+        $reviewItem.find(".edit-form").addClass("d-none");
+      });
+
+      // Handle delete review
+      $newReview.find(".delete-review").on("click", function () {
+        if (confirm("Are you sure you want to delete this review?")) {
+          $(this).closest(".review-item").remove();
+        }
+      });
+      $(".review-list").prepend($newReview);
 
       // Reset form
       $("#reviewText").val("");
