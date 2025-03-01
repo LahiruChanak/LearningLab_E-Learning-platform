@@ -95,6 +95,23 @@ $(document).ready(function () {
     }
   });
 
+  // Initialize Bootstrap tabs and set initial state
+  $(".tab-pane").hide();
+  $("#overview").show();
+
+  $('button[data-bs-toggle="tab"]').on("click", function (e) {
+    e.preventDefault();
+    const targetId = $(this).attr("data-bs-target");
+
+    // Hide all tabs and remove active class
+    $(".tab-pane").hide();
+    $(".nav-link").removeClass("active");
+
+    // Show selected tab and add active class
+    $(targetId).show();
+    $(this).addClass("active");
+  });
+
   // Handle FAQ form submission
   $("#faqForm").on("submit", function (e) {
     e.preventDefault();
@@ -130,8 +147,12 @@ $(document).ready(function () {
             <div>
               <h6 class="mb-0">You</h6>
               <div class="stars">
-                ${"<i class='hgi-stroke hgi-star fs-6 align-middle filled'></i>".repeat(selectedRating)}
-                ${"<i class='hgi-stroke hgi-star fs-6 align-middle'></i>".repeat(5 - selectedRating)}
+                ${"<i class='hgi-stroke hgi-star fs-6 align-middle filled'></i>".repeat(
+                  selectedRating
+                )}
+                ${"<i class='hgi-stroke hgi-star fs-6 align-middle'></i>".repeat(
+                  5 - selectedRating
+                )}
               </div>
             </div>
           </div>
@@ -156,7 +177,7 @@ $(document).ready(function () {
   // Quiz functionality
   const quizAnswers = {
     q1: "b",
-    q2: "b"
+    q2: "b",
   };
 
   $("#quizForm").on("submit", function (e) {
@@ -166,7 +187,9 @@ $(document).ready(function () {
 
     // Calculate score
     for (let question in quizAnswers) {
-      if ($(`input[name=${question}]:checked`).val() === quizAnswers[question]) {
+      if (
+        $(`input[name=${question}]:checked`).val() === quizAnswers[question]
+      ) {
         score++;
       }
     }
@@ -182,7 +205,9 @@ $(document).ready(function () {
       $("#retakeQuiz").addClass("d-none");
       $("#quizForm button[type=submit]").prop("disabled", true);
     } else {
-      $("#quizFeedback").text("You need to score at least 75% to pass. Please try again.");
+      $("#quizFeedback").text(
+        "You need to score at least 75% to pass. Please try again."
+      );
       $("#retakeQuiz").removeClass("d-none");
     }
   });
