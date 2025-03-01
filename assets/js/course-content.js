@@ -2,8 +2,84 @@ $(document).ready(function () {
   // Track current video
   let currentVideoId = "";
 
+  // Initialize the first lesson as unlocked
+  initializeLessons();
+
+  // Function to initialize lessons
+  function initializeLessons() {
+    // Unlock the first lesson in each section
+    $(".accordion-item").each(function () {
+      const firstLesson = $(this).find(".lesson-item").first();
+      if (firstLesson.length) {
+        unlockLesson(firstLesson);
+      }
+    });
+  }
+
+  // Function to unlock a lesson
+  function unlockLesson(lessonElement) {
+    lessonElement.removeClass("locked");
+    lessonElement.find(".hgi-square-lock-02").remove();
+  }
+
+  // Function to unlock the next lesson
+  function unlockNextLesson(currentLesson) {
+    const nextLesson = currentLesson.next(".lesson-item");
+    if (nextLesson.length) {
+      unlockLesson(nextLesson);
+    } else {
+      // If this is the last lesson in a section, unlock the first lesson in the next section
+      const currentSection = currentLesson.closest(".accordion-item");
+      const nextSection = currentSection.next(".accordion-item");
+      if (nextSection.length) {
+        // Unlock the section header first
+        const sectionHeader = nextSection.find(".accordion-button");
+        if (sectionHeader.hasClass("locked")) {
+          sectionHeader.removeClass("locked");
+          sectionHeader.find(".hgi-square-lock-02").remove();
+        }
+
+        // Then unlock the first lesson
+        const firstLessonInNextSection = nextSection
+          .find(".lesson-item")
+          .first();
+        if (firstLessonInNextSection.length) {
+          unlockLesson(firstLessonInNextSection);
+        }
+      }
+    }
+  }
+
+  // Function to check if all beginner lessons are completed
+  function areAllBeginnerLessonsCompleted() {
+    const beginnerSections = $(".accordion-item[data-level='beginner']");
+    let allCompleted = true;
+
+    beginnerSections.each(function () {
+      const totalLessons = $(this).find(".lesson-item").length;
+      const completedLessons = $(this).find(".hgi-check").length;
+      if (completedLessons < totalLessons) {
+        allCompleted = false;
+        return false; // Break the loop
+      }
+    });
+
+    return allCompleted;
+  }
+
   // Handle lesson item clicks
   $(".lesson-item").on("click", function () {
+    // Check if the lesson is locked
+    if ($(this).hasClass("locked")) {
+      return; // Prevent interaction with locked lessons
+    }
+
+    // Check if this is an intermediate lesson and beginner content isn't completed
+    const sectionLevel = $(this).closest(".accordion-item").data("level");
+    if (sectionLevel === "intermediate" && !areAllBeginnerLessonsCompleted()) {
+      alert("Please complete all beginner lessons first!");
+      return;
+    }
     const videoId = $(this).data("video-id");
     if (videoId && videoId !== currentVideoId) {
       currentVideoId = videoId;
@@ -13,13 +89,30 @@ $(document).ready(function () {
         `https://www.youtube.com/embed/${videoId}`
       );
 
-      // Update lesson status
-      $(".lesson-item i.hgi-check").remove(); // Remove all check marks
+      // Update lesson status immediately
+      $(this).find("i.hgi-check").remove(); // Remove existing check mark if any
       $(this).append('<i class="hgi-stroke hgi-check text-success"></i>');
+
+      // Check if all beginner lessons are completed
+      if (areAllBeginnerLessonsCompleted()) {
+        // Unlock all intermediate sections
+        $(".accordion-item[data-level='intermediate']").each(function () {
+          const sectionHeader = $(this).find(".accordion-button");
+          if (sectionHeader.hasClass("locked")) {
+            sectionHeader.removeClass("locked");
+            sectionHeader.find(".hgi-square-lock-02").remove();
+          }
+        });
+      }
 
       // Update play icon to indicate current lesson
       $(".lesson-item i.hgi-play").removeClass("text-primary");
       $(this).find("i.hgi-play").addClass("text-primary");
+      // Unlock the next lesson when this one is completed
+      unlockNextLesson($(this));
+
+      // Update section progress
+      updateSectionProgress();
     }
   });
 
@@ -34,7 +127,7 @@ $(document).ready(function () {
     // Simulate enrollment process
     setTimeout(function () {
       $btn.html(
-        'Enrolled <i class="hgi-stroke hgi-tick-01 fs-5 align-middle"></i>'
+        'Enrolled <i class="hgi-stroke hgi-tick-01 text-white fs-5 align-middle"></i>'
       );
       $btn.removeClass("btn-primary").addClass("btn-success");
     }, 1500);
@@ -89,6 +182,10 @@ $(document).ready(function () {
 
   // Update progress when lessons are completed
   $(".lesson-item").on("click", function () {
+    // Skip if lesson is locked
+    if ($(this).hasClass("locked")) {
+      return;
+    }
     if (!$(this).find(".hgi-check").length) {
       $(this).append('<i class="hgi-stroke hgi-check text-success"></i>');
       updateSectionProgress();

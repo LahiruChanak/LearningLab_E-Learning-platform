@@ -254,6 +254,7 @@ textarea:focus {
   margin: 10px auto 0;
 }
 
-.hgi-check {
+.hgi-tick-01,
+.progress-info {
   color: #12b76a;
 }
