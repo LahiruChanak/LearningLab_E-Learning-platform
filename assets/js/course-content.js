@@ -91,7 +91,7 @@ $(document).ready(function () {
 
       // Update lesson status immediately
       $(this).find("i.hgi-check").remove(); // Remove existing check mark if any
-      $(this).append('<i class="hgi-stroke hgi-tick-01 align-middle text-success"></i>');
+      $(this).find("i.hgi-tick-01").removeClass("d-none").addClass("d-block");
 
       // Check if all beginner lessons are completed
       if (areAllBeginnerLessonsCompleted()) {

@@ -72,7 +72,7 @@ body {
 
 /* Tab Navigation */
 .nav-tabs {
-  border: none;
+  border-bottom: 2px solid #e0e0e0 !important;
   gap: 5px;
 }
 
@@ -100,7 +100,7 @@ body {
   content: "";
   position: absolute;
   left: 50%;
-  bottom: -3px;
+  bottom: -1px;
   width: 0;
   height: 3px;
   border-radius: 8px;
