@@ -16,16 +16,16 @@ body {
 
 /* Header Styles */
 .btn-share {
-  border: 1px solid #e4e7ec;
+  /* border: 1px solid #e4e7ec; */
   color: var(--text-color);
   padding: 10px 20px;
   display: flex;
   align-items: center;
   gap: 8px;
   border-radius: 8px;
-  transition: all 0.2s ease;
   background: white;
   box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
 }
 
 .btn-share:hover {
@@ -35,13 +35,13 @@ body {
 }
 
 .btn-enroll {
-  background: var(--gradient-bg);
+  /* background: var(--gradient-bg); */
   border: none;
-  padding: 10px 28px;
-  border-radius: 8px;
+  padding: 10px 20px;
+  border-radius: 10px;
   font-weight: 500;
-  transition: all 0.2s ease;
   box-shadow: var(--shadow-sm);
+  transition: all 0.4s ease;
 }
 
 .btn-enroll:hover {
@@ -73,6 +73,7 @@ body {
 /* Tab Navigation */
 .nav-tabs {
   border: none;
+  gap: 5px;
 }
 
 .nav-tabs .nav-link {
@@ -114,6 +115,9 @@ body {
 }
 
 /* Accordion Styles */
+.accordion {
+  height: fit-content;
+}
 .accordion-item {
   border: none;
   background: transparent;
@@ -191,10 +195,24 @@ body {
   animation: fadeIn 0.3s ease-out;
 }
 
+.learning-objectives {
+  padding-left: 15px;
+}
+
+.learning-objectives li {
+  list-style: none;
+}
+
+.learning-objectives li::before {
+  content: "\2714"; /* Unicode for checkmark */
+  color: #12b76a;
+  margin-right: 8px;
+}
+
 /* FAQ Accordion */
 #faqAccordion .accordion-button {
   background: white;
-  border: 1px solid #eaecf0;
+  border: 1px solid #e0e0e0;
 }
 
 #faqAccordion .accordion-button:not(.collapsed) {
@@ -203,7 +221,7 @@ body {
 }
 
 #faqAccordion .accordion-body {
-  border: 1px solid #eaecf0;
+  border: 1px solid #e0e0e0;
   border-top: none;
   border-radius: 0 0 8px 8px;
 }
