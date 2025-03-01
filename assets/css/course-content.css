@@ -166,14 +166,26 @@ textarea:focus {
 
 /* Lesson Items */
 .lesson-item {
-  padding: 12px;
+  padding: 12px 20px;
   border-radius: 8px;
   transition: all 0.4s ease;
   cursor: pointer;
+  background-color: var(--secondary-color);
 }
 
 .lesson-item:hover {
   background: var(--secondary-color);
+}
+
+.lesson-item.locked {
+}
+
+.lesson-item small {
+  font-size: 12px;
+}
+
+.lesson-item p {
+  font-weight: 500;
 }
 
 /* Author Profile */
@@ -244,12 +256,4 @@ textarea:focus {
 
 .hgi-check {
   color: #12b76a;
-}
-
-.lesson-item small {
-  font-size: 12px;
-}
-
-.lesson-item p {
-  font-weight: 500;
 }
