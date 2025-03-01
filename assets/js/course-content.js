@@ -273,8 +273,11 @@ $(document).ready(function () {
 
   // Quiz functionality
   const quizAnswers = {
-    q1: "b",
+    q1: "a",
     q2: "b",
+    q3: "c",
+    q4: "a",
+    q5: "b",
   };
 
   $("#quizForm").on("submit", function (e) {
@@ -297,15 +300,22 @@ $(document).ready(function () {
 
     // Show results and feedback
     $("#quizResults").removeClass("d-none");
-    if (percentage >= 75) {
+    if (percentage >= 60) {
+      $("#quizResults .alert-color")
+        .removeClass("alert-danger")
+        .addClass("alert-success");
       $("#quizFeedback").text("Congratulations! You've passed the quiz.");
       $("#retakeQuiz").addClass("d-none");
       $("#quizForm button[type=submit]").prop("disabled", true);
     } else {
+      $("#quizResults .alert-color")
+        .removeClass("alert-success")
+        .addClass("alert-danger");
       $("#quizFeedback").text(
         "You need to score at least 75% to pass. Please try again."
       );
       $("#retakeQuiz").removeClass("d-none");
+      $("#quizForm button[type=submit]").prop("disabled", true);
     }
   });
 
