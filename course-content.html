@@ -264,6 +264,7 @@
                         id="questionText"
                         rows="3"
                         placeholder="Type your question here..."
+                        required
                       ></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">
@@ -549,7 +550,7 @@
             </div>
             <div class="accordion" id="courseAccordion">
               <!-- Existing course content sections -->
-              <div class="accordion-item">
+              <div class="accordion-item" id="chapter1">
                 <h2 class="accordion-header">
                   <button
                     class="accordion-button shadow-none"
@@ -572,6 +573,7 @@
                     <div
                       class="lesson-item d-flex align-items-center"
                       data-video-id="dQw4w9WgXcQ"
+                      id="lesson1_1"
                     >
                       <i class="hgi-stroke hgi-play align-middle me-3"></i>
                       <div class="flex-grow-1">
@@ -583,48 +585,66 @@
                       ></i>
                     </div>
                     <div
-                      class="lesson-item d-flex align-items-center"
+                      class="lesson-item d-flex align-items-center locked"
                       data-video-id="dQw4w9WgXcQ"
+                      id="lesson1_2"
+                      disabled
                     >
                       <i class="hgi-stroke hgi-play align-middle me-3"></i>
                       <div class="flex-grow-1">
                         <p class="mb-0">What is Figma?</p>
                         <small class="text-muted">5 min</small>
                       </div>
+                      <i
+                        class="hgi-stroke hgi-square-lock-02 fs-5 align-middle text-muted"
+                      ></i>
                     </div>
                     <div
-                      class="lesson-item d-flex align-items-center"
+                      class="lesson-item d-flex align-items-center locked"
                       data-video-id="dQw4w9WgXcQ"
+                      id="lesson1_3"
+                      disabled
                     >
                       <i class="hgi-stroke hgi-play align-middle me-3"></i>
                       <div class="flex-grow-1">
                         <p class="mb-0">Understanding Figma</p>
                         <small class="text-muted">12 min</small>
                       </div>
+                      <i
+                        class="hgi-stroke hgi-square-lock-02 fs-5 align-middle text-muted"
+                      ></i>
                     </div>
                     <div
-                      class="lesson-item d-flex align-items-center"
+                      class="lesson-item d-flex align-items-center locked"
                       data-video-id="dQw4w9WgXcQ"
+                      id="lesson1_4"
+                      disabled
                     >
                       <i class="hgi-stroke hgi-play align-middle me-3"></i>
                       <div class="flex-grow-1">
                         <p class="mb-0">UI tour</p>
                         <small class="text-muted">3 min</small>
                       </div>
+                      <i
+                        class="hgi-stroke hgi-square-lock-02 fs-5 align-middle text-muted"
+                      ></i>
                     </div>
                   </div>
                 </div>
               </div>
 
               <!-- Section 2: Intermediate Level Content -->
-              <div class="accordion-item">
+              <div class="accordion-item" id="chapter2">
                 <h2 class="accordion-header">
                   <button
-                    class="accordion-button shadow-none collapsed"
+                    class="accordion-button shadow-none collapsed locked"
                     type="button"
                     data-bs-toggle="collapse"
                     data-bs-target="#section2"
                   >
+                    <i
+                      class="hgi-stroke hgi-square-lock-02 fs-5 align-middle text-muted me-2"
+                    ></i>
                     <div class="d-flex justify-content-between w-100 me-3">
                       <span>02: Intermediate Level</span>
                       <span class="duration">45min</span>
@@ -638,44 +658,64 @@
                 >
                   <div class="accordion-body">
                     <div
-                      class="lesson-item d-flex align-items-center"
+                      class="lesson-item d-flex align-items-center locked"
                       data-video-id="dQw4w9WgXcQ"
+                      id="lesson2_1"
+                      disabled
                     >
                       <i class="hgi-stroke hgi-play align-middle me-3"></i>
                       <div class="flex-grow-1">
                         <p class="mb-0">Advanced Component Creation</p>
                         <small class="text-muted">15 min</small>
                       </div>
+                      <i
+                        class="hgi-stroke hgi-square-lock-02 fs-5 align-middle text-muted"
+                      ></i>
                     </div>
                     <div
-                      class="lesson-item d-flex align-items-center"
+                      class="lesson-item d-flex align-items-center locked"
                       data-video-id="dQw4w9WgXcQ"
+                      id="lesson2_2"
+                      disabled
                     >
                       <i class="hgi-stroke hgi-play align-middle me-3"></i>
                       <div class="flex-grow-1">
                         <p class="mb-0">Auto-layout Mastery</p>
                         <small class="text-muted">10 min</small>
                       </div>
+                      <i
+                        class="hgi-stroke hgi-square-lock-02 fs-5 align-middle text-muted"
+                      ></i>
                     </div>
                     <div
-                      class="lesson-item d-flex align-items-center"
+                      class="lesson-item d-flex align-items-center locked"
                       data-video-id="dQw4w9WgXcQ"
+                      id="lesson2_3"
+                      disabled
                     >
                       <i class="hgi-stroke hgi-play align-middle me-3"></i>
                       <div class="flex-grow-1">
                         <p class="mb-0">Interactive Prototyping</p>
                         <small class="text-muted">12 min</small>
                       </div>
+                      <i
+                        class="hgi-stroke hgi-square-lock-02 fs-5 align-middle text-muted"
+                      ></i>
                     </div>
                     <div
-                      class="lesson-item d-flex align-items-center"
+                      class="lesson-item d-flex align-items-center locked"
                       data-video-id="dQw4w9WgXcQ"
+                      id="lesson2_4"
+                      disabled
                     >
                       <i class="hgi-stroke hgi-play align-middle me-3"></i>
                       <div class="flex-grow-1">
                         <p class="mb-0">Design System Management</p>
                         <small class="text-muted">8 min</small>
                       </div>
+                      <i
+                        class="hgi-stroke hgi-square-lock-02 fs-5 align-middle text-muted"
+                      ></i>
                     </div>
                   </div>
                 </div>
