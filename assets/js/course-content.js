@@ -285,6 +285,19 @@ $(document).ready(function () {
     let score = 0;
     let totalQuestions = Object.keys(quizAnswers).length;
 
+    // Check if all questions have an answer selected
+    let unansweredQuestions = [];
+    for (let question in quizAnswers) {
+      if ($(`input[name=${question}]:checked`).length === 0) {
+        unansweredQuestions.push(question);
+      }
+    }
+
+    if (unansweredQuestions.length > 0) {
+      alert("Please answer all questions before submitting.");
+      return;
+    }
+
     // Calculate score
     for (let question in quizAnswers) {
       if (
