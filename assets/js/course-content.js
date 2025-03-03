@@ -16,7 +16,7 @@ $(document).ready(function () {
   // Function to initialize lessons
   function initializeLessons() {
     // Unlock the first lesson in each section
-    $(".accordion-item").each(function () {
+    $(".accordion-item #chapter1").each(function () {
       const firstLesson = $(this).find(".lesson-item").first();
       if (firstLesson.length) {
         unlockLesson(firstLesson);
@@ -164,25 +164,36 @@ $(document).ready(function () {
 
   // Track section progress
   function updateSectionProgress() {
-    $(".accordion-item").each(function () {
-      const totalLessons = $(this).find(".lesson-item").length;
-      const completedLessons = $(this).find(".hgi-check").length;
-      const progress = Math.round((completedLessons / totalLessons) * 100);
+    const $accordion = $(".accordion");
+    const totalLessons = $accordion.find(".lesson-item").length;
+    const completedLessons = $accordion.find(".hgi-check").length;
+    const progress = Math.round((completedLessons / totalLessons) * 100);
 
-      // Add progress info to section header
-      const $header = $(this).find(".accordion-button");
-      const $progressInfo = $header.find(".progress-info");
+    // Update the main progress info
+    $("#progress").text(progress);
 
-      if ($progressInfo.length === 0 && totalLessons > 0) {
-        $header
-          .find(".duration")
-          .before(
-            `<span class="progress-info ms-2">${progress}% complete</span>`
-          );
-      } else {
-        $progressInfo.text(`${progress}% complete`);
-      }
-    });
+    // // Update individual section progress
+    // $accordion.each(function () {
+    //   const sectionTotalLessons = $(this).find(".lesson-item").length;
+    //   const sectionCompletedLessons = $(this).find(".hgi-check").length;
+    //   const sectionProgress = Math.round(
+    //     (sectionCompletedLessons / sectionTotalLessons) * 100
+    //   );
+
+    //   // Add progress info to section header
+    //   const $header = $(this).find(".accordion-button");
+    //   const $progressInfo = $header.find(".progress-info");
+
+    //   if ($progressInfo.length === 0 && sectionTotalLessons > 0) {
+    //     $header
+    //       .find(".duration")
+    //       .before(
+    //         `<span class="progress-info ms-2">${sectionProgress}% complete</span>`
+    //       );
+    //   } else {
+    //     $progressInfo.text(`${sectionProgress}% complete`);
+    //   }
+    // });
   }
 
   // Initial progress update
@@ -375,6 +386,7 @@ $(document).ready(function () {
 
     // Check if all questions have an answer selected
     let unansweredQuestions = [];
+    
     for (let question in quizAnswers) {
       if ($(`input[name=${question}]:checked`).length === 0) {
         unansweredQuestions.push(question);
@@ -413,7 +425,7 @@ $(document).ready(function () {
         .removeClass("alert-success")
         .addClass("alert-danger");
       $("#quizFeedback").text(
-        "You need to score at least 75% to pass. Please try again."
+        "You need to score at least 60% to pass. Please try again."
       );
       $("#retakeQuiz").removeClass("d-none");
       $("#quizForm button[type=submit]").prop("disabled", true);

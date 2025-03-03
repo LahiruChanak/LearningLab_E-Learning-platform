@@ -51,7 +51,10 @@ body {
 }
 
 .btn-enroll {
-  /* background: var(--gradient-bg); */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   border: none;
   padding: 10px 20px;
   border-radius: 10px;
@@ -82,7 +85,7 @@ body {
 .course-content {
   background: white;
   border-radius: 16px;
-  padding: 28px;
+  padding: 28px 28px 10px 28px;
   box-shadow: var(--shadow-sm);
 }
 
@@ -183,10 +186,11 @@ textarea:focus {
 /* Lesson Items */
 .lesson-item {
   padding: 12px 20px;
-  border-radius: 8px;
+  border-radius: 15px;
   transition: all 0.4s ease;
   cursor: pointer;
-  background-color: var(--secondary-color);
+  background-color: #f9fafb;
+  border: 1px solid var(--secondary-color);
 }
 
 .lesson-item:hover {
@@ -277,8 +281,9 @@ i.hgi-star.half-filled {
 }
 
 .progress-info {
-  font-size: 0.85rem;
+  /* font-size: 0.85rem; */
   color: #12b76a;
+  background-color: #12b76a2a;
 }
 
 .duration {
