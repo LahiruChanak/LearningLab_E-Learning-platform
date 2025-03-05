@@ -336,7 +336,7 @@ i.hgi-star.half-filled {
   background-color: var(--secondary-color);
 }
 
-/* Quiz Results Modal Styles */
+/* Quiz Styles */
 .lottie-container {
   display: flex;
   justify-content: center;
@@ -379,6 +379,7 @@ i.hgi-star.half-filled {
 
 #quizResultModal .btn-primary {
   background-color: #6366f1;
+  border: none;
   padding: 0.75rem 2rem;
   font-weight: 500;
   border-radius: 0.75rem;
@@ -392,4 +393,14 @@ i.hgi-star.half-filled {
 #quizResultModal .modal-header {
   border-bottom: none;
   padding: 1.5rem 1.5rem 0;
+}
+
+.btn-outline-success {
+  border-color: #12b76a !important;
+  color: #12b76a;
+  transition: all 0.4s ease;
+}
+
+.btn-outline-success:hover {
+  background-color: #12b76a;
 }

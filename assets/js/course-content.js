@@ -393,10 +393,10 @@ $(document).ready(function () {
       }
     }
 
-    // if (unansweredQuestions.length > 0) {
-    //   alert("Please answer all questions before submitting.");
-    //   return;
-    // }
+    if (unansweredQuestions.length > 0) {
+      showAlert("danger", "Please answer all questions before submitting.");
+      return;
+    }
 
     // Calculate score
     for (let question in quizAnswers) {
@@ -425,7 +425,11 @@ $(document).ready(function () {
       $("#retakeQuiz").addClass("d-none");
       $("#quizForm button[type=submit]").prop("disabled", true);
       $(".result-status").text("Congratulations...!");
-      $(".result-message").text("You got " + percentage + "% score. Good job!");
+      $(".result-message").html(
+        "You got <span style='color: #12b76a; font-size: 1.3rem; font-weight: 600'>" +
+          percentage +
+          "%</span> score. Good job!"
+      );
     } else {
       passedImg.addClass("d-none");
       failedImg.removeClass("d-none");
@@ -433,8 +437,10 @@ $(document).ready(function () {
       $("#retakeQuiz").removeClass("d-none");
       $("#quizForm button[type=submit]").prop("disabled", true);
       $(".result-status").text("Try Again...!");
-      $(".result-message").text(
-        "You got " + percentage + "% score. Better luck next time!"
+      $(".result-message").html(
+        "You got <span style='color: #ef4444; font-size: 1.3rem; font-weight: 600'>" +
+          percentage +
+          "%</span> score. Better luck next time!"
       );
     }
     quizResultModal.show();
@@ -443,6 +449,7 @@ $(document).ready(function () {
   // Handle quiz retake
   $("#retakeQuiz").on("click", function () {
     $("#quizForm")[0].reset();
+    $("#quizForm button[type=submit]").prop("disabled", false);
     $("#quizResults").addClass("d-none");
     $(this).addClass("d-none");
   });
