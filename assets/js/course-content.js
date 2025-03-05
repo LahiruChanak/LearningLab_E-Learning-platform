@@ -85,7 +85,7 @@ $(document).ready(function () {
     // Check if this is an intermediate lesson and beginner content isn't completed
     const sectionLevel = $(this).closest(".accordion-item").data("level");
     if (sectionLevel === "intermediate" && !areAllBeginnerLessonsCompleted()) {
-      alert("Please complete all beginner lessons first!");
+      showAlert("warning", "Please complete all beginner lessons first!");
       return;
     }
     const videoId = $(this).data("video-id");
@@ -233,7 +233,7 @@ $(document).ready(function () {
     e.preventDefault();
     const question = $("#questionText").val().trim();
     if (question) {
-      alert("Thank you for your question! We'll respond shortly.");
+      showAlert("info", "Thank you for your question! We'll respond shortly.");
       $("#questionText").val("");
     }
   });
@@ -269,7 +269,7 @@ $(document).ready(function () {
     e.preventDefault();
     const reviewText = $("#reviewText").val().trim();
     if (selectedRating === 0) {
-      alert("Please select a rating");
+      showAlert("warning", "Please select a rating");
       return;
     }
     if (reviewText) {
@@ -367,7 +367,7 @@ $(document).ready(function () {
   // Handle resource downloads
   $(".resource-item button").on("click", function () {
     const resourceName = $(this).closest(".resource-item").find("h6").text();
-    alert(`Downloading ${resourceName}...`);
+    showAlert("info", `Downloading ${resourceName}...`);
   });
 
   // Quiz functionality
