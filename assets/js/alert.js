@@ -19,11 +19,11 @@ function showAlert(type, message) {
 
   $("body").append(alertHtml);
 
-  //   setTimeout(
-  //     () =>
-  //       $(".alert").fadeOut("slow", function () {
-  //         $(this).remove();
-  //       }),
-  //     5000
-  //   );
+    setTimeout(
+      () =>
+        $(".alert").fadeOut("slow", function () {
+          $(this).remove();
+        }),
+      5000
+    );
 }
