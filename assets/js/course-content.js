@@ -386,17 +386,17 @@ $(document).ready(function () {
 
     // Check if all questions have an answer selected
     let unansweredQuestions = [];
-    
+
     for (let question in quizAnswers) {
       if ($(`input[name=${question}]:checked`).length === 0) {
         unansweredQuestions.push(question);
       }
     }
 
-    if (unansweredQuestions.length > 0) {
-      alert("Please answer all questions before submitting.");
-      return;
-    }
+    // if (unansweredQuestions.length > 0) {
+    //   alert("Please answer all questions before submitting.");
+    //   return;
+    // }
 
     // Calculate score
     for (let question in quizAnswers) {
@@ -411,25 +411,33 @@ $(document).ready(function () {
     const percentage = Math.round((score / totalQuestions) * 100);
     $("#quizScore").text(percentage);
 
-    // Show results and feedback
-    $("#quizResults").removeClass("d-none");
+    // Show results in modal
+    const quizResultModal = new bootstrap.Modal(
+      document.getElementById("quizResultModal")
+    );
+    const passedImg = $("#quizResultModal #passed-img");
+    const failedImg = $("#quizResultModal #failed-img");
+
     if (percentage >= 60) {
-      $("#quizResults .alert-color")
-        .removeClass("alert-danger")
-        .addClass("alert-success");
-      $("#quizFeedback").text("Congratulations! You've passed the quiz.");
+      passedImg.removeClass("d-none");
+      failedImg.addClass("d-none");
+
       $("#retakeQuiz").addClass("d-none");
       $("#quizForm button[type=submit]").prop("disabled", true);
+      $(".result-status").text("Congratulations...!");
+      $(".result-message").text("You got " + percentage + "% score. Good job!");
     } else {
-      $("#quizResults .alert-color")
-        .removeClass("alert-success")
-        .addClass("alert-danger");
-      $("#quizFeedback").text(
-        "You need to score at least 60% to pass. Please try again."
-      );
+      passedImg.addClass("d-none");
+      failedImg.removeClass("d-none");
+
       $("#retakeQuiz").removeClass("d-none");
       $("#quizForm button[type=submit]").prop("disabled", true);
+      $(".result-status").text("Try Again...!");
+      $(".result-message").text(
+        "You got " + percentage + "% score. Better luck next time!"
+      );
     }
+    quizResultModal.show();
   });
 
   // Handle quiz retake

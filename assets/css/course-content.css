@@ -152,7 +152,7 @@ body {
   box-shadow: none !important;
   border: 1px solid #ccc !important;
   border-radius: 12px !important;
-  padding: 16px 24px;
+  padding: 16px 20px;
   font-weight: 500;
   color: var(--text-color);
   transition: all 0.4s ease;
@@ -185,7 +185,7 @@ textarea:focus {
 
 /* Lesson Items */
 .lesson-item {
-  padding: 12px 20px;
+  padding: 12px 18px;
   border-radius: 15px;
   transition: all 0.4s ease;
   cursor: pointer;
@@ -334,4 +334,62 @@ i.hgi-star.half-filled {
 
 .dropdown-item:hover {
   background-color: var(--secondary-color);
+}
+
+/* Quiz Results Modal Styles */
+.lottie-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+}
+
+.result-status {
+  color: #333;
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.result-message {
+  color: #666;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.result-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+#quizResultModal .modal-body {
+  background-color: #fff;
+  border-radius: 1rem;
+  padding: 0 2rem 2rem;
+}
+
+#quizResultModal .modal-content {
+  border: none;
+  border-radius: 1.25rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+#quizResultModal .btn-primary {
+  background-color: #6366f1;
+  padding: 0.75rem 2rem;
+  font-weight: 500;
+  border-radius: 0.75rem;
+  transition: all 0.4s ease;
+}
+
+#quizResultModal .btn-primary:hover {
+  background-color: #4f46e5;
+}
+
+#quizResultModal .modal-header {
+  border-bottom: none;
+  padding: 1.5rem 1.5rem 0;
 }
