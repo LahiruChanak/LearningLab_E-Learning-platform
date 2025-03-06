@@ -404,3 +404,8 @@ i.hgi-star.half-filled {
 .btn-outline-success:hover {
   background-color: #12b76a;
 }
+
+.announcement-item p {
+  font-size: 0.9rem;
+  color: #666;
+}
