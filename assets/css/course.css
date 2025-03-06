@@ -103,8 +103,10 @@ body {
   display: flex !important;
   flex-direction: column;
   justify-content: center;
+  flex-shrink: 1;
   background-color: #fff;
   border-radius: 16px;
+  width: 100%;
   padding: 1.25rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
@@ -268,4 +270,8 @@ body {
 
 .list-view .course-card .avatar-group {
   margin-right: 1rem;
+}
+
+.highlight {
+  background-color: #ffc322;
 }

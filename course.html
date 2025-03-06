@@ -12,7 +12,6 @@
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
-
     <link
       rel="stylesheet"
       href="https://cdn.hugeicons.com/font/hgi-stroke-rounded.css"
@@ -21,6 +20,8 @@
     <link rel="stylesheet" href="assets/css/user-dashboard.css" />
     <link rel="stylesheet" href="assets/css/course.css" />
     <link rel="stylesheet" href="assets/css/header.css" />
+    <link rel="stylesheet" href="assets/css/sidebar.css" />
+    <link rel="stylesheet" href="assets/css/alert.css"
   </head>
   <body>
     <div class="container-fluid p-4 pt-2 overflow-x-hidden">
@@ -28,34 +29,28 @@
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
           <div
-            class="d-flex justify-content-between align-items-center mb-4 position-relative"
+            class="d-flex justify-content-center align-items-center mt-2 mb-3"
           >
-            <div class="logo ms-1" id="logo">LearnWave</div>
-            <button class="toggle-btn rotate" id="toggleBtn">
-              <i class="hgi-stroke hgi-menu-02 fs-5"></i>
-            </button>
+            <img src="assets/images/logo-mini.png" alt="Logo Image" id="logo" />
           </div>
-
-          <nav class="nav flex-column mb-4">
+          <nav class="nav flex-column align-items-center gap-1 mb-4">
             <a
-              class="nav-link"
+              class="nav-link active"
               href="user-dashboard.html"
               data-bs-toggle="tooltip"
               data-bs-placement="right"
               data-bs-title="Dashboard"
             >
               <i class="hgi-stroke hgi-home-04 fs-5 align-middle"></i>
-              <span class="ms-2">Dashboard</span>
             </a>
             <a
-              class="nav-link active"
+              class="nav-link"
               href="course.html"
               data-bs-toggle="tooltip"
               data-bs-placement="right"
               data-bs-title="Courses"
             >
               <i class="hgi-stroke hgi-course fs-5 align-middle"></i>
-              <span class="ms-2">Courses</span>
             </a>
             <a
               class="nav-link"
@@ -65,7 +60,6 @@
               data-bs-title="Messages"
             >
               <i class="hgi-stroke hgi-chatting-01 fs-5 align-middle"></i>
-              <span class="ms-2">Messages</span>
             </a>
             <a
               class="nav-link"
@@ -75,7 +69,6 @@
               data-bs-title="Grades"
             >
               <i class="hgi-stroke hgi-analytics-01 fs-5 align-middle"></i>
-              <span class="ms-2">Grades</span>
             </a>
             <a
               class="nav-link"
@@ -85,7 +78,6 @@
               data-bs-title="Schedule"
             >
               <i class="hgi-stroke hgi-calendar-03 fs-5 align-middle"></i>
-              <span class="ms-2">Schedule</span>
             </a>
             <a
               class="nav-link"
@@ -95,7 +87,6 @@
               data-bs-title="Settings"
             >
               <i class="hgi-stroke hgi-settings-01 fs-5 align-middle"></i>
-              <span class="ms-2">Settings</span>
             </a>
             <a
               class="nav-link"
@@ -105,49 +96,60 @@
               data-bs-title="Logout"
             >
               <i class="hgi-stroke hgi-logout-01 fs-5 align-middle"></i>
-              <span class="ms-2">Logout</span>
             </a>
           </nav>
-
-          <div class="premium-card">
-            <img src="assets/images/developer.png" alt="Student studying" />
-            <h6>Premium subscription</h6>
-            <p class="text-muted small">
-              Buy Premium and get access to new courses
-            </p>
-            <a href="#" class="btn">More Details</a>
-          </div>
         </div>
 
         <!-- Main Content -->
         <div class="col-md-10 main-content">
           <!-- Header options -->
-          <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-              <h4 class="mb-1">My All Courses</h4>
-              <p class="text-muted mb-0">Education Teacher Dashboard</p>
+          <div
+            class="d-flex justify-content-between align-items-center px-md-5 mb-4"
+          >
+            <div class="">
+              <h3 class="mb-2">My Courses</h3>
+              <p class="text-muted mb-0">
+                Welcome back,
+                <span id="name" class="fw-bold">Esther Howard</span> Explore our
+                courses and enhance your skills today.
+              </p>
             </div>
-            <div class="d-flex gap-2">
-              <button class="btn btn-light">
-                <i class="hgi-stroke hgi-upload-01"></i>
-                Upload
-              </button>
-              <button class="btn btn-light">
-                <i class="hgi-stroke hgi-notification-01"></i>
-              </button>
-              <img
-                src="assets/images/user.jpg"
-                alt="Profile"
-                class="rounded-circle"
-                width="40"
-                height="40"
-              />
+
+            <div class="d-flex align-items-center gap-3">
+              <!-- Search box -->
+              <div class="search-box">
+                <input type="text" placeholder="Search" id="courseSearch" />
+                <button class="search-btn">
+                  <i class="hgi-stroke hgi-search-01 fs-5"></i>
+                </button>
+              </div>
+              <!-- Notification icon -->
+              <div class="position-relative me-3 notification-icon">
+                <a href="#notifications" class="text-decoration-none text-dark">
+                  <i class="hgi-stroke hgi-notification-02 fs-5"></i>
+                </a>
+              </div>
+              <!-- Profile -->
+              <a
+                href="user-profile.html"
+                class="text-decoration-none text-dark d-flex align-items-center"
+              >
+                <img
+                  src="assets/images/user.jpg"
+                  alt="Profile"
+                  class="rounded-circle me-2 header-image"
+                />
+                <div>
+                  <h6 class="mb-0">Esther Howard</h6>
+                  <small class="text-muted">Elementary</small>
+                </div>
+              </a>
             </div>
           </div>
 
           <div class="row">
             <!-- Filter Section -->
-            <div class="filter-section mb-4">
+            <div class="filter-section mb-4 mx-2">
               <div class="d-flex align-items-center w-100 flex-wrap gap-3">
                 <!-- Search Bar -->
                 <div class="search-bar">
@@ -486,7 +488,9 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <script src="assets/js/jquery-3.7.1.min.js"></script>
     <script src="assets/js/course.js"></script>
     <script src="assets/js/user-dashboard.js"></script>
+    <script src="assets/js/alert.js"></script>
   </body>
 </html>
