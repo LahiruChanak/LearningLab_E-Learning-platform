@@ -11,19 +11,25 @@ function showAlert(type, message) {
       : "";
 
   const alertHtml = `
-      <div class="alert alert-${type} alert-dismissible fade show position-fixed bottom-0 end-0 m-3" role="alert">
+      <div class="alert alert-${type} alert-dismissible fade show position-fixed bottom-0 end-0 me-3 mb-3" role="alert">
         <i class="hgi hgi-stroke ${icon} align-middle fs-4 me-2"></i>
-        ${message}
-        <button type="button" class="btn-close shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
+        <span class="align-middle">${message}</span>
+        <button type="button" class="btn-close shadow-none" data-bs-dismiss="alert" aria-label="Close">
+          <i class="hgi hgi-stroke hgi-multiplication-sign"></i>
+        </button>
       </div>`;
 
   $("body").append(alertHtml);
 
-    setTimeout(
-      () =>
-        $(".alert").fadeOut("slow", function () {
-          $(this).remove();
-        }),
-      5000
+  setTimeout(() => {
+    $(".alert").animate(
+      {
+        right: "-100%",
+      },
+      1000,
+      function () {
+        $(this).remove();
+      }
     );
+  }, 5000);
 }
