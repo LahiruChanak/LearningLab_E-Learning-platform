@@ -85,7 +85,7 @@ $(document).ready(function () {
     // Check if this is an intermediate lesson and beginner content isn't completed
     const sectionLevel = $(this).closest(".accordion-item").data("level");
     if (sectionLevel === "intermediate" && !areAllBeginnerLessonsCompleted()) {
-      showAlert("warning", "Please complete all beginner lessons first!");
+      alert("Please complete all beginner lessons first!");
       return;
     }
     const videoId = $(this).data("video-id");
@@ -233,7 +233,7 @@ $(document).ready(function () {
     e.preventDefault();
     const question = $("#questionText").val().trim();
     if (question) {
-      showAlert("info", "Thank you for your question! We'll respond shortly.");
+      alert("Thank you for your question! We'll respond shortly.");
       $("#questionText").val("");
     }
   });
@@ -269,7 +269,7 @@ $(document).ready(function () {
     e.preventDefault();
     const reviewText = $("#reviewText").val().trim();
     if (selectedRating === 0) {
-      showAlert("warning", "Please select a rating");
+      alert("Please select a rating");
       return;
     }
     if (reviewText) {
@@ -367,7 +367,7 @@ $(document).ready(function () {
   // Handle resource downloads
   $(".resource-item button").on("click", function () {
     const resourceName = $(this).closest(".resource-item").find("h6").text();
-    showAlert("info", `Downloading ${resourceName}...`);
+    alert(`Downloading ${resourceName}...`);
   });
 
   // Quiz functionality
@@ -393,10 +393,10 @@ $(document).ready(function () {
       }
     }
 
-    if (unansweredQuestions.length > 0) {
-      showAlert("danger", "Please answer all questions before submitting.");
-      return;
-    }
+    // if (unansweredQuestions.length > 0) {
+    //   alert("Please answer all questions before submitting.");
+    //   return;
+    // }
 
     // Calculate score
     for (let question in quizAnswers) {
@@ -425,22 +425,18 @@ $(document).ready(function () {
       $("#retakeQuiz").addClass("d-none");
       $("#quizForm button[type=submit]").prop("disabled", true);
       $(".result-status").text("Congratulations...!");
-      $(".result-message").html(
-        "You got <span style='color: #12b76a; font-size: 1.3rem; font-weight: 600'>" +
-          percentage +
-          "%</span> score. Good job!"
+      $(".result-message").text(
+        "You got " + percentage + "% score. Good job!"
       );
     } else {
       passedImg.addClass("d-none");
       failedImg.removeClass("d-none");
 
       $("#retakeQuiz").removeClass("d-none");
-      $("#quizForm button[type=submit]").prop("disabled", true);
+      $("#quizForm button[type=submit]").prop("disabled", false);
       $(".result-status").text("Try Again...!");
-      $(".result-message").html(
-        "You got <span style='color: #ef4444; font-size: 1.3rem; font-weight: 600'>" +
-          percentage +
-          "%</span> score. Better luck next time!"
+      $(".result-message").text(
+        "You got " + percentage + "% score. Better luck next time!"
       );
     }
     quizResultModal.show();
@@ -449,7 +445,6 @@ $(document).ready(function () {
   // Handle quiz retake
   $("#retakeQuiz").on("click", function () {
     $("#quizForm")[0].reset();
-    $("#quizForm button[type=submit]").prop("disabled", false);
     $("#quizResults").addClass("d-none");
     $(this).addClass("d-none");
   });
