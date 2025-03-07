@@ -18,22 +18,23 @@
       href="https://cdn.hugeicons.com/font/hgi-stroke-rounded.css"
     />
 
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
-
     <link rel="stylesheet" href="assets/css/admin-dashboard.css" />
+    <link rel="stylesheet" href="assets/css/sidebar.css" />
     <link rel="stylesheet" href="assets/css/header.css" />
+    <link rel="stylesheet" href="assets/css/calendar.css" />
+    <link rel="stylesheet" href="assets/css/alert.css" />
   </head>
   <body>
-    <div class="container-fluid p-4 pt-2 overflow-x-hidden">
+    <div class="container-fluid p-4 pt-2">
       <div class="row">
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
-          <div id="logo-container" class="gap-2">
-            <div class="ms-1" id="logo">
+          <div id="logo-container">
+            <div class="ms-1">
               <img
-                src="assets/images/logo-mini.png"
-                alt=""
-                style="width: 70px"
+                src="assets/images/logo-full.png"
+                alt="logo image"
+                id="logo"
               />
             </div>
             <button class="toggle-btn rotate" id="toggleBtn">
@@ -44,7 +45,7 @@
           <nav class="nav flex-column mb-4">
             <a
               class="nav-link active"
-              href="admin-dashboard.html"
+              href="user-dashboard.html"
               data-bs-toggle="tooltip"
               data-bs-placement="right"
               data-bs-title="Dashboard"
@@ -54,23 +55,13 @@
             </a>
             <a
               class="nav-link"
-              href="#"
+              href="course.html"
               data-bs-toggle="tooltip"
               data-bs-placement="right"
-              data-bs-title="Students"
+              data-bs-title="Courses"
             >
-              <i class="hgi-stroke hgi-users-group fs-5 align-middle"></i>
-              <span class="ms-2">Students</span>
-            </a>
-            <a
-              class="nav-link"
-              href="#"
-              data-bs-toggle="tooltip"
-              data-bs-placement="right"
-              data-bs-title="Assignments"
-            >
-              <i class="hgi-stroke hgi-document-01 fs-5 align-middle"></i>
-              <span class="ms-2">Assignments</span>
+              <i class="hgi-stroke hgi-course fs-5 align-middle"></i>
+              <span class="ms-2">Courses</span>
             </a>
             <a
               class="nav-link"
@@ -81,6 +72,26 @@
             >
               <i class="hgi-stroke hgi-chatting-01 fs-5 align-middle"></i>
               <span class="ms-2">Messages</span>
+            </a>
+            <a
+              class="nav-link"
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-placement="right"
+              data-bs-title="Grades"
+            >
+              <i class="hgi-stroke hgi-analytics-01 fs-5 align-middle"></i>
+              <span class="ms-2">Grades</span>
+            </a>
+            <a
+              class="nav-link"
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-placement="right"
+              data-bs-title="Schedule"
+            >
+              <i class="hgi-stroke hgi-calendar-03 fs-5 align-middle"></i>
+              <span class="ms-2">Schedule</span>
             </a>
             <a
               class="nav-link"
@@ -107,204 +118,151 @@
 
         <!-- Main Content -->
         <div class="col-md-10 main-content">
-          <!-- Header -->
-          <header class="mb-4">
-            <div class="d-flex justify-content-between align-items-center">
-              <div class="d-flex align-items-center gap-3">
-                <h4 class="mb-0">Hello Audrey Rozario, welcome back!</h4>
+          <!-- Stats Cards -->
+          <div class="row px-2 gap-3">
+            <div class="stats-card">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="hgi hgi-stroke hgi-user-multiple-02 fs-4" id="i1"></i>
+                <p>Total Students</p>
               </div>
-              <div class="d-flex align-items-center gap-3">
-                <div class="search-container">
-                  <i class="hgi-stroke hgi-search-01"></i>
-                  <input type="text" placeholder="Search..." />
+              <h3 id="student-count">302</h3>
+            </div>
+            <div class="stats-card">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="hgi hgi-stroke hgi-teacher fs-4" id="i2"></i>
+                <p>Total Instructors</p>
+              </div>
+              <h3 id="instructor-count">28</h3>
+            </div>
+            <div class="stats-card">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="hgi hgi-stroke hgi-course fs-4" id="i3"></i>
+                <p>Total Courses</p>
+              </div>
+              <h3 id="course-count">16</h3>
+            </div>
+            <div class="stats-card">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="hgi hgi-stroke hgi-money-bag-02 fs-4" id="i4"></i>
+                <p>Total Earnings</p>
+              </div>
+              <h3 id="earning-count">$12,345</h3>
+            </div>
+          </div>
+
+          <!-- Charts Section -->
+          <div class="row mt-4">
+            <div class="col-md-8 flex-grow-1">
+              <div class="chart-card">
+                <div class="chart-header">
+                  <h5 class="chart-title">Attendance Overview</h5>
+                  <div class="btn-group">
+                    <button
+                      class="btn btn-outline-primary active"
+                      data-period="weekly"
+                    >
+                      Weekly
+                    </button>
+                    <button
+                      class="btn btn-outline-primary"
+                      data-period="monthly"
+                    >
+                      Monthly
+                    </button>
+                    <button
+                      class="btn btn-outline-primary"
+                      data-period="yearly"
+                    >
+                      Yearly
+                    </button>
+                  </div>
                 </div>
-                <div class="notification-icon">
-                  <i class="hgi-stroke hgi-bell-01"></i>
-                  <span class="notification-badge"></span>
-                </div>
-                <div class="user-profile">
-                  <img src="assets/images/user.jpg" alt="User" />
-                </div>
+                <div id="salesChart"></div>
               </div>
             </div>
-          </header>
-
-          <div class="row">
-            <!-- Left Section -->
-            <div class="col-md-8">
-              <!-- Course Stats -->
-              <div class="row mb-4">
-                <div class="col-md-4">
-                  <div class="course-card">
-                    <h6>Completed Courses</h6>
-                    <h3>25/60</h3>
-                    <div class="progress">
-                      <div class="progress-bar" style="width: 80%"></div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="course-card">
-                    <h6>In Progress</h6>
-                    <h3>18/60</h3>
-                    <div class="progress">
-                      <div class="progress-bar" style="width: 60%"></div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="course-card">
-                    <h6>Not Started</h6>
-                    <h3>17/60</h3>
-                    <div class="progress">
-                      <div class="progress-bar" style="width: 40%"></div>
-                    </div>
-                  </div>
-                </div>
+            <div class="col-md-4 calendar-wrapper">
+              <!-- Calendar -->
+              <div class="calendar-container mb-4">
+                <div id="calendar"></div>
               </div>
+            </div>
+          </div>
 
-              <!-- Premium Banner -->
-              <div class="premium-banner mb-4">
-                <div class="row align-items-center">
-                  <div class="col-md-8">
-                    <h5>Go Premium</h5>
-                    <p>Explore 500+ courses with lifetime membership</p>
-                    <button class="btn btn-dark">Explore more</button>
-                  </div>
-                  <div class="col-md-4 text-end">
-                    <img
-                      src="assets/images/developer.png"
-                      alt="Premium"
-                      class="premium-img"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <!-- Course Table -->
-              <div class="table-container">
-                <div
-                  class="d-flex justify-content-between align-items-center mb-3"
+          <!-- Tables Section -->
+          <div class="data-table">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link active"
+                  id="students-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#students"
+                  type="button"
+                  role="tab"
+                  aria-controls="students"
+                  aria-selected="true"
                 >
-                  <h5>My Courses</h5>
-                  <a href="#" class="view-all">View all</a>
-                </div>
+                  Students
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link"
+                  id="coordinators-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#coordinators"
+                  type="button"
+                  role="tab"
+                  aria-controls="coordinators"
+                  aria-selected="false"
+                >
+                  Coordinators
+                </button>
+              </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+              <div
+                class="tab-pane fade show active"
+                id="students"
+                role="tabpanel"
+                aria-labelledby="students-tab"
+              >
                 <div class="table-responsive">
-                  <table class="table courses-table">
+                  <table class="table table-borderless table-hover">
                     <thead>
                       <tr>
-                        <th>Course Name</th>
-                        <th>Start Date</th>
-                        <th>Rating</th>
-                        <th>Level</th>
+                        <th>Student</th>
+                        <th>Email</th>
+                        <th>Course</th>
+                        <th>Progress</th>
+                        <th>Status</th>
+                        <th>Actions</th>
                       </tr>
                     </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <div class="d-flex align-items-center">
-                            <div class="course-icon">
-                              <i class="huge-icon">🎨</i>
-                            </div>
-                            <div>
-                              <h6 class="mb-0">3D Vector Illustration</h6>
-                              <small class="text-muted">24 Lessons</small>
-                            </div>
-                          </div>
-                        </td>
-                        <td>Mar 12</td>
-                        <td>4.8</td>
-                        <td>Beginner</td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div class="d-flex align-items-center">
-                            <div class="course-icon">
-                              <i class="huge-icon">🎭</i>
-                            </div>
-                            <div>
-                              <h6 class="mb-0">Digital Painting</h6>
-                              <small class="text-muted">18 Lessons</small>
-                            </div>
-                          </div>
-                        </td>
-                        <td>Mar 15</td>
-                        <td>4.9</td>
-                        <td>Intermediate</td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div class="d-flex align-items-center">
-                            <div class="course-icon">
-                              <i class="huge-icon">🎮</i>
-                            </div>
-                            <div>
-                              <h6 class="mb-0">3D Blend Objects</h6>
-                              <small class="text-muted">14 Lessons</small>
-                            </div>
-                          </div>
-                        </td>
-                        <td>Mar 18</td>
-                        <td>4.7</td>
-                        <td>Master</td>
-                      </tr>
-                    </tbody>
+                    <tbody id="studentsTableBody"></tbody>
                   </table>
                 </div>
               </div>
-            </div>
-
-            <!-- Right Section -->
-            <div class="col-md-4">
-              <!-- Calendar -->
-              <div class="calendar-container mb-4">
-                <div class="calendar-header">
-                  <h5 class="mb-0">March 2023</h5>
-                  <div class="calendar-nav">
-                    <button class="btn btn-sm btn-light">
-                      <i class="hgi-stroke hgi-arrow-left-01"></i>
-                    </button>
-                    <button class="btn btn-sm btn-light">
-                      <i class="hgi-stroke hgi-arrow-right-01"></i>
-                    </button>
-                  </div>
-                </div>
-                <div id="calendar"></div>
-              </div>
-
-              <!-- Upcoming Tasks -->
-              <div class="upcoming-tasks">
-                <div
-                  class="d-flex justify-content-between align-items-center mb-3"
-                >
-                  <h5 class="mb-0">Upcoming Tasks</h5>
-                  <a href="#" class="view-all">View all</a>
-                </div>
-                <div class="task-list">
-                  <div class="task-item">
-                    <div class="task-icon">
-                      <img src="assets/images/logo-mini.png" alt="Task" />
-                    </div>
-                    <div class="task-info">
-                      <h6>3d Design Icons Section</h6>
-                      <p class="text-muted">19th Mar 2023, Thursday</p>
-                    </div>
-                    <button class="btn btn-sm btn-light">
-                      <i class="hgi-stroke hgi-arrow-right-01"></i>
-                    </button>
-                  </div>
-                  <div class="task-item">
-                    <div class="task-icon">
-                      <img src="assets/images/logo-mini.png" alt="Task" />
-                    </div>
-                    <div class="task-info">
-                      <h6>UI Style Icons Section</h6>
-                      <p class="text-muted">23rd Mar 2023, Monday</p>
-                    </div>
-                    <button class="btn btn-sm btn-light">
-                      <i class="hgi-stroke hgi-arrow-right-01"></i>
-                    </button>
-                  </div>
+              <div
+                class="tab-pane fade"
+                id="coordinators"
+                role="tabpanel"
+                aria-labelledby="coordinators-tab"
+              >
+                <div class="table-responsive">
+                  <table class="table table-borderless table-hover">
+                    <thead>
+                      <tr>
+                        <th>Coordinator</th>
+                        <th>Email</th>
+                        <th>Department</th>
+                        <th>Courses</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="coordinatorsTableBody"></tbody>
+                  </table>
                 </div>
               </div>
             </div>
@@ -318,6 +276,12 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="assets/js/jquery-3.7.1.min.js"></script>
     <script src="assets/js/admin-dashboard.js"></script>
+    <script src="assets/js/sidebar.js"></script>
+    <script src="assets/js/calendar.js"></script>
+    <script src="assets/js/alert.js"></script>
   </body>
 </html>
