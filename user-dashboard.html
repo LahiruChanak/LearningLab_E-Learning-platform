@@ -18,10 +18,15 @@
       href="https://cdn.hugeicons.com/font/hgi-stroke-rounded.css"
     />
 
+    <!-- Calendar and ApexCharts Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
     <link rel="stylesheet" href="assets/css/user-dashboard.css" />
+    <link rel="stylesheet" href="assets/css/sidebar.css" />
     <link rel="stylesheet" href="assets/css/header.css" />
+    <link rel="stylesheet" href="assets/css/calendar.css" />
+    <link rel="stylesheet" href="assets/css/alert.css" />
   </head>
   <body>
     <div class="container-fluid p-4 pt-2 overflow-x-hidden">
@@ -29,11 +34,11 @@
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
           <div id="logo-container">
-            <div class="ms-1" id="logo">
+            <div class="ms-1">
               <img
-                src="assets/images/logo-mini.png"
-                alt=""
-                style="width: 70px"
+                src="assets/images/logo-full.png"
+                alt="logo image"
+                id="logo"
               />
             </div>
             <button class="toggle-btn rotate" id="toggleBtn">
@@ -331,6 +336,10 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <script src="assets/js/jquery-3.7.1.min.js"></script>
     <script src="assets/js/user-dashboard.js"></script>
+    <script src="assets/js/sidebar.js"></script>
+    <script src="assets/js/calendar.js"></script>
+    <script src="assets/js/alert.js"></script>
   </body>
 </html>
