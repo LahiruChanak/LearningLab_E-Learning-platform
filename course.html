@@ -17,7 +17,7 @@
       href="https://cdn.hugeicons.com/font/hgi-stroke-rounded.css"
     />
 
-    <link rel="stylesheet" href="assets/css/user-dashboard.css" />
+    <!-- <link rel="stylesheet" href="assets/css/user-dashboard.css" /> -->
     <link rel="stylesheet" href="assets/css/course.css" />
     <link rel="stylesheet" href="assets/css/header.css" />
     <link rel="stylesheet" href="assets/css/sidebar.css" />
@@ -27,7 +27,7 @@
     <div class="container-fluid p-4 pt-2 overflow-x-hidden">
       <div class="row">
         <!-- Sidebar -->
-        <div class="sidebar" id="sidebar">
+        <div class="sidebar sidebar-collapsed" id="sidebar">
           <div
             class="d-flex justify-content-center align-items-center mt-2 mb-3"
           >
@@ -104,11 +104,11 @@
         <div class="col-md-10 main-content">
           <!-- Header options -->
           <div
-            class="d-flex justify-content-between align-items-center px-md-5 mb-4"
+            class="d-flex justify-content-between align-items-center px-md-4 mb-4"
           >
-            <div class="">
-              <h3 class="mb-2">My Courses</h3>
-              <p class="text-muted mb-0">
+            <div>
+              <h3 class="mb-1">My Courses</h3>
+              <p class="text-muted mb-0 small">
                 Welcome back,
                 <span id="name" class="fw-bold">Esther Howard</span> Explore our
                 courses and enhance your skills today.
@@ -149,7 +149,7 @@
 
           <div class="row">
             <!-- Filter Section -->
-            <div class="filter-section mb-4 mx-2">
+            <div class="filter-section-container mb-4 mx-2">
               <div class="d-flex align-items-center w-100 flex-wrap gap-3">
                 <!-- Search Bar -->
                 <div class="search-bar">
@@ -163,12 +163,13 @@
                 </div>
 
                 <!-- Sorting Dropdowns -->
-                <div class="dropdown">
+                <div class="dropdown-center">
                   <button
                     class="btn btn-light dropdown-toggle"
                     type="button"
                     id="sortDropdown"
                     data-bs-toggle="dropdown"
+                    aria-expanded="false"
                   >
                     <i class="hgi-stroke hgi-sorting-01 align-middle me-2"> </i>
                     Sort by
@@ -216,103 +217,191 @@
                 </div>
 
                 <!-- Filter Dropdown -->
-                <div class="dropdown">
+                <div class="dropdown-center">
                   <button
                     class="btn btn-light dropdown-toggle"
                     type="button"
                     id="filterDropdown"
                     data-bs-toggle="dropdown"
+                    aria-expanded="false"
                   >
                     <i class="hgi-stroke hgi-filter align-middle me-2"></i>
                     Filter
                   </button>
-                  <ul class="dropdown-menu p-3 mt-3" style="width: 230px">
-                    <li class="mb-3 border-bottom pb-3">
-                      <label class="form-label">Course Level</label>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          value="beginner"
-                          id="levelBeginner"
-                        />
-                        <label
-                          class="form-check-label ms-2"
-                          for="levelBeginner"
-                        >
-                          Beginner
-                        </label>
+                  <ul class="dropdown-menu mt-3">
+                    <div class="row filter-sections">
+                      <!-- Course Level Section -->
+                      <div class="filter-section mb-3">
+                        <h6 class="filter-heading mb-2">Course Level</h6>
+                        <div class="filter-options">
+                          <div class="form-check mb-2">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              value="beginner"
+                              id="levelBeginner"
+                            />
+                            <label class="form-check-label" for="levelBeginner"
+                              >Beginner</label
+                            >
+                          </div>
+                          <div class="form-check mb-2">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              value="intermediate"
+                              id="levelIntermediate"
+                            />
+                            <label
+                              class="form-check-label"
+                              for="levelIntermediate"
+                              >Intermediate</label
+                            >
+                          </div>
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              value="advanced"
+                              id="levelAdvanced"
+                            />
+                            <label class="form-check-label" for="levelAdvanced"
+                              >Advanced</label
+                            >
+                          </div>
+                        </div>
                       </div>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          value="intermediate"
-                          id="levelIntermediate"
-                        />
-                        <label
-                          class="form-check-label ms-2"
-                          for="levelIntermediate"
-                        >
-                          Intermediate
-                        </label>
+
+                      <!-- Duration Section -->
+                      <div class="filter-section mb-3">
+                        <h6 class="filter-heading mb-2">Duration</h6>
+                        <div class="filter-options">
+                          <div class="form-check mb-2">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              value="0-2"
+                              id="duration1"
+                            />
+                            <label class="form-check-label" for="duration1"
+                              >0-2 Hours</label
+                            >
+                          </div>
+                          <div class="form-check mb-2">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              value="2-5"
+                              id="duration2"
+                            />
+                            <label class="form-check-label" for="duration2"
+                              >2-5 Hours</label
+                            >
+                          </div>
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              value="5+"
+                              id="duration3"
+                            />
+                            <label class="form-check-label" for="duration3"
+                              >5+ Hours</label
+                            >
+                          </div>
+                        </div>
                       </div>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          value="advanced"
-                          id="levelAdvanced"
-                        />
-                        <label
-                          class="form-check-label ms-2"
-                          for="levelAdvanced"
-                        >
-                          Advanced
-                        </label>
+
+                      <!-- Course Type Section -->
+                      <div class="filter-section mb-3">
+                        <h6 class="filter-heading mb-2">Course Type</h6>
+                        <div class="filter-options">
+                          <div class="form-check mb-2">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              value="free"
+                              id="typeFree"
+                            />
+                            <label class="form-check-label" for="typeFree"
+                              >Free</label
+                            >
+                          </div>
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              value="paid"
+                              id="typePaid"
+                            />
+                            <label class="form-check-label" for="typePaid"
+                              >Premium</label
+                            >
+                          </div>
+                        </div>
                       </div>
-                    </li>
-                    <li class="mb-3">
-                      <label class="form-label">Duration</label>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          value="0-2"
-                          id="duration1"
-                        />
-                        <label class="form-check-label ms-2" for="duration1">
-                          0-2 Hours
-                        </label>
+
+                      <!-- Rating Section -->
+                      <div class="filter-section mb-3">
+                        <h6 class="filter-heading mb-2">Rating</h6>
+                        <div class="filter-options">
+                          <div class="form-check mb-2">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              value="4-5"
+                              id="rating4-5"
+                            />
+                            <label class="form-check-label" for="rating4-5"
+                              >4-5 Stars</label
+                            >
+                          </div>
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              value="3-4"
+                              id="rating3-4"
+                            />
+                            <label class="form-check-label" for="rating3-4"
+                              >3-4 Stars</label
+                            >
+                          </div>
+                        </div>
                       </div>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          value="2-5"
-                          id="duration2"
-                        />
-                        <label class="form-check-label ms-2" for="duration2">
-                          2-5 Hours
-                        </label>
+
+                      <!-- Instructor Section -->
+                      <div class="filter-section mb-3" id="instructor">
+                        <h6 class="filter-heading mb-3">Instructor</h6>
+                        <div class="filter-options">
+                          <select class="form-select">
+                            <option selected>Select Instructor</option>
+                            <option value="instructor1">Instructor 1</option>
+                            <option value="instructor2">Instructor 2</option>
+                            <option value="instructor3">Instructor 3</option>
+                          </select>
+                        </div>
                       </div>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          value="5+"
-                          id="duration3"
-                        />
-                        <label class="form-check-label ms-2" for="duration3">
-                          5+ Hours
-                        </label>
+
+                      <!-- Course Category Section -->
+                      <div class="filter-section mb-3" id="courseCategory">
+                        <h6 class="filter-heading mb-3">Course Category</h6>
+                        <div class="filter-options">
+                          <select class="form-select">
+                            <option selected>Select Category</option>
+                            <option value="development">Development</option>
+                            <option value="design">Design</option>
+                            <option value="business">Business</option>
+                            <option value="marketing">Marketing</option>
+                          </select>
+                        </div>
                       </div>
-                    </li>
-                    <li>
-                      <button class="btn btn-primary w-100">
-                        Apply Filters
-                      </button>
-                    </li>
+                    </div>
+
+                    <!-- Apply Button -->
+                    <div class="d-grid gap-2 mt-3">
+                      <button class="btn btn-primary">Apply Filters</button>
+                    </div>
                   </ul>
                 </div>
 
@@ -340,7 +429,7 @@
             </div>
 
             <!-- Course Cards -->
-            <div class="col-12">
+            <div class="col-12 overflow-y-auto">
               <div class="row g-4">
                 <!-- Course Card 1 -->
                 <div class="col-md-6">

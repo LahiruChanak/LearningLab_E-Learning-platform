@@ -21,6 +21,12 @@ body {
   background-color: #f8f9fa;
 }
 
+.main-content {
+  flex: 1;
+  padding: 20px;
+  transition: all 0.4s ease;
+}
+
 .course-card {
   background-color: var(--secondary-color);
   border-radius: 16px;
@@ -99,7 +105,7 @@ body {
   background-color: #5a4dba;
 }
 
-.filter-section {
+.filter-section-container {
   display: flex !important;
   flex-direction: column;
   justify-content: center;
@@ -107,7 +113,7 @@ body {
   background-color: #fff;
   border-radius: 16px;
   width: 100%;
-  padding: 1.25rem;
+  padding: 1.25rem 1.25rem 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
@@ -169,9 +175,6 @@ body {
   color: #fff;
 }
 
-.active-filters {
-}
-
 .course-card {
   background: #fff;
   border-radius: 12px;
@@ -213,7 +216,7 @@ body {
   font-weight: 500;
   padding: 0.5rem 1rem;
   border: 1px solid #e5e7eb;
-  margin: 1rem 0.5rem 0 0 !important;
+  margin: 0.75rem 0.5rem 0 0 !important;
 }
 
 .badge i {
@@ -226,19 +229,35 @@ body {
   border: none;
   box-shadow: 0 0px 10px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
-  position: relative;
+  padding: 20px;
+}
+
+#filterDropdown + .dropdown-menu {
+  width: 320px;
 }
 
 .dropdown-menu::before {
   content: "";
   position: absolute;
   top: -15px;
-  left: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 0;
   height: 0;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
   border-bottom: 10px solid var(--primary-color);
+}
+
+.filter-sections {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.filter-section {
+  margin-bottom: 1rem;
+  width: fit-content;
 }
 
 .dropdown-item {
@@ -252,8 +271,21 @@ body {
   font-size: 1.1rem;
 }
 
+.form-check-input,
+.form-select {
+  box-shadow: none !important;
+}
+
+.form-select {
+  font-size: 0.875rem;
+}
+
 .form-check-input:checked {
   background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.form-select:focus {
   border-color: var(--primary-color);
 }
 
