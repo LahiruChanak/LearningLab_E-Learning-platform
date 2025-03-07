@@ -1,6 +1,19 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
 :root {
   --primary-color: #8b72ee;
   --secondary-color: #e9e3ff;
+}
+
+body {
+  font-family: "Roboto", sans-serif !important;
+}
+
+#logo {
+  height: 45px;
+  width: auto;
+  filter: brightness(0) saturate(100%) invert(50%) sepia(23%) saturate(1405%)
+    hue-rotate(211deg) brightness(96%) contrast(94%);
 }
 
 .search-box {
@@ -9,16 +22,20 @@
   background: #fff;
   border: none;
   border-radius: 15px;
-  padding: 5px 10px;
+  padding: 5px 10px 5px 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .search-box input {
   border: none;
-  background: none;
   outline: none;
-  padding-left: 5px;
+  background: none;
+  border-radius: 8px;
+  padding-left: 10px;
   color: #666;
+}
+
+.search-box input:focus {
 }
 
 .search-btn {
@@ -38,6 +55,7 @@
 .notification-icon {
   padding: 5px 10px;
   border-radius: 10px;
+  background-color: #fff;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   cursor: pointer;
 }
