@@ -535,10 +535,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const expDate = document.getElementById("newExpDate").value;
     const cvvCode = document.getElementById("newCvvCode").value;
 
-    // if (!cardNumber || !cardName || !expDate || !cvvCode) {
-    //   alert("Please fill in all card details");
-    //   return;
-    // }
+    if (!cardNumber || !cardName || !expDate || !cvvCode) {
+      showAlert("warning", "Please fill in all card details.");
+      return;
+    }
 
     const newCard = document.createElement("div");
     newCard.className = "flip-card d-flex flex-row align-items-center";
