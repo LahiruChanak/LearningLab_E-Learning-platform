@@ -13,10 +13,50 @@ document.addEventListener("DOMContentLoaded", function () {
     durations: [],
     sortType: "date-new",
     view: "grid",
+    rating: 0,
   };
 
   // Course Data (Sample data - would typically come from a backend API)
   let courses = [
+    {
+      id: 1,
+      name: "Free Sketch from A to Z: Become an UX UI Designer",
+      sales: 150,
+      comments: 15,
+      likes: 242,
+      level: "beginner",
+      duration: "2-5",
+      date: "2024-03-01",
+      image: "assets/images/courses/sketch.jpg",
+      category: "UI Design",
+      rating: 4.5,
+    },
+    {
+      id: 2,
+      name: "Android UI-UX Design And Material Design Clone",
+      sales: 150,
+      comments: 15,
+      likes: 242,
+      level: "intermediate",
+      duration: "5+",
+      date: "2024-02-28",
+      image: "assets/images/courses/android.jpg",
+      category: "UI Design",
+      rating: 3.8,
+    },
+    {
+      id: 3,
+      name: "Photography for Beginner - Complete Guide 2021",
+      sales: 150,
+      comments: 15,
+      likes: 242,
+      level: "beginner",
+      duration: "0-2",
+      date: "2024-02-27",
+      image: "assets/images/courses/photography.jpg",
+      category: "Photography",
+      rating: 5.0,
+    },
     {
       id: 1,
       name: "Free Sketch from A to Z: Become an UX UI Designer",
@@ -54,6 +94,44 @@ document.addEventListener("DOMContentLoaded", function () {
       category: "Photography",
     },
   ];
+
+  // Star Rating Event Listeners
+  const stars = $(".stars i.hgi-star");
+
+  // Add hover effects
+  stars.hover(
+    function () {
+      const hoverRating = $(this).data("rating");
+      stars.removeClass("filled");
+      $(this).prevAll().addBack().addClass("filled");
+    },
+    function () {
+      stars.removeClass("filled");
+      if (currentState.rating > 0) {
+        stars.slice(0, currentState.rating).addClass("filled");
+      }
+    }
+  );
+
+  // Handle click events
+  stars.on("click", function () {
+    const rating = parseInt($(this).data("rating"));
+    currentState.rating = currentState.rating === rating ? 0 : rating;
+    stars.removeClass("filled");
+    if (currentState.rating > 0) {
+      stars.slice(0, currentState.rating).addClass("filled");
+    }
+    updateUI();
+  });
+
+  // Add CSS for star rating
+  $("<style>")
+    .text(
+      `.stars i.filled { color: #ffc107; }
+    .stars i.hgi-star:hover { color: #ffd700; }
+    `
+    )
+    .appendTo("head");
 
   // Event Listeners
   courseSearch.addEventListener(
@@ -120,7 +198,10 @@ document.addEventListener("DOMContentLoaded", function () {
       const matchesDuration =
         currentState.durations.length === 0 ||
         currentState.durations.includes(course.duration);
-      return matchesSearch && matchesLevel && matchesDuration;
+      const matchesRating =
+        currentState.rating === 0 ||
+        Math.floor(course.rating) >= currentState.rating;
+      return matchesSearch && matchesLevel && matchesDuration && matchesRating;
     });
 
     // Sort courses
@@ -177,6 +258,23 @@ document.addEventListener("DOMContentLoaded", function () {
         updateUI();
       });
     });
+
+    // Rating filter
+    if (currentState.rating > 0) {
+      addFilterChip(`Rating: ${currentState.rating}+ stars`, () => {
+        currentState.rating = 0;
+        updateStarsDisplay(0, false);
+        updateUI();
+      });
+      addFilterChip(`Duration: ${duration} hours`, () => {
+        const checkbox = document.querySelector(`input[value="${duration}"]`);
+        if (checkbox) checkbox.checked = false;
+        currentState.durations = currentState.durations.filter(
+          (d) => d !== duration
+        );
+        updateUI();
+      });
+    }
   }
 
   function addFilterChip(text, removeCallback) {
@@ -274,6 +372,28 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   }
 
-  // Initial render
+  const $applyFilterBtn = $("#applyFilters");
+  const $clearFilterBtn = $("#clearFilters");
+
+  $applyFilterBtn.on("click", function () {
+    const $dropdownToggle = $("#filterDropdown");
+    bootstrap.Dropdown.getInstance($dropdownToggle[0]).hide();
+    updateUI();
+  });
+
+  $clearFilterBtn.on("click", function () {
+    $("input[type='checkbox']").prop("checked", false);
+
+    currentState.rating = 0;
+    stars.removeClass("filled");
+
+    $("select").prop("selectedIndex", 0);
+
+    currentState.levels = [];
+    currentState.durations = [];
+
+    updateUI();
+  });
+
   updateUI();
 });

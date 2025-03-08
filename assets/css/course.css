@@ -7,6 +7,7 @@
 
 :root {
   --primary-color: #6c5dd3;
+  --primary-hover-color: #5a4dba;
   --secondary-color: #f1f4f8;
 }
 
@@ -102,7 +103,7 @@ body {
 }
 
 .btn-primary:hover {
-  background-color: #5a4dba;
+  background-color: var(--primary-hover-color) !important;
 }
 
 .filter-section-container {
@@ -233,7 +234,7 @@ body {
 }
 
 #filterDropdown + .dropdown-menu {
-  width: 320px;
+  width: 380px;
 }
 
 .dropdown-menu::before {
@@ -251,13 +252,8 @@ body {
 
 .filter-sections {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
-}
-
-.filter-section {
-  margin-bottom: 1rem;
-  width: fit-content;
 }
 
 .dropdown-item {
@@ -278,6 +274,8 @@ body {
 
 .form-select {
   font-size: 0.875rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
 }
 
 .form-check-input:checked {
@@ -306,4 +304,84 @@ body {
 
 .highlight {
   background-color: #ffc322;
+}
+
+/* //////////////////// */
+
+.filter-section {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  width: 100%;
+}
+
+.filter-heading {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.filter-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.filter-options .form-check {
+  margin-bottom: 0;
+}
+
+.filter-options .form-check-label {
+  font-size: 0.875rem;
+  color: #555;
+}
+
+.rating-input.stars {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.rating-input.stars i {
+  cursor: pointer;
+  color: #d1d5db;
+  transition: color 0.2s ease;
+}
+
+.rating-input.stars i:hover,
+.rating-input.stars i.active {
+  color: #ffc322;
+}
+
+.filter-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.filter-actions .btn {
+  font-size: 0.875rem;
+  padding: 0.375rem 0.75rem;
+}
+
+.filter-actions .btn-primary {
+  flex: 3;
+}
+
+.filter-actions .btn-outline-secondary {
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .filter-dropdown-menu {
+    width: 95vw;
+  }
+
+  .filter-container {
+    flex-direction: column;
+  }
+
+  .filter-column {
+    width: 100%;
+  }
 }
