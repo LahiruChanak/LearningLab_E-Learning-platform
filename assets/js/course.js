@@ -16,7 +16,9 @@ document.addEventListener("DOMContentLoaded", function () {
     rating: 0,
     instructors: [],
     categories: [],
-    contentType: "all", // can be 'all', 'free', or 'premium'
+    contentType: "all",
+    minPrice: null,
+    maxPrice: null,
   };
 
   // Course Data (Sample data - would typically come from a backend API)
@@ -212,6 +214,28 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  // Price range inputs
+  const minPriceInput = document.getElementById("minPrice");
+  const maxPriceInput = document.getElementById("maxPrice");
+
+  minPriceInput.addEventListener(
+    "input",
+    debounce(function (e) {
+      currentState.minPrice =
+        e.target.value === "" ? null : parseFloat(e.target.value);
+      updateUI();
+    }, 300)
+  );
+
+  maxPriceInput.addEventListener(
+    "input",
+    debounce(function (e) {
+      currentState.maxPrice =
+        e.target.value === "" ? null : parseFloat(e.target.value);
+      updateUI();
+    }, 300)
+  );
+
   function filterAndSortCourses() {
     // Filter courses
     let filtered = courses.filter((course) => {
@@ -237,6 +261,11 @@ document.addEventListener("DOMContentLoaded", function () {
         currentState.contentType === "all" ||
         (currentState.contentType === "free" && course.price === 0) ||
         (currentState.contentType === "premium" && course.price > 0);
+      const matchesPrice =
+        (currentState.minPrice === null ||
+          course.price >= currentState.minPrice) &&
+        (currentState.maxPrice === null ||
+          course.price <= currentState.maxPrice);
 
       return (
         matchesSearch &&
@@ -245,7 +274,8 @@ document.addEventListener("DOMContentLoaded", function () {
         matchesRating &&
         matchesInstructor &&
         matchesCategory &&
-        matchesContentType
+        matchesContentType &&
+        matchesPrice
       );
     });
 
@@ -345,6 +375,21 @@ document.addEventListener("DOMContentLoaded", function () {
           currentState.contentType = "all";
           document.getElementById("typeFree").checked = false;
           document.getElementById("typePaid").checked = false;
+          updateUI();
+        }
+      );
+
+    // Price range filter
+    currentState.minPrice !== null &&
+      currentState.maxPrice !== null &&
+      addFilterChip(
+        `Price: (${currentState.minPrice} - ${currentState.maxPrice} $)`,
+        () => {
+          currentState.minPrice = null;
+          currentState.maxPrice = null;
+          minPriceInput.value = "";
+          maxPriceInput.value = "";
+
           updateUI();
         }
       );
