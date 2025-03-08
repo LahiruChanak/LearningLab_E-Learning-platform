@@ -14,6 +14,9 @@ document.addEventListener("DOMContentLoaded", function () {
     sortType: "date-new",
     view: "grid",
     rating: 0,
+    instructors: [],
+    categories: [],
+    contentType: "all", // can be 'all', 'free', or 'premium'
   };
 
   // Course Data (Sample data - would typically come from a backend API)
@@ -30,6 +33,8 @@ document.addEventListener("DOMContentLoaded", function () {
       image: "assets/images/courses/sketch.jpg",
       category: "UI Design",
       rating: 4.5,
+      instructor: "John Doe",
+      price: 0,
     },
     {
       id: 2,
@@ -43,6 +48,8 @@ document.addEventListener("DOMContentLoaded", function () {
       image: "assets/images/courses/android.jpg",
       category: "UI Design",
       rating: 3.8,
+      instructor: "Jane Smith",
+      price: 19.99,
     },
     {
       id: 3,
@@ -56,42 +63,53 @@ document.addEventListener("DOMContentLoaded", function () {
       image: "assets/images/courses/photography.jpg",
       category: "Photography",
       rating: 5.0,
+      instructor: "John Doe",
+      price: 0,
     },
     {
-      id: 1,
-      name: "Free Sketch from A to Z: Become an UX UI Designer",
+      id: 4,
+      name: "Complete Python BootCamp: Go from zero to hero in Python",
       sales: 150,
       comments: 15,
       likes: 242,
       level: "beginner",
       duration: "2-5",
-      date: "2024-03-01",
-      image: "assets/images/courses/sketch.jpg",
-      category: "UI Design",
+      date: "2024-02-26",
+      image: "assets/images/courses/python.jpg",
+      category: "Development",
+      rating: 4.3,
+      instructor: "Jane Smith",
+      price: 19.99,
     },
     {
-      id: 2,
-      name: "Android UI-UX Design And Material Design Clone",
-      sales: 150,
-      comments: 15,
-      likes: 242,
-      level: "intermediate",
-      duration: "5+",
-      date: "2024-02-28",
-      image: "assets/images/courses/android.jpg",
-      category: "UI Design",
-    },
-    {
-      id: 3,
-      name: "Photography for Beginner - Complete Guide 2021",
+      id: 5,
+      name: "Complete Web Development BootCamp: Go from zero to hero in Web",
       sales: 150,
       comments: 15,
       likes: 242,
       level: "beginner",
-      duration: "0-2",
-      date: "2024-02-27",
-      image: "assets/images/courses/photography.jpg",
-      category: "Photography",
+      duration: "2-5",
+      date: "2024-02-25",
+      image: "assets/images/courses/web.jpg",
+      category: "Development",
+      rating: 2.0,
+      instructor: "Lisa Johnson",
+      price: 0,
+    },
+    {
+      id: 6,
+      name: "Complete Web Development BootCamp: Go from zero to hero in Web",
+      sales: 150,
+      comments: 15,
+      likes: 242,
+      level: "beginner",
+      duration: "2-5",
+      date: "2024-02-24",
+      image: "assets/images/courses/web.jpg",
+      category: "Marketing",
+      rating: 1.0,
+      instructor: "Lisa Johnson",
+      price: 19.99,
     },
   ];
 
@@ -152,10 +170,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Filter checkboxes
   document
-    .querySelectorAll('input[id^="level"], input[id^="duration"]')
+    .querySelectorAll(
+      'input[id^="level"], input[id^="duration"], input[id^="instructor"], input[id^="category"]'
+    )
     .forEach((checkbox) => {
       checkbox.addEventListener("change", function () {
-        const type = this.id.startsWith("level") ? "levels" : "durations";
+        const type = this.id.startsWith("level")
+          ? "levels"
+          : this.id.startsWith("duration")
+          ? "durations"
+          : this.id.startsWith("instructor")
+          ? "instructors"
+          : "categories";
         if (this.checked) {
           currentState[type] = [...currentState[type], this.value];
         } else {
@@ -201,7 +227,26 @@ document.addEventListener("DOMContentLoaded", function () {
       const matchesRating =
         currentState.rating === 0 ||
         Math.floor(course.rating) >= currentState.rating;
-      return matchesSearch && matchesLevel && matchesDuration && matchesRating;
+      const matchesInstructor =
+        currentState.instructors.length === 0 ||
+        currentState.instructors.includes(course.instructor);
+      const matchesCategory =
+        currentState.categories.length === 0 ||
+        currentState.categories.includes(course.category);
+      const matchesContentType =
+        currentState.contentType === "all" ||
+        (currentState.contentType === "free" && course.price === 0) ||
+        (currentState.contentType === "premium" && course.price > 0);
+
+      return (
+        matchesSearch &&
+        matchesLevel &&
+        matchesDuration &&
+        matchesRating &&
+        matchesInstructor &&
+        matchesCategory &&
+        matchesContentType
+      );
     });
 
     // Sort courses
@@ -263,15 +308,42 @@ document.addEventListener("DOMContentLoaded", function () {
     if (currentState.rating > 0) {
       addFilterChip(`Rating: ${currentState.rating}+ stars`, () => {
         currentState.rating = 0;
-        updateStarsDisplay(0, false);
+        updateStarsDisplay(0);
         updateUI();
       });
-      addFilterChip(`Duration: ${duration} hours`, () => {
-        const checkbox = document.querySelector(`input[value="${duration}"]`);
+    }
+
+    // Instructor filters
+    currentState.instructors.forEach((instructor) => {
+      addFilterChip(`Instructor: ${instructor}`, () => {
+        const checkbox = document.querySelector(`input[value="${instructor}"]`);
         if (checkbox) checkbox.checked = false;
-        currentState.durations = currentState.durations.filter(
-          (d) => d !== duration
+        currentState.instructors = currentState.instructors.filter(
+          (i) => i !== instructor
         );
+        updateUI();
+      });
+    });
+
+    // Category filters
+    currentState.categories.forEach((category) => {
+      addFilterChip(`Category: ${category}`, () => {
+        const checkbox = document.querySelector(`input[value="${category}"]`);
+        if (checkbox) checkbox.checked = false;
+        currentState.categories = currentState.categories.filter(
+          (c) => c !== category
+        );
+        updateUI();
+      });
+    });
+
+    // Content Type filter
+    if (currentState.contentType !== "all") {
+      addFilterChip(`Content Type: ${currentState.contentType}`, () => {
+        currentState.contentType = "all";
+        document.querySelector(
+          'input[name="contentType"][value="all"]'
+        ).checked = true;
         updateUI();
       });
     }
