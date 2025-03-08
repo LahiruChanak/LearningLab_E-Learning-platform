@@ -233,7 +233,7 @@ body {
   padding: 20px;
 }
 
-#filterDropdown + .dropdown-menu {
+.dropdown-menu.filter-dropdown-menu {
   width: 380px;
 }
 
@@ -272,7 +272,8 @@ body {
   box-shadow: none !important;
 }
 
-.form-select {
+.form-select,
+.form-control {
   font-size: 0.875rem;
   padding: 0.375rem 0.75rem;
   border-radius: 6px;
@@ -283,7 +284,9 @@ body {
   border-color: var(--primary-color);
 }
 
-.form-select:focus {
+.form-select:focus,
+.form-control:focus {
+  box-shadow: none;
   border-color: var(--primary-color);
 }
 
@@ -305,8 +308,6 @@ body {
 .highlight {
   background-color: #ffc322;
 }
-
-/* //////////////////// */
 
 .filter-section {
   margin-bottom: 0.75rem;
@@ -334,6 +335,10 @@ body {
 .filter-options .form-check-label {
   font-size: 0.875rem;
   color: #555;
+}
+
+.filter-options input[type="number"] {
+  
 }
 
 .rating-input.stars {

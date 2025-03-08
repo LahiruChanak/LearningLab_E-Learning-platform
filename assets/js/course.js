@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
       category: "Development",
       rating: 2.0,
       instructor: "Lisa Johnson",
-      price: 0,
+      price: 19.99,
     },
     {
       id: 6,
@@ -308,7 +308,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (currentState.rating > 0) {
       addFilterChip(`Rating: ${currentState.rating}+ stars`, () => {
         currentState.rating = 0;
-        updateStarsDisplay(0);
+        stars.removeClass("filled");
         updateUI();
       });
     }
@@ -337,16 +337,46 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
 
-    // Content Type filter
-    if (currentState.contentType !== "all") {
-      addFilterChip(`Content Type: ${currentState.contentType}`, () => {
-        currentState.contentType = "all";
-        document.querySelector(
-          'input[name="contentType"][value="all"]'
-        ).checked = true;
+    // Price filter
+    currentState.contentType !== "all" &&
+      addFilterChip(
+        `Price: ${currentState.contentType === "free" ? "Free" : "Premium"}`,
+        () => {
+          currentState.contentType = "all";
+          document.getElementById("typeFree").checked = false;
+          document.getElementById("typePaid").checked = false;
+          updateUI();
+        }
+      );
+
+    // Course Type filter
+    document.querySelectorAll("#typeFree, #typePaid").forEach((checkbox) => {
+      checkbox.addEventListener("change", function () {
+        if (this.id === "typeFree" && this.checked) {
+          currentState.contentType = "free";
+          document.getElementById("typePaid").checked = false;
+        } else if (this.id === "typePaid" && this.checked) {
+          currentState.contentType = "premium";
+          document.getElementById("typeFree").checked = false;
+        } else {
+          currentState.contentType = "all";
+        }
         updateUI();
       });
-    }
+    });
+
+    $clearFilterBtn.on("click", function () {
+      $('input[type="checkbox"]').prop("checked", false);
+      currentState.rating = 0;
+      stars.removeClass("filled");
+      $("select").prop("selectedIndex", 0);
+      currentState.levels = [];
+      currentState.durations = [];
+      currentState.contentType = "all";
+      currentState.instructors = [];
+      currentState.categories = [];
+      updateUI();
+    });
   }
 
   function addFilterChip(text, removeCallback) {
