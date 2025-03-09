@@ -585,7 +585,7 @@ document.addEventListener("DOMContentLoaded", () => {
                               </div>
                             </div>
                 <button class="remove-card-btn" style="display: none;">
-                    <i class="hgi-stroke hgi-cancel-01 fw-bold small"></i>
+                    <i class="hgi hgi-stroke hgi-cancel-01 fw-bold small"></i>
                 </button>
             </div>
             <div class="flip-card-back">
@@ -668,6 +668,17 @@ document.addEventListener("DOMContentLoaded", () => {
     newCardInner.style.transform = isFlipped
       ? "rotateY(0deg)"
       : "rotateY(180deg)";
+  });
+
+  // Handle expiry date input formatting
+  document.getElementById("newExpDate").addEventListener("input", function (e) {
+    let value = e.target.value.replace(/\D/g, "");
+    if (value.length >= 2) {
+      const month = parseInt(value.substring(0, 2));
+      if (month > 12) value = "12" + value.substring(2);
+      value = value.substring(0, 2) + "/" + value.substring(2);
+    }
+    e.target.value = value.substring(0, 5);
   });
 });
 

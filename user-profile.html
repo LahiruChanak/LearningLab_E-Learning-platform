@@ -106,8 +106,9 @@
             <h3 class="mb-1">My Profile</h3>
             <p class="text-muted mb-0 small">
               Welcome back,
-              <span id="name" class="fw-bold">Esther Howard</span> Manage your
-              profile settings and preferences.
+              <span id="name" class="fw-bold">Esther Howard</span> Your profile
+              is a reflection of your journey. Keep building your story - it's
+              inspiring!
             </p>
           </div>
 
@@ -121,7 +122,12 @@
             </div>
             <!-- Notification icon -->
             <div class="position-relative me-3 notification-icon">
-              <a href="#notifications" class="text-decoration-none text-dark">
+              <a
+                href="#"
+                class="text-decoration-none text-dark"
+                data-bs-toggle="modal"
+                data-bs-target="#notificationsModal"
+              >
                 <i class="hgi-stroke hgi-notification-02 fs-5"></i>
               </a>
             </div>
@@ -475,94 +481,153 @@
           <!-- Notifications Page -->
           <div id="notifications" class="page">
             <h2 class="page-title">Notifications</h2>
-            <div class="section">
-              <div class="d-flex justify-content-between align-items-center">
-                <p class="mb-0">
-                  <span class="me-2 fs-5">🔔</span> Your notifications will
-                  appear here.
-                </p>
-                <button
-                  class="text-primary border-0 bg-transparent"
-                  id="markAllRead"
-                >
-                  Read All
-                </button>
+            <div class="notification-settings">
+              <!-- Course Notifications -->
+              <div class="notification-category">
+                <h3>
+                  <i class="hgi-stroke hgi-course fs-5 me-2"></i>Course
+                  Notifications
+                </h3>
+                <div class="notification-option">
+                  <div class="notification-option-info">
+                    <h4>Assignment Deadlines</h4>
+                    <p>Get notified about upcoming assignment due dates</p>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="assignmentNotif"
+                      checked
+                    />
+                  </div>
+                </div>
+                <div class="notification-option">
+                  <div class="notification-option-info">
+                    <h4>Course Updates</h4>
+                    <p>
+                      Notifications for new course materials and announcements
+                    </p>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="courseUpdateNotif"
+                      checked
+                    />
+                  </div>
+                </div>
               </div>
-              <div class="notification-list" id="notificationList">
-                <div class="notification-item">
-                  <div class="notification-content">
-                    <p>Your profile has been updated successfully.</p>
-                    <small>2 hours ago</small>
+
+              <!-- Achievement Notifications -->
+              <div class="notification-category">
+                <h3>
+                  <i class="hgi-stroke hgi-medal-01 fs-5 me-2"></i>Achievement
+                  Notifications
+                </h3>
+                <div class="notification-option">
+                  <div class="notification-option-info">
+                    <h4>Badges & Certificates</h4>
+                    <p>Get notified when you earn new badges or certificates</p>
                   </div>
-                  <button
-                    class="btn btn-delete"
-                    data-id="1"
-                    data-bs-toggle="tooltip"
-                    data-bs-title="Remove"
-                    data-bs-placement="bottom"
-                  >
-                    <i class="hgi-stroke hgi-delete-02"></i>
-                  </button>
+                  <div class="form-check form-switch">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="achievementNotif"
+                      checked
+                    />
+                  </div>
                 </div>
-                <div class="notification-item">
-                  <div class="notification-content">
-                    <p>New course available: "Introduction to Python".</p>
-                    <small>1 day ago</small>
+                <div class="notification-option">
+                  <div class="notification-option-info">
+                    <h4>Progress Milestones</h4>
+                    <p>Notifications for reaching course progress milestones</p>
                   </div>
-                  <button
-                    class="btn btn-delete"
-                    data-id="2"
-                    data-bs-toggle="tooltip"
-                    data-bs-title="Remove"
-                    data-bs-placement="bottom"
-                  >
-                    <i class="hgi-stroke hgi-delete-02"></i>
-                  </button>
+                  <div class="form-check form-switch">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="progressNotif"
+                    />
+                  </div>
                 </div>
-                <div class="notification-item">
-                  <div class="notification-content">
-                    <p>You earned a new achievement: "Quick Learner".</p>
-                    <small>3 days ago</small>
+              </div>
+
+              <!-- Communication Notifications -->
+              <div class="notification-category">
+                <h3>
+                  <i class="hgi-stroke hgi-chatting-01 fs-5 me-2"></i
+                  >Communication Notifications
+                </h3>
+                <div class="notification-option">
+                  <div class="notification-option-info">
+                    <h4>Messages</h4>
+                    <p>
+                      Get notified about new messages from instructors and peers
+                    </p>
                   </div>
-                  <button
-                    class="btn btn-delete"
-                    data-id="3"
-                    data-bs-toggle="tooltip"
-                    data-bs-title="Remove"
-                    data-bs-placement="bottom"
-                  >
-                    <i class="hgi-stroke hgi-delete-02"></i>
-                  </button>
+                  <div class="form-check form-switch">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="messageNotif"
+                      checked
+                    />
+                  </div>
                 </div>
-                <div class="notification-item">
-                  <div class="notification-content">
-                    <p>Your subscription renewal is due in 5 days.</p>
-                    <small>5 days ago</small>
+                <div class="notification-option">
+                  <div class="notification-option-info">
+                    <h4>Discussion Replies</h4>
+                    <p>
+                      Notifications when someone replies to your discussions
+                    </p>
                   </div>
-                  <button
-                    class="btn btn-delete"
-                    data-id="4"
-                    data-bs-toggle="tooltip"
-                    data-bs-title="Remove"
-                    data-bs-placement="bottom"
-                  >
-                    <i class="hgi-stroke hgi-delete-02"></i>
-                  </button>
+                  <div class="form-check form-switch">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="discussionNotif"
+                      checked
+                    />
+                  </div>
                 </div>
-                <div class="notification-item">
-                  <div class="notification-content">
-                    <p>Course "Advanced JavaScript" has new content added.</p>
-                    <small>1 week ago</small>
+              </div>
+
+              <!-- System Notifications -->
+              <div class="notification-category">
+                <h3>
+                  <i class="hgi-stroke hgi-settings-01 fs-5 me-2"></i>System
+                  Notifications
+                </h3>
+                <div class="notification-option">
+                  <div class="notification-option-info">
+                    <h4>System Updates</h4>
+                    <p>Important updates about the learning platform</p>
                   </div>
-                  <button
-                    class="btn btn-delete"
-                    data-id="5"
-                    data-bs-toggle="tooltip"
-                    data-bs-title="Remove"
-                    data-bs-placement="bottom"
-                  >
-                    <i class="hgi-stroke hgi-delete-02"></i>
-                  </button>
+                  <div class="form-check form-switch">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="systemNotif"
+                      checked
+                    />
+                  </div>
+                </div>
+                <div class="notification-option">
+                  <div class="notification-option-info">
+                    <h4>Security Alerts</h4>
+                    <p>Get notified about security-related activities</p>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="securityNotif"
+                      checked
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -680,7 +745,7 @@
                               data-bs-placement="bottom"
                             >
                               <i
-                                class="hgi-stroke hgi-cancel-01 fw-bold small"
+                                class="hgi hgi-stroke hgi-cancel-01 fw-bold small"
                               ></i>
                             </button>
                           </div>
@@ -1270,6 +1335,123 @@
             <button type="button" class="btn btn-success" id="saveCardBtn">
               Save Card
             </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notifications Modal -->
+    <div
+      class="modal fade"
+      id="notificationsModal"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="notificationsModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 rounded-4">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="notificationsModalLabel">
+              <i
+                class="hgi-stroke hgi-notification-02 fs-4 me-2 align-middle"
+              ></i>
+              Notifications
+            </h1>
+            <button
+              type="button"
+              class="btn-close shadow-none"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body p-0">
+            <div class="d-flex justify-content-end p-3 pb-0">
+              <button
+                class="text-primary border-0 bg-transparent"
+                id="markAllReadModal"
+              >
+                Read All
+              </button>
+            </div>
+            <div class="notification-list p-3 pt-0" id="notificationListModal">
+              <div class="notification-item">
+                <div class="notification-content">
+                  <p>Your profile has been updated successfully.</p>
+                  <small>2 hours ago</small>
+                </div>
+                <button
+                  class="btn btn-delete"
+                  data-id="1"
+                  data-bs-toggle="tooltip"
+                  data-bs-title="Remove"
+                  data-bs-placement="bottom"
+                >
+                  <i class="hgi-stroke hgi-delete-02"></i>
+                </button>
+              </div>
+              <div class="notification-item">
+                <div class="notification-content">
+                  <p>New course available: "Introduction to Python".</p>
+                  <small>1 day ago</small>
+                </div>
+                <button
+                  class="btn btn-delete"
+                  data-id="2"
+                  data-bs-toggle="tooltip"
+                  data-bs-title="Remove"
+                  data-bs-placement="bottom"
+                >
+                  <i class="hgi-stroke hgi-delete-02"></i>
+                </button>
+              </div>
+              <div class="notification-item">
+                <div class="notification-content">
+                  <p>You earned a new achievement: "Quick Learner".</p>
+                  <small>3 days ago</small>
+                </div>
+                <button
+                  class="btn btn-delete"
+                  data-id="3"
+                  data-bs-toggle="tooltip"
+                  data-bs-title="Remove"
+                  data-bs-placement="bottom"
+                >
+                  <i class="hgi-stroke hgi-delete-02"></i>
+                </button>
+              </div>
+              <div class="notification-item">
+                <div class="notification-content">
+                  <p>Your subscription renewal is due in 5 days.</p>
+                  <small>5 days ago</small>
+                </div>
+                <button
+                  class="btn btn-delete"
+                  data-id="4"
+                  data-bs-toggle="tooltip"
+                  data-bs-title="Remove"
+                  data-bs-placement="bottom"
+                >
+                  <i class="hgi-stroke hgi-delete-02"></i>
+                </button>
+              </div>
+              <div class="notification-item">
+                <div class="notification-content">
+                  <p>Course "Advanced JavaScript" has new content added.</p>
+                  <small>1 week ago</small>
+                </div>
+                <button
+                  class="btn btn-delete"
+                  data-id="5"
+                  data-bs-toggle="tooltip"
+                  data-bs-title="Remove"
+                  data-bs-placement="bottom"
+                >
+                  <i class="hgi-stroke hgi-delete-02"></i>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
