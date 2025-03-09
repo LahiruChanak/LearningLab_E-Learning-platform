@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="assets/css/header.css" />
     <link rel="stylesheet" href="assets/css/calendar.css" />
     <link rel="stylesheet" href="assets/css/alert.css" />
+    <!-- <link rel="stylesheet" href="assets/css/color.css" /> -->
   </head>
   <body>
     <div class="container-fluid p-4 pt-2">
@@ -208,15 +209,15 @@
               <li class="nav-item" role="presentation">
                 <button
                   class="nav-link"
-                  id="coordinators-tab"
+                  id="instructors-tab"
                   data-bs-toggle="tab"
-                  data-bs-target="#coordinators"
+                  data-bs-target="#instructors"
                   type="button"
                   role="tab"
-                  aria-controls="coordinators"
+                  aria-controls="instructors"
                   aria-selected="false"
                 >
-                  Coordinators
+                  Instructors
                 </button>
               </li>
             </ul>
@@ -233,8 +234,9 @@
                       <tr>
                         <th>Student</th>
                         <th>Email</th>
-                        <th>Course</th>
-                        <th>Progress</th>
+                        <th>Contact</th>
+                        <th>Address</th>
+                        <th>Joined At</th>
                         <th>Status</th>
                         <th>Actions</th>
                       </tr>
@@ -245,27 +247,402 @@
               </div>
               <div
                 class="tab-pane fade"
-                id="coordinators"
+                id="instructors"
                 role="tabpanel"
-                aria-labelledby="coordinators-tab"
+                aria-labelledby="instructors-tab"
               >
                 <div class="table-responsive">
                   <table class="table table-borderless table-hover">
                     <thead>
                       <tr>
-                        <th>Coordinator</th>
+                        <th>Instructor</th>
                         <th>Email</th>
-                        <th>Department</th>
+                        <th>Contact</th>
+                        <th>Address</th>
+                        <th>Joined At</th>
                         <th>Courses</th>
                         <th>Status</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
-                    <tbody id="coordinatorsTableBody"></tbody>
+                    <tbody id="instructorsTableBody"></tbody>
                   </table>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Student Edit Modal -->
+    <div
+      class="modal fade"
+      id="studentViewModal"
+      tabindex="-1"
+      aria-labelledby="studentViewModalLabel"
+      aria-hidden="true"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title fw-bold" id="studentViewModalLabel">
+              <i
+                class="hgi hgi-stroke hgi-user me-2 fs-4 text-success align-middle"
+              ></i>
+              Edit Student
+            </h5>
+            <button
+              type="button"
+              class="btn-close small shadow-none"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body px-4 pb-4">
+            <form id="studentEditForm" class="needs-validation" novalidate>
+              <div class="row g-3">
+                <div class="col-12">
+                  <label for="studentName" class="form-label small fw-medium">
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control bg-light"
+                    id="studentName"
+                    name="studentName"
+                    readonly
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label for="studentEmail" class="form-label small fw-medium">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    class="form-control bg-light"
+                    id="studentEmail"
+                    name="studentEmail"
+                    readonly
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label
+                    for="studentContact"
+                    class="form-label small fw-medium"
+                  >
+                    Contact
+                  </label>
+                  <input
+                    type="tel"
+                    class="form-control bg-light"
+                    id="studentContact"
+                    name="studentContact"
+                    readonly
+                  />
+                </div>
+                <div class="col-12">
+                  <label
+                    for="studentAddress"
+                    class="form-label small fw-medium"
+                  >
+                    Address
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control bg-light"
+                    id="studentAddress"
+                    name="studentAddress"
+                    readonly
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label
+                    for="studentJoinedDate"
+                    class="form-label small fw-medium"
+                  >
+                    Joined At
+                  </label>
+                  <input
+                    type="datetime"
+                    class="form-control bg-light"
+                    id="studentJoinedDate"
+                    name="studentJoinedDate"
+                    readonly
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label for="studentStatus" class="form-label small fw-medium">
+                    Status
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control bg-light"
+                    id="studentStatus"
+                    name="studentStatus"
+                    readonly
+                  />
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instructor View Modal -->
+    <div
+      class="modal fade"
+      id="instructorViewModal"
+      tabindex="-1"
+      aria-labelledby="instructorViewModalLabel"
+      aria-hidden="true"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title fw-bold" id="instructorViewModalLabel">
+              <i
+                class="hgi hgi-stroke hgi-teacher me-2 fs-4 text-success align-middle"
+              ></i>
+              View Instructor
+            </h5>
+            <button
+              type="button"
+              class="btn-close small shadow-none"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body px-4 pb-4">
+            <form id="instructorEditForm" class="needs-validation" novalidate>
+              <div class="row g-3">
+                <div class="col-12">
+                  <label
+                    for="instructorName"
+                    class="form-label small fw-medium"
+                  >
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control bg-light"
+                    id="instructorName"
+                    name="instructorName"
+                    readonly
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label
+                    for="instructorEmail"
+                    class="form-label small fw-medium"
+                  >
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    class="form-control bg-light"
+                    id="instructorEmail"
+                    name="instructorEmail"
+                    readonly
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label
+                    for="instructorContact"
+                    class="form-label small fw-medium"
+                  >
+                    Contact
+                  </label>
+                  <input
+                    type="tel"
+                    class="form-control bg-light"
+                    id="instructorContact"
+                    name="instructorContact"
+                    readonly
+                  />
+                </div>
+                <div class="col-12">
+                  <label
+                    for="instructorAddress"
+                    class="form-label small fw-medium"
+                  >
+                    Address
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control bg-light"
+                    id="instructorAddress"
+                    name="instructorAddress"
+                    readonly
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label
+                    for="instructorJoinedDate"
+                    class="form-label small fw-medium"
+                  >
+                    Joined At
+                  </label>
+                  <input
+                    type="datetime"
+                    class="form-control bg-light"
+                    id="instructorJoinedDate"
+                    name="instructorJoinedDate"
+                    readonly
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label
+                    for="instructorStatus"
+                    class="form-label small fw-medium"
+                  >
+                    Status
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control bg-light"
+                    id="instructorStatus"
+                    name="instructorStatus"
+                    readonly
+                  />
+                </div>
+                <div class="col-12">
+                  <label
+                    for="instructorCourses"
+                    class="form-label small fw-medium"
+                  >
+                    Courses
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control bg-light"
+                    id="instructorCourses"
+                    name="instructorCourses"
+                    readonly
+                  />
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Student Status Modal -->
+    <div
+      class="modal fade"
+      id="studentStatusModal"
+      tabindex="-1"
+      aria-labelledby="studentStatusModalLabel"
+      aria-hidden="true"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title fw-bold" id="studentStatusModalLabel">
+              <i
+                class="hgi hgi-stroke hgi-student me-2 fs-4 fw-medium align-middle"
+              ></i>
+              Student Status
+            </h5>
+            <button
+              type="button"
+              class="btn-close small shadow-none"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body px-4 pb-3">
+            <form id="userStatusForm" class="needs-validation" novalidate>
+              <div class="row g-3">
+                <div class="col-12">
+                  <label for="userStatus" class="form-label small fw-medium">
+                    Status
+                  </label>
+                  <select
+                    class="form-select bg-light"
+                    id="userStatus"
+                    name="userStatus"
+                  >
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                  </select>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer pt-0 border-0">
+            <button type="button" class="btn btn-warning" id="updateUserStatus">
+              Update Status
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instructor Status Modal -->
+    <div
+      class="modal fade"
+      id="instructorStatusModal"
+      tabindex="-1"
+      aria-labelledby="instructorStatusModalLabel"
+      aria-hidden="true"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title fw-bold" id="instructorStatusModalLabel">
+              <i
+                class="hgi hgi-stroke hgi-teacher me-2 fs-4 fw-medium align-middle"
+              ></i>
+              Instructor Status
+            </h5>
+            <button
+              type="button"
+              class="btn-close small shadow-none"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body px-4 pb-3">
+            <form id="instructorStatusForm" class="needs-validation" novalidate>
+              <div class="row g-3">
+                <div class="col-12">
+                  <label
+                    for="instructorStatus"
+                    class="form-label small fw-medium"
+                  >
+                    Status
+                  </label>
+                  <select
+                    class="form-select bg-light"
+                    id="instructorStatus"
+                    name="instructorStatus"
+                  >
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                  </select>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer pt-0 border-0">
+            <button
+              type="button"
+              class="btn btn-warning"
+              id="updateInstructorStatus"
+            >
+              Update Status
+            </button>
           </div>
         </div>
       </div>

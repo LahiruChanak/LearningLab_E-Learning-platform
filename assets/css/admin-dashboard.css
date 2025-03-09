@@ -7,10 +7,34 @@
   --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  margin-top: 20px;
+  background: #f1f1f1;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.4s ease;
+}
+
 body {
   background-color: #f5f6f8;
   color: var(--text-color);
   font-family: "Inter", sans-serif;
+}
+
+.main-content {
+  overflow-y: auto;
+  max-height: 95vh;
 }
 
 .logo-img {
@@ -47,10 +71,10 @@ body {
 }
 
 .stats-card #i1 {
-  color: #22c55e;
+  color: #2ebb62;
 }
 #student-count::after {
-  background: #22c55e;
+  background: #2ebb62;
 }
 
 .stats-card #i2 {
@@ -136,6 +160,7 @@ body {
 
 .table td {
   padding: 1rem;
+  font-size: 0.875rem;
   vertical-align: middle;
   text-align: center;
 }
@@ -154,14 +179,35 @@ body {
   transition: all 0.3s ease;
 }
 
-.btn-edit {
+.text-success {
+  color: #2ebb62 !important;
+}
+
+.text-warning {
+  color: #ffd93d !important;
+}
+
+.text-danger {
+  color: #ff6b6b !important;
+}
+
+.btn-view,
+.btn-success {
+  background-color: #2ebb62;
+  color: #fff;
+  transition: all 0.4s ease;
+}
+
+.btn-edit,
+.btn-warning {
   background-color: #ffd93d;
   color: #000;
+  transition: all 0.4s ease;
 }
 
 .btn-delete {
   background-color: #ff6b6b;
-  color: white;
+  color: #fff;
 }
 
 .btn-action:hover {
@@ -184,4 +230,79 @@ body {
   border-radius: 8px 8px 0 0;
   font-weight: 600;
   /* background-color: var(--secondary-color); */
+}
+
+.form-control,
+.form-select {
+  border-radius: 8px;
+  transition: all 0.4s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: none;
+}
+
+.btn-light {
+  height: 40px;
+  border-radius: 8px;
+  border: none;
+}
+
+/* ------------- delete btn ------------- */
+.delete-btn {
+  width: 100px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: #212121;
+  border: none;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.164);
+  cursor: pointer;
+  transition: all 0.4s ease;
+  overflow: hidden;
+  position: relative;
+}
+
+.svgIcon {
+  width: 12px;
+  transition-duration: 0.3s;
+}
+
+.svgIcon path {
+  fill: white !important;
+}
+
+.delete-btn:hover {
+  width: 100px;
+  border-radius: 50px;
+  background-color: #ef4444 !important;
+  align-items: center;
+  transition: all 0.5s ease;
+}
+
+.delete-btn:hover .svgIcon {
+  width: 50px;
+  transform: translateY(55%);
+  transition: all 0.4s ease;
+}
+
+.delete-btn::before {
+  position: absolute;
+  top: -28px;
+  content: "Yes, Delete";
+  color: white;
+  font-size: 12px !important;
+  transition: all 0.4s ease;
+}
+
+.delete-btn:hover::before {
+  font-size: 13px;
+  opacity: 1;
+  transform: translateY(30px);
+  transition: all 0.4s ease;
 }

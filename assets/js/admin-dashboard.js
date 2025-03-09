@@ -7,28 +7,6 @@ $(document).ready(function () {
     (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
   );
 
-  // ------------------------ Calendar ------------------------
-  document.addEventListener("DOMContentLoaded", function () {
-    const calendarEl = document.getElementById("calendar");
-
-    const calendar = new FullCalendar.Calendar(calendarEl, {
-      initialView: "dayGridMonth",
-      headerToolbar: {
-        left: "prev",
-        center: "title",
-        right: "next",
-      },
-      height: "auto",
-      fixedWeekCount: false,
-      showNonCurrentDates: true,
-      dayHeaderFormat: {
-        weekday: "short",
-      },
-    });
-
-    calendar.render();
-  });
-
   // Attendance Chart
   const attendanceChartOptions = {
     series: [
@@ -195,44 +173,71 @@ $(document).ready(function () {
     {
       name: "John Smith",
       email: "john@example.com",
-      course: "Web Development",
-      progress: 75,
+      contact: "123-456-7890",
+      address: "123 Main St, Anytown, USA",
+      joinedAt: "2022-01-01 10:00:00",
       status: "Active",
     },
     {
       name: "Emma Wilson",
       email: "emma@example.com",
-      course: "UI/UX Design",
-      progress: 60,
-      status: "Active",
+      contact: "987-654-3210",
+      address: "456 Oak St, Anytown, USA",
+      joinedAt: "2022-02-15 14:30:00",
+      status: "Inactive",
     },
   ];
 
-  const mockCoordinators = [
+  const mockInstructors = [
     {
       name: "David Brown",
       email: "david@example.com",
-      department: "Computer Science",
-      courses: 5,
+      contact: "555-555-5555",
+      address: "789 Pine St, Anytown, USA",
+      joinedAt: "2022-03-01 12:00:00",
+      courses: "Figma" + ", " + "Photoshop" + ", " + "Illustrator",
       status: "Active",
     },
     {
       name: "Sarah Johnson",
       email: "sarah@example.com",
-      department: "Design",
-      courses: 3,
-      status: "Active",
+      contact: "111-111-1111",
+      address: "321 Maple St, Anytown, USA",
+      joinedAt: "2022-04-15 09:30:00",
+      courses: "HTML" + ", " + "CSS" + ", " + "JavaScript" + ", " + "React",
+      status: "Inactive",
     },
   ];
 
   // Populate Tables
+  // Function to populate student modal with data
+  function populateStudentModal(studentData) {
+    $("#studentName").val(studentData.name);
+    $("#studentEmail").val(studentData.email);
+    $("#studentContact").val(studentData.contact);
+    $("#studentAddress").val(studentData.address);
+    $("#studentJoinedDate").val(studentData.joinedAt);
+    $("#studentStatus").val(studentData.status);
+  }
+
+  // Function to populate instructor modal with data
+  function populateInstructorModal(instructorData) {
+    $("#instructorName").val(instructorData.name);
+    $("#instructorEmail").val(instructorData.email);
+    $("#instructorContact").val(instructorData.contact);
+    $("#instructorAddress").val(instructorData.address);
+    $("#instructorJoinedDate").val(instructorData.joinedAt);
+    $("#instructorStatus").val(instructorData.status);
+    $("#instructorCourses").val(instructorData.courses);
+  }
+
   function populateStudentsTable() {
     const tbody = $("#studentsTableBody");
     tbody.empty();
 
-    mockStudents.forEach((student) => {
-      tbody.append(`
-        <tr>
+    mockStudents.forEach((student, index) => {
+      const row = $(`
+        <tr data-student-index="${index}">
           <td>
             <div class="d-flex align-items-center gap-2">
               <div class="avatar">
@@ -244,73 +249,122 @@ $(document).ready(function () {
             </div>
           </td>
           <td>${student.email}</td>
-          <td>${student.course}</td>
-          <td>
-            <div class="progress" style="height: 5px;">
-              <div class="progress-bar bg-primary" role="progressbar" style="width: ${
-                student.progress
-              }%"></div>
-            </div>
-          </td>
+          <td>${student.contact}</td>
+          <td>${student.address}</td>
+          <td>${student.joinedAt}</td>
           <td><span class="badge bg-${
-            student.status === "Active" ? "success" : "warning"
-          }">${student.status}</span>
-          </td>
+            student.status === "Active" ? "success" : "danger"
+          }">${student.status}</span></td>
           <td>
             <div class="d-flex justify-content-center align-items-center gap-2">
-              <button class="btn btn-action btn-edit">
-                <i class="hgi-stroke hgi-pencil-edit-02 fs-5"></i>
+              <button class="btn btn-action btn-view" data-bs-toggle="modal" data-bs-target="#studentViewModal">
+                <i class="hgi hgi-stroke hgi-property-view fs-5"></i>
               </button>
-              <button class="btn btn-action btn-delete">
-                <i class="hgi-stroke hgi-delete-02 fs-5"></i>
+              <button class="btn btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#studentStatusModal">
+                <i class="hgi-stroke hgi-user-edit-01 fs-5"></i>
               </button>
             </div>
           </td>
         </tr>
       `);
+
+      // Add click handler for view button
+      row.find(".btn-view").on("click", () => populateStudentModal(student));
+
+      // Add click handler for edit button
+      row.find(".btn-edit").on("click", () => {
+        $("#userStatus").val(student.status);
+        $("#studentStatusModal").data("studentIndex", index);
+      });
+
+      tbody.append(row);
     });
   }
 
-  function populateCoordinatorsTable() {
-    const tbody = $("#coordinatorsTableBody");
+  function populateInstructorsTable() {
+    const tbody = $("#instructorsTableBody");
     tbody.empty();
 
-    mockCoordinators.forEach((coordinator) => {
-      tbody.append(`
+    mockInstructors.forEach((instructor) => {
+      const row = $(`
         <tr>
           <td>
             <div class="d-flex align-items-center gap-2">
               <div class="avatar me-2">
                 <img src="assets/images/user.jpg" alt="${
-                  coordinator.name
+                  instructor.name
                 }" class="logo-img">
               </div>
-              <div>${coordinator.name}</div>
+              <div>${instructor.name}</div>
             </div>
           </td>
-          <td>${coordinator.email}</td>
-          <td>${coordinator.department}</td>
-          <td>${coordinator.courses}</td>
+          <td>${instructor.email}</td>
+          <td>${instructor.contact}</td>
+          <td>${instructor.address}</td>
+          <td>${instructor.joinedAt}</td>
+          <td>${instructor.courses}</td>
           <td><span class="badge bg-${
-            coordinator.status === "Active" ? "success" : "warning"
-          }">${coordinator.status}</span>
-          </td>
+            instructor.status === "Active" ? "success" : "danger"
+          }">${instructor.status}</span></td>
           <td>
             <div class="d-flex justify-content-center align-items-center gap-2">
-              <button class="btn btn-action btn-edit">
-                <i class="hgi-stroke hgi-pencil-edit-02 fs-5"></i>
+              <button class="btn btn-action btn-view" data-bs-toggle="modal" data-bs-target="#instructorViewModal">
+                <i class="hgi hgi-stroke hgi-property-view fs-5"></i>
               </button>
-              <button class="btn btn-action btn-delete">
-                <i class="hgi-stroke hgi-delete-02 fs-5"></i>
+              <button class="btn btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#instructorStatusModal">
+                <i class="hgi-stroke hgi-user-edit-01 fs-5"></i>
               </button>
             </div>
           </td>
         </tr>
       `);
+
+      // Add click handler for view button
+      row
+        .find(".btn-view")
+        .on("click", () => populateInstructorModal(instructor));
+
+      // Add click handler for edit button
+      row.find(".btn-edit").on("click", () => {
+        $("#instructorStatus").val(instructor.status);
+        $("#instructorStatusModal").data("instructorIndex", index);
+      });
+
+      tbody.append(row);
     });
   }
 
   // Initial table population
   populateStudentsTable();
-  populateCoordinatorsTable();
+  populateInstructorsTable();
+
+  // Handle status update
+  $("#updateUserStatus").on("click", function () {
+    const studentIndex = $("#studentStatusModal").data("studentIndex");
+    const newStatus = $("#userStatus").val();
+
+    // Update mock data
+    mockStudents[studentIndex].status = newStatus;
+
+    // Update table
+    populateStudentsTable();
+
+    // Close modal
+    $("#studentStatusModal").modal("hide");
+  });
+
+  // Handle instructor status update
+  $("#updateInstructorStatus").on("click", function () {
+    const instructorIndex = $("#instructorStatusModal").data("instructorIndex");
+    const newStatus = $("#instructorStatus").val();
+
+    // Update mock data
+    mockInstructors[instructorIndex].status = newStatus;
+
+    // Update table
+    populateInstructorsTable();
+
+    // Close modal
+    $("#instructorStatusModal").modal("hide");
+  });
 });
