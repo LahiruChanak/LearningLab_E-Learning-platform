@@ -12,9 +12,25 @@
 }
 
 * {
-  scrollbar-width: thin;
-  scrollbar-color: var(--primary-color) #eee;
   scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.4s ease;
 }
 
 body {
@@ -26,6 +42,13 @@ body {
   flex: 1;
   padding: 20px;
   transition: all 0.4s ease;
+}
+
+.course-card-container {
+  overflow: auto;
+  max-height: 500px;
+  padding-bottom: 10px;
+  padding-top: 10px;
 }
 
 .course-card {
@@ -335,10 +358,6 @@ body {
 .filter-options .form-check-label {
   font-size: 0.875rem;
   color: #555;
-}
-
-.filter-options input[type="number"] {
-  
 }
 
 .rating-input.stars {
