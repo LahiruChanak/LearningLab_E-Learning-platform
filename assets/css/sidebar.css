@@ -44,7 +44,7 @@ body {
   padding: 15px !important;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   width: fit-content !important;
-  height: 93vh;
+  height: 95vh;
   transition: all 0.4s ease;
   margin: 15px !important;
 }
