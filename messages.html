@@ -21,6 +21,8 @@
     <link rel="stylesheet" href="assets/css/messages.css" />
     <link rel="stylesheet" href="assets/css/call.css" />
     <link rel="stylesheet" href="assets/css/header.css" />
+    <link rel="stylesheet" href="assets/css/sidebar.css" />
+    <link rel="stylesheet" href="assets/css/alert.css" />
 
     <link
       rel="stylesheet"
@@ -30,50 +32,84 @@
   <body>
     <div class="container-fluid">
       <div class="row">
-        <!-- Left Sidebar -->
-        <div class="col-auto p-0">
-          <div class="sidebar">
-            <div class="d-flex flex-column">
-              <a href="user-dashboard.html" class="nav-link mb-2">
-                <i class="hgi-stroke hgi-home-04 fs-5"></i>
-                <span class="ms-2">Dashboard</span>
-              </a>
-              <a href="course.html" class="nav-link mb-2">
-                <i class="hgi-stroke hgi-course fs-5"></i>
-                <span class="ms-2">My Course</span>
-              </a>
-              <a href="messages.html" class="nav-link active mb-2">
-                <i class="hgi-stroke hgi-chatting-01 fs-5"></i>
-                <span class="ms-2">Message</span>
-              </a>
-              <a href="#" class="nav-link mb-2">
-                <i class="hgi-stroke hgi-upload fs-5"></i>
-                <span class="ms-2">Upload</span>
-              </a>
-              <a href="#" class="nav-link mb-2">
-                <i class="hgi-stroke hgi-analytics-01 fs-5"></i>
-                <span class="ms-2">Leaderboard</span>
-              </a>
-              <a href="user-profile.html" class="nav-link mb-2">
-                <i class="hgi-stroke hgi-user-01 fs-5"></i>
-                <span class="ms-2">My Account</span>
-              </a>
-              <a href="#" class="nav-link mb-2">
-                <i class="hgi-stroke hgi-status fs-5"></i>
-                <span class="ms-2">My Status</span>
-              </a>
-              <a href="#" class="nav-link">
-                <i class="hgi-stroke hgi-logout fs-5"></i>
-                <span class="ms-2">Withdraw</span>
-              </a>
-            </div>
+        <!-- Sidebar -->
+        <div class="sidebar sidebar-collapsed" id="sidebar">
+          <div
+            class="d-flex justify-content-center align-items-center mt-2 mb-3"
+          >
+            <img src="assets/images/logo-mini.png" alt="Logo Image" id="logo" />
           </div>
+          <nav class="nav flex-column align-items-center gap-1 mb-4">
+            <a
+              class="nav-link"
+              href="user-dashboard.html"
+              data-bs-toggle="tooltip"
+              data-bs-placement="right"
+              data-bs-title="Dashboard"
+            >
+              <i class="hgi-stroke hgi-home-04 fs-5 align-middle"></i>
+            </a>
+            <a
+              class="nav-link"
+              href="course.html"
+              data-bs-toggle="tooltip"
+              data-bs-placement="right"
+              data-bs-title="Courses"
+            >
+              <i class="hgi-stroke hgi-course fs-5 align-middle"></i>
+            </a>
+            <a
+              class="nav-link active"
+              href="messages.html"
+              data-bs-toggle="tooltip"
+              data-bs-placement="right"
+              data-bs-title="Messages"
+            >
+              <i class="hgi-stroke hgi-chatting-01 fs-5 align-middle"></i>
+            </a>
+            <a
+              class="nav-link"
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-placement="right"
+              data-bs-title="Grades"
+            >
+              <i class="hgi-stroke hgi-analytics-01 fs-5 align-middle"></i>
+            </a>
+            <a
+              class="nav-link"
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-placement="right"
+              data-bs-title="Schedule"
+            >
+              <i class="hgi-stroke hgi-calendar-03 fs-5 align-middle"></i>
+            </a>
+            <a
+              class="nav-link"
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-placement="right"
+              data-bs-title="Settings"
+            >
+              <i class="hgi-stroke hgi-settings-01 fs-5 align-middle"></i>
+            </a>
+            <a
+              class="nav-link"
+              href="index.html"
+              data-bs-toggle="tooltip"
+              data-bs-placement="right"
+              data-bs-title="Logout"
+            >
+              <i class="hgi-stroke hgi-logout-01 fs-5 align-middle"></i>
+            </a>
+          </nav>
         </div>
 
         <div class="col p-3 pe-4">
           <!-- Header options -->
           <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="mb-0">Dashboard</h3>
+            <h3 class="mb-0">Messages</h3>
             <div class="d-flex align-items-center gap-3">
               <!-- Search box -->
               <div class="search-box">
@@ -142,7 +178,32 @@
                   </div>
                 </div>
                 <div class="chat-messages" id="chatMessages">
-                  <!-- Messages will be dynamically added here -->
+                  <div
+                    class="d-flex align-items-center justify-content-center w-100 h-100"
+                  >
+                    <div class="welcome-screen">
+                      <img src="assets/images/logo-full.png" alt="LearnWave" />
+                      <h2>Welcome to LearningLab Messages</h2>
+                      <p>Connect with your instructors and classmates</p>
+                      <div class="welcome-features">
+                        <div class="feature">
+                          <i class="hgi-stroke hgi-chatting-01 fs-3"></i>
+                          <p>Send messages to your contacts</p>
+                        </div>
+                        <div class="feature">
+                          <i class="hgi-stroke hgi-video-02 fs-3"></i>
+                          <p>Start video calls</p>
+                        </div>
+                        <div class="feature">
+                          <i class="hgi-stroke hgi-call-02 fs-3"></i>
+                          <p>Make voice calls</p>
+                        </div>
+                      </div>
+                      <p class="select-chat">
+                        Select a chat to start messaging
+                      </p>
+                    </div>
+                  </div>
                 </div>
                 <div class="chat-input">
                   <div class="d-flex align-items-center gap-0">
@@ -176,12 +237,18 @@
                     id="messageInput"
                     placeholder="Enter your message here"
                   />
-                  <button class="send-btn" id="sendButton">Send</button>
+                  <button class="send-btn" id="sendButton">
+                    <img
+                      src="assets/images/send.svg"
+                      alt="Send Icon"
+                      class="svgIcon"
+                    />
+                  </button>
                 </div>
               </div>
             </div>
 
-            <!-- Right Sidebar - Contacts -->
+            <!-- Side Contacts -->
             <div class="p-0">
               <div class="contacts-sidebar">
                 <div class="contacts-header">
@@ -230,6 +297,8 @@
     ></script>
     <script src="assets/js/user-dashboard.js"></script>
     <script src="assets/js/messages.js"></script>
+    <script src="assets/js/sidebar.js"></script>
+    <script src="assets/js/alert.js"></script>
     <script src="assets/js/call.js"></script>
     <script src="assets/js/emoji-keyboard.js"></script>
   </body>

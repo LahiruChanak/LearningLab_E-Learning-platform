@@ -84,37 +84,11 @@ let currentFilter = "all";
 
 // Function to show welcome screen
 function showWelcomeScreen() {
-  const messagesContainer = document.getElementById("chatMessages");
   const chatHeader = document.querySelector(".chat-header");
   const chatInput = document.querySelector(".chat-input");
 
   chatHeader.style.display = "none";
   chatInput.style.display = "none";
-
-  messagesContainer.innerHTML = `
-    <div class="d-flex align-items-center justify-content-center w-100 h-100">
-      <div class="welcome-screen">
-        <img src="assets/images/logo-full.png" alt="LearnWave" style="width: 150px; object-fit: cover">
-        <h2>Welcome to LearnWave Messages</h2>
-        <p>Connect with your instructors and classmates</p>
-        <div class="welcome-features">
-          <div class="feature">
-            <i class="hgi-stroke hgi-chatting-01 fs-3"></i>
-            <p>Send messages to your contacts</p>
-          </div>
-          <div class="feature">
-            <i class="hgi-stroke hgi-video-02 fs-3"></i>
-            <p>Start video calls</p>
-          </div>
-          <div class="feature">
-            <i class="hgi-stroke hgi-call-02 fs-3"></i>
-            <p>Make voice calls</p>
-          </div>
-        </div>
-        <p class="select-chat">Select a chat to start messaging</p>
-      </div>
-    </div>
-  `;
 }
 
 // Function to filter contacts

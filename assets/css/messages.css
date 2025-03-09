@@ -31,15 +31,24 @@ body {
   text-align: center;
 }
 
+.welcome-screen img {
+  width: 150px;
+  object-fit: cover;
+  margin-bottom: 20px;
+  /* filter: brightness(0) saturate(100%) invert(50%) sepia(23%) saturate(1405%)
+    hue-rotate(211deg) brightness(96%) contrast(94%); */
+}
+
 .chat-container {
   background: #fff;
   border-radius: 16px;
-  height: 95vh;
+  height: 80vh;
   margin: 15px 0;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
   flex: 1;
+  overflow: auto;
 }
 
 .chat-header {
@@ -177,7 +186,6 @@ body {
   border-width: 10px;
   border-style: solid;
   border-color: #ccc transparent transparent transparent;
-  
 }
 
 .input-field {
@@ -210,7 +218,7 @@ body {
 .contacts-sidebar {
   background: #fff;
   border-radius: 16px;
-  height: 95vh;
+  height: 80vh;
   margin: 15px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   width: 300px;
@@ -328,4 +336,70 @@ body {
   font-size: 12px;
   color: #fff;
   margin-left: auto;
+}
+
+/* ////////////////////// send btn ////////////////////// */
+.send-btn {
+  width: 100px;
+  height: 45px;
+  border-radius: 8px;
+  background-color: #212121;
+  border: none;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.164);
+  cursor: pointer;
+  transition: all 0.5s ease;
+  overflow: hidden;
+  position: relative;
+}
+
+.svgIcon {
+  width: 20px;
+  transition: all 0.5s ease;
+}
+
+.svgIcon path {
+  fill: white;
+}
+
+.send-btn:hover {
+  width: 100px;
+  border-radius: 50px;
+  transition: all 0.5s ease;
+  background-color: #212121;
+  align-items: center;
+}
+
+.send-btn:hover .svgIcon {
+  width: 32px;
+  transition: all 0.6s ease;
+  animation: fly 0.6s ease-in-out infinite alternate;
+  transform: translateX(50px);
+}
+
+@keyframes fly {
+  from {
+    transform: translate(50%, 1px);
+  }
+
+  to {
+    transform: translate(50%, -1px);
+  }
+}
+
+.send-btn::before {
+  position: absolute;
+  left: -40px;
+  content: "Send";
+  color: white;
+  transition: all 0.5s ease;
+}
+
+.send-btn:hover::before {
+  opacity: 1;
+  transform: translateX(150%);
+  transition: all 0.5s ease;
 }
