@@ -14,6 +14,13 @@
     />
     <link
       rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
       href="https://cdn.hugeicons.com/font/hgi-stroke-rounded.css"
     />
 
@@ -216,19 +223,26 @@
                       <button
                         class="btn border-0 rotate"
                         onclick="document.getElementById('fileInput').click()"
+                        data-bs-toggle="tooltip"
+                        data-bs-title="Attachment"
+                        data-bs-placement="bottom"
                       >
-                        <i
-                          class="hgi-stroke hgi-attachment-01 fw-semibold fs-5"
-                        ></i>
+                        <i class="fa-solid fa-paperclip fs-5 align-middle"></i>
                       </button>
                     </div>
                     <div class="emoji-picker position-relative">
-                      <button class="btn border-0" id="emojiButton">
-                        <i class="hgi-stroke hgi-smile fw-semibold fs-5"></i>
+                      <button
+                        class="btn border-0"
+                        id="emojiButton"
+                        data-bs-toggle="tooltip"
+                        data-bs-title="Emoji"
+                        data-bs-placement="bottom"
+                      >
+                        <i
+                          class="fa-regular fa-face-laugh-beam fs-5 align-middle"
+                        ></i>
                       </button>
-                      <div class="emoji-box d-none">
-                        <!-- Emoji list will be populated by JavaScript -->
-                      </div>
+                      <div class="emoji-box d-none"></div>
                     </div>
                   </div>
                   <input
@@ -277,11 +291,31 @@
                 </div>
                 <input
                   type="text"
-                  class="search-box"
-                  placeholder="Search here"
+                  class="search-bar"
+                  id="contactSearch"
+                  placeholder="Search messages . . ."
                 />
                 <div class="contact-list" id="contactList">
                   <!-- Contacts will be dynamically added here -->
+                </div>
+                <!-- Floating button for new messages -->
+                <button
+                  class="btn new-message-btn"
+                  id="newMessageBtn"
+                  data-bs-toggle="dropdown"
+                  data-bs-auto-close="outside"
+                  aria-expanded="false"
+                >
+                  <i class="hgi hgi-stroke hgi-message-01"></i>
+                </button>
+                <div class="dropdown-menu p-3">
+                  <input
+                    type="text"
+                    class="form-control mb-2"
+                    id="newContactSearch"
+                    placeholder="Search contacts . . ."
+                  />
+                  <div class="new-contact-list"></div>
                 </div>
               </div>
             </div>
@@ -295,11 +329,14 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
+    <script src="assets/js/jquery-3.7.1.min.js"></script>
     <script src="assets/js/user-dashboard.js"></script>
     <script src="assets/js/messages.js"></script>
     <script src="assets/js/sidebar.js"></script>
     <script src="assets/js/alert.js"></script>
     <script src="assets/js/call.js"></script>
     <script src="assets/js/emoji-keyboard.js"></script>
+    <script src="assets/js/new-message.js"></script>
   </body>
 </html>

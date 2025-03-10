@@ -1,4 +1,4 @@
-// Sample data for contacts
+// Sample data for contacts - simulating server data
 const contacts = [
   {
     id: 1,
@@ -27,9 +27,36 @@ const contacts = [
     isGroup: false,
     isArchived: true,
   },
+  {
+    id: 4,
+    name: "John Doe",
+    lastMessage: "How are you?",
+    time: "Yesterday",
+    avatar: "assets/images/user.jpg",
+    isGroup: false,
+    isArchived: true,
+  },
+  {
+    id: 5,
+    name: "Sarah Johnson",
+    lastMessage: "Can you help me?",
+    time: "10:45",
+    avatar: "assets/images/user.jpg",
+    isGroup: false,
+    isArchived: false,
+  },
+  {
+    id: 6,
+    name: "Emily Davis Friends Group",
+    lastMessage: "Can you help me?",
+    time: "10:45",
+    avatar: "assets/images/user.jpg",
+    isGroup: true,
+    isArchived: false,
+  },
 ];
 
-// Sample messages for each chat
+// Sample messages for each chat - simulating server data
 const chatMessages = {
   1: [
     { id: 1, text: "Hi Alexis! How are you?", sent: true, time: "09:30" },
@@ -82,28 +109,56 @@ const chatMessages = {
 let currentChatId = null;
 let currentFilter = "all";
 
+// Simulated API endpoints
+const api = {
+  getContacts: () => {
+    return $.Deferred().resolve(contacts);
+  },
+  getMessages: (chatId) => {
+    return $.Deferred().resolve(chatMessages[chatId] || []);
+  },
+  sendMessage: (chatId, message) => {
+    const newMessage = {
+      id: chatMessages[chatId].length + 1,
+      text: message,
+      sent: true,
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
+    chatMessages[chatId].push(newMessage);
+    return $.Deferred().resolve(newMessage);
+  },
+  updateContact: (contactId, data) => {
+    const contactIndex = contacts.findIndex((c) => c.id === contactId);
+    if (contactIndex !== -1) {
+      contacts[contactIndex] = { ...contacts[contactIndex], ...data };
+    }
+    return $.Deferred().resolve(contacts[contactIndex]);
+  },
+};
+
 // Function to show welcome screen
 function showWelcomeScreen() {
-  const chatHeader = document.querySelector(".chat-header");
-  const chatInput = document.querySelector(".chat-input");
-
-  chatHeader.style.display = "none";
-  chatInput.style.display = "none";
+  $(".chat-header, .chat-input").hide();
 }
 
 // Function to filter contacts
 function filterContacts(searchText) {
-  const filteredContacts = contacts.filter((contact) => {
-    const matchesSearch = contact.name
-      .toLowerCase()
-      .includes(searchText.toLowerCase());
-    const matchesFilter =
-      (currentFilter === "all" && !contact.isArchived) ||
-      (currentFilter === "group" && contact.isGroup && !contact.isArchived) ||
-      (currentFilter === "archived" && contact.isArchived);
-    return matchesSearch && matchesFilter;
+  api.getContacts().then((contacts) => {
+    const filteredContacts = contacts.filter((contact) => {
+      const matchesSearch = contact.name
+        .toLowerCase()
+        .includes(searchText.toLowerCase());
+      const matchesFilter =
+        (currentFilter === "all" && !contact.isArchived) ||
+        (currentFilter === "group" && contact.isGroup && !contact.isArchived) ||
+        (currentFilter === "archived" && contact.isArchived);
+      return matchesSearch && matchesFilter;
+    });
+    renderContacts(filteredContacts);
   });
-  renderContacts(filteredContacts);
 }
 
 // Function to render contacts
@@ -116,13 +171,12 @@ function renderContacts(contactsList = contacts) {
     );
   });
 
-  const contactList = document.getElementById("contactList");
-  contactList.innerHTML = filteredContacts
+  const contactsHtml = filteredContacts
     .map(
       (contact) => `
         <div class="contact-item ${
           contact.id === currentChatId ? "active" : ""
-        }" onclick="selectChat(${contact.id})">
+        }" data-chat-id="${contact.id}">
           <img src="${contact.avatar}" alt="${
         contact.name
       }" class="contact-avatar" />
@@ -131,12 +185,12 @@ function renderContacts(contactsList = contacts) {
               ${contact.name}
               ${
                 contact.isGroup
-                  ? '<span class="badge bg-primary ms-2">Group</span>'
+                  ? '<span class="badge bg-primary rounded-pill">Group</span>'
                   : ""
               }
               ${
                 contact.isArchived
-                  ? '<span class="badge bg-secondary ms-2">Archived</span>'
+                  ? '<span class="badge bg-secondary rounded-pill">Archived</span>'
                   : ""
               }
             </div>
@@ -147,37 +201,35 @@ function renderContacts(contactsList = contacts) {
       `
     )
     .join("");
+
+  $("#contactList").html(contactsHtml);
 }
 
 // Function to render messages
 function renderMessages(chatId) {
-  const messagesContainer = document.getElementById("chatMessages");
-  const chatHeader = document.querySelector(".chat-header");
-  const chatInput = document.querySelector(".chat-input");
-  const messages = chatMessages[chatId] || [];
+  api.getMessages(chatId).then((messages) => {
+    const selectedContact = contacts.find((c) => c.id === chatId);
+    $(".chat-header, .chat-input").show();
 
-  chatHeader.style.display = "flex";
-  chatInput.style.display = "flex";
-
-  messagesContainer.innerHTML = messages
-    .map(
-      (message) => `
-        <div class="message ${message.sent ? "sent" : "received"}">
-          ${
-            message.sender
-              ? `<div class="sender-name">${message.sender}</div>`
-              : ""
-          }
-          <div class="message-content">
-            <div class="message-text">${message.text}</div>
-            <div class="message-time">${message.time}</div>
+    const messagesHtml = messages
+      .map(
+        (message) => `
+          <div class="message ${message.sent ? "sent" : "received"}">
+            <div class="sender-name">${
+              message.sent ? "You" : message.sender || selectedContact.name
+            }</div>
+            <div class="message-content">
+              <div class="message-text">${message.text}</div>
+              <div class="message-time">${message.time}</div>
+            </div>
           </div>
-        </div>
-      `
-    )
-    .join("");
+        `
+      )
+      .join("");
 
-  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    $("#chatMessages").html(messagesHtml);
+    $("#chatMessages").scrollTop($("#chatMessages")[0].scrollHeight);
+  });
 }
 
 // Function to select chat
@@ -186,8 +238,8 @@ function selectChat(chatId) {
   const selectedContact = contacts.find((c) => c.id === chatId);
 
   // Update header
-  document.querySelector(".user-info h6").textContent = selectedContact.name;
-  document.querySelector(".user-avatar").src = selectedContact.avatar;
+  $(".user-info h6").text(selectedContact.name);
+  $(".user-avatar").attr("src", selectedContact.avatar);
 
   renderContacts();
   renderMessages(chatId);
@@ -197,61 +249,54 @@ function selectChat(chatId) {
 function sendMessage(text) {
   if (!text.trim() || !currentChatId) return;
 
-  const newMessage = {
-    id: chatMessages[currentChatId].length + 1,
-    text: text,
-    sent: true,
-    time: new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    }),
-  };
+  api.sendMessage(currentChatId, text).then((newMessage) => {
+    renderMessages(currentChatId);
 
-  chatMessages[currentChatId].push(newMessage);
-  renderMessages(currentChatId);
-
-  // Update last message in contacts
-  const contactIndex = contacts.findIndex((c) => c.id === currentChatId);
-  contacts[contactIndex].lastMessage =
-    text.substring(0, 20) + (text.length > 20 ? "..." : "");
-  contacts[contactIndex].time = newMessage.time;
-  renderContacts();
+    // Update last message in contacts
+    api
+      .updateContact(currentChatId, {
+        lastMessage: text.substring(0, 20) + (text.length > 20 ? "..." : ""),
+        time: newMessage.time,
+      })
+      .then(() => {
+        renderContacts();
+      });
+  });
 }
 
-// Add event listeners for message type buttons
-document.querySelectorAll("[data-message-type]").forEach((button) => {
-  button.addEventListener("click", () => {
-    currentFilter = button.dataset.messageType;
-    document.querySelectorAll("[data-message-type]").forEach((btn) => {
-      btn.classList.remove("active");
-    });
-    button.classList.add("active");
+$(document).ready(() => {
+  // Add event listeners for message type buttons
+  $("[data-message-type]").on("click", function () {
+    currentFilter = $(this).data("messageType");
+    $("[data-message-type]").removeClass("active");
+    $(this).addClass("active");
     renderContacts();
   });
+
+  // Add event listener for contact search input
+  $("#contactSearch").on("input", function () {
+    filterContacts($(this).val());
+  });
+
+  // Add event listener for contact selection
+  $(document).on("click", ".contact-item", function () {
+    selectChat($(this).data("chatId"));
+  });
+
+  // Add event listener for send button and input
+  $("#sendButton").on("click", () => {
+    sendMessage($("#messageInput").val());
+    $("#messageInput").val("");
+  });
+
+  $("#messageInput").on("keypress", (e) => {
+    if (e.key === "Enter") {
+      sendMessage($("#messageInput").val());
+      $("#messageInput").val("");
+    }
+  });
+
+  // Initialize the chat interface
+  showWelcomeScreen();
+  renderContacts();
 });
-
-// Add event listener for search box
-const searchBox = document.querySelector(".search-box");
-searchBox.addEventListener("input", (e) => {
-  filterContacts(e.target.value);
-});
-
-// Add event listener for send button and input
-const messageInput = document.getElementById("messageInput");
-const sendButton = document.getElementById("sendButton");
-
-sendButton.addEventListener("click", () => {
-  sendMessage(messageInput.value);
-  messageInput.value = "";
-});
-
-messageInput.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") {
-    sendMessage(messageInput.value);
-    messageInput.value = "";
-  }
-});
-
-// Initialize the chat interface
-showWelcomeScreen();
-renderContacts();
