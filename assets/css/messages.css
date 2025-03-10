@@ -256,7 +256,7 @@ body {
 
 .emoji-box {
   position: absolute;
-  bottom: 120%;
+  bottom: 130%;
   left: -30%;
   border-radius: 10px;
   border: none;
@@ -266,7 +266,7 @@ body {
 .emoji-box::after {
   content: "";
   position: absolute;
-  bottom: -22px;
+  bottom: -23px;
   left: 8%;
   transform: translateX(-10%);
   border-width: 10px;
@@ -422,8 +422,10 @@ body {
   background-color: #fff;
   border-radius: 20px;
   padding: 5px;
+  margin-top: 10px;
   width: 100%;
   height: fit-content;
+  min-height: 100px;
   max-height: 300px;
   overflow-y: auto;
 }
@@ -437,7 +439,8 @@ body {
   padding: 0 15px;
 }
 
-.contact-item {
+.contact-item,
+.new-contact-item {
   display: flex;
   align-items: center;
   padding: 12px;

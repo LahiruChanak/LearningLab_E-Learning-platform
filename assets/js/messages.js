@@ -56,6 +56,46 @@ const contacts = [
   },
 ];
 
+// Sample data for available contacts (simulating server data)
+const availableContacts = [
+  {
+    id: 7,
+    name: "Michael Brown",
+    avatar: "assets/images/user.jpg",
+    role: "Student",
+  },
+  {
+    id: 8,
+    name: "Emma Wilson",
+    avatar: "assets/images/user.jpg",
+    role: "Instructor",
+  },
+  {
+    id: 9,
+    name: "David Clark",
+    avatar: "assets/images/user.jpg",
+    role: "Student",
+  },
+  {
+    id: 10,
+    name: "Sophia Lee",
+    avatar: "assets/images/user.jpg",
+    role: "Student",
+  },
+  {
+    id: 11,
+    name: "Oliver Davis",
+    avatar: "assets/images/user.jpg",
+    role: "Instructor",
+  },
+  {
+    id: 12,
+    name: "Ava Adams",
+    avatar: "assets/images/user.jpg",
+    role: "Instructor",
+  },
+];
+
 // Sample messages for each chat - simulating server data
 const chatMessages = {
   1: [
@@ -264,6 +304,74 @@ function sendMessage(text) {
   });
 }
 
+// --------------------------------------- Contact List (dropdown menu) --------------------------------------- //
+// Function to filter available contacts
+function filterAvailableContacts(searchText) {
+  const filteredContacts = availableContacts.filter((contact) =>
+    contact.name.toLowerCase().includes(searchText.toLowerCase())
+  );
+
+  renderAvailableContacts(filteredContacts);
+}
+
+// Function to render available contacts in dropdown
+function renderAvailableContacts(contactsList = availableContacts) {
+  if (contactsList.length === 0) {
+    $(".new-contact-list").html(
+      '<div class="text-center p-3 pt-4 mt-2">No contacts found</div>'
+    );
+    return;
+  }
+
+  const contactsHtml = contactsList
+    .map(
+      (contact) => `
+        <div class="new-contact-item" data-contact-id="${contact.id}">
+          <img src="${contact.avatar}" alt="${contact.name}" class="contact-avatar" />
+          <div class="contact-info">
+            <div class="contact-name">${contact.name}</div>
+            <div class="contact-role">${contact.role}</div>
+          </div>
+        </div>
+      `
+    )
+    .join("");
+
+  $(".new-contact-list").html(contactsHtml);
+}
+
+// Function to start new chat
+function startNewChat(contactId) {
+  const selectedContact = availableContacts.find((c) => c.id === contactId);
+
+  if (!selectedContact) return;
+
+  // Create new chat entry
+  const newChat = {
+    id: selectedContact.id,
+    name: selectedContact.name,
+    lastMessage: "",
+    time: "Now",
+    avatar: selectedContact.avatar,
+    isGroup: false,
+    isArchived: false,
+  };
+
+  // Initialize empty message array for new chat
+  chatMessages[newChat.id] = [];
+
+  // Add to contacts list if not exists
+  if (!contacts.some((c) => c.id === newChat.id)) {
+    contacts.unshift(newChat);
+  }
+
+  $("#newMessageBtn").dropdown("hide");
+
+  // Select the new chat
+  selectChat(newChat.id);
+  renderContacts();
+}
+
 $(document).ready(() => {
   // Add event listeners for message type buttons
   $("[data-message-type]").on("click", function () {
@@ -294,6 +402,20 @@ $(document).ready(() => {
       sendMessage($("#messageInput").val());
       $("#messageInput").val("");
     }
+  });
+
+  // Initialize new message dropdown
+  renderAvailableContacts();
+
+  // Add event listener for new contact search
+  $("#newContactSearch").on("input", function () {
+    filterAvailableContacts($(this).val());
+  });
+
+  // Add event listener for new contact selection
+  $(document).on("click", ".new-contact-item", function () {
+    const contactId = $(this).data("contactId");
+    startNewChat(contactId);
   });
 
   // Initialize the chat interface
