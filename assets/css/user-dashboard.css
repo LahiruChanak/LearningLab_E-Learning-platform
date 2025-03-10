@@ -11,9 +11,26 @@
 }
 
 * {
-  scrollbar-width: thin;
-  scrollbar-color: var(--primary-color) #eee;
   scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  margin-top: 20px;
+  background: #f1f1f1;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.4s ease;
 }
 
 body {
