@@ -1,4 +1,13 @@
 $(document).ready(function () {
+  // Bootstrap Tooltip
+  const tooltipTriggerList = document.querySelectorAll(
+    '[data-bs-toggle="tooltip"]'
+  );
+  const tooltipList = [...tooltipTriggerList].map(
+    (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
+  );
+
+  // Mock data
   let currentDate = new Date("2025-03-12");
   let currentView = "month";
   let events = {
@@ -115,9 +124,9 @@ $(document).ready(function () {
         dayHtml += `<div class="events-container">`;
         events[prevDateStr].forEach((event, index) => {
           const endTime = calculateEndTime(event.time, event.duration);
-          const summary = `Time: ${event.time}-${endTime}\n|\nType: ${
+          const summary = `Time: ${event.time}-${endTime} <br/> Type: ${
             event.type.charAt(0).toUpperCase() + event.type.slice(1)
-          }\n|\nDescription: ${event.description || "No description"}`;
+          } <br/> Description: ${event.description || "No description"}`;
 
           dayHtml += `<div class="event event-${event.type}" data-date="${prevDateStr}" data-index="${index}">
                         ${event.time}-${endTime} ${event.title}
@@ -152,9 +161,9 @@ $(document).ready(function () {
         dayHtml += `<div class="events-container">`;
         events[dateStr].forEach((event, index) => {
           const endTime = calculateEndTime(event.time, event.duration);
-          const summary = `Time: ${event.time}-${endTime}\n|\nType: ${
+          const summary = `Time: ${event.time}-${endTime} <br/> Type: ${
             event.type.charAt(0).toUpperCase() + event.type.slice(1)
-          }\n|\nDescription: ${event.description || "No description"}`;
+          } <br/> Description: ${event.description || "No description"}`;
 
           dayHtml += `<div class="event event-${event.type}" data-date="${dateStr}" data-index="${index}">
                         ${event.time}-${endTime} ${event.title}
@@ -192,9 +201,9 @@ $(document).ready(function () {
           dayHtml += `<div class="events-container">`;
           events[nextDateStr].forEach((event, index) => {
             const endTime = calculateEndTime(event.time, event.duration);
-            const summary = `Time: ${event.time}-${endTime}\n|\nType: ${
+            const summary = `Time: ${event.time}-${endTime} <br/> Type: ${
               event.type.charAt(0).toUpperCase() + event.type.slice(1)
-            }\n|\nDescription: ${event.description || "No description"}`;
+            } <br/> Description: ${event.description || "No description"}`;
 
             dayHtml += `<div class="event event-${event.type}" data-date="${nextDateStr}" data-index="${index}">
                           ${event.time}-${endTime} ${event.title}
@@ -256,9 +265,9 @@ $(document).ready(function () {
             const slotHour = parseInt(time.split(":")[0]);
             if (eventStartHour === slotHour) {
               const endTime = calculateEndTime(event.time, event.duration);
-              const summary = `Time: ${event.time}-${endTime}\n|\nType: ${
+              const summary = `Time: ${event.time}-${endTime} <br/> Type: ${
                 event.type.charAt(0).toUpperCase() + event.type.slice(1)
-              }\n|\nDescription: ${event.description || "No description"}`;
+              } <br/> Description: ${event.description || "No description"}`;
 
               eventsHtml += `<div class="event event-${event.type}" data-date="${dateStr}" data-index="${index}">
                               ${event.time}-${endTime} ${event.title}

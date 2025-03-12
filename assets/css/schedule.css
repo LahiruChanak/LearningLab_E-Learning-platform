@@ -1,8 +1,42 @@
+:root {
+  --primary-color: #f4e361;
+  --secondary-color: #ebedfb;
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  margin-top: 20px;
+  background: #f1f1f1;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #f4a261;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.4s ease;
+}
+
 body {
   background: #f5f5f5;
   font-family: "Arial", sans-serif;
   padding: 0;
   margin: 0;
+}
+
+.main-content {
+  width: 100%;
+  margin: 0;
+  padding: 15px 0 !important;
 }
 
 #prevMonth,
@@ -20,12 +54,14 @@ body {
 }
 
 .calendar {
-  margin: 30px auto;
+  height: calc(100vh - 40px);
+  overflow-y: auto;
+  overflow-x: hidden;
   padding: 30px;
   background: #fff;
   border-radius: 20px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
-  transition: opacity 0.3s ease;
+  transition: opacity 0.4s ease;
 }
 
 .calendar.fade-in {
@@ -257,6 +293,8 @@ body {
 .week-header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  margin-left: 75px;
   margin-bottom: 15px;
 }
 
@@ -308,7 +346,7 @@ body {
   right: 0;
   height: 1px;
   background: #e9ecef;
-  z-index: 0;
+  z-index: 1;
 }
 
 .time-label {
@@ -347,62 +385,89 @@ body {
 }
 
 .event {
-  position: relative; /* Ensures a new stacking context for the tooltip */
-  padding: 8px 12px;
+  position: relative;
+  padding: 4px 8px 4px 15px;
   border-radius: 10px;
-  font-size: 0.85rem;
-  color: #fff;
+  font-size: 0.8rem;
+  /* color: #fff; */
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: fit-content !important;
-  height: fit-content !important;
-  transition: transform 0.4s ease;
-  z-index: 3 !important;
+  width: fit-content;
+  height: fit-content;
+  transition: all 0.3s ease;
+  z-index: 3;
+}
+
+.event::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 3px;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  border-radius: 10px;
+  z-index: 5;
 }
 
 .event:hover {
-  transform: scale(1.02);
+  transform: scale(1.04);
 }
 
 .event .delete-btn {
-  color: #fff;
+  /* color: #fff; */
   font-size: 1rem;
   margin-left: 5px;
   cursor: pointer;
 }
 
 .event-lecture {
-  background: #a3bffa;
+  background: #aec8ff;
 }
+.event-lecture.event::after {
+  background: #3f51b5;
+}
+
 .event-quiz {
-  background: #f4a261;
+  background: #fffa65;
 }
+.event-quiz.event::after {
+  background: #ff8000;
+}
+
 .event-assignment {
-  background: #f28c38;
+  background: #ffafaf;
 }
+.event-assignment.event::after {
+  background: #c62828;
+}
+
 .event-workshop {
-  background: #81c784;
+  background: #80ffa8;
+}
+.event-workshop.event::after {
+  background: #00b93b;
 }
 
 /* Tooltip for Event Summary */
 .event-tooltip {
   position: absolute;
-  top: -40px;
+  top: -35%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -100%);
   background: #333;
   color: #fff;
   padding: 5px 10px;
-  border-radius: 5px;
-  font-size: 0.8rem;
-  z-index: 5 !important;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  z-index: 1000;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.4s ease;
 }
 
 .event-tooltip::after {
@@ -448,7 +513,7 @@ body {
   box-shadow: none;
 }
 
-.modal-body .form-control:focus  {
+.modal-body .form-control:focus {
   border-color: #f4a261;
 }
 
