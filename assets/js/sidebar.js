@@ -11,10 +11,10 @@ toggleBtn.addEventListener("click", () => {
   // logo and menu button
   if (sidebar.classList.contains("collapsed")) {
     logoContainer.style.flexDirection = "column-reverse";
-    logo.setAttribute("src", "assets/images/logo-mini.png");
+    logo.setAttribute("src", "../../assets/images/logo-mini.png");
   } else {
     logoContainer.style.flexDirection = "row";
-    logo.setAttribute("src", "assets/images/logo-full.png");
+    logo.setAttribute("src", "../../assets/images/logo-full.png");
   }
 
   // Destroy tooltips when sidebar is expanded
