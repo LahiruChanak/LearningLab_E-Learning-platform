@@ -9,13 +9,6 @@ body {
   font-family: "Roboto", sans-serif !important;
 }
 
-#logo {
-  height: 45px;
-  width: auto;
-  filter: brightness(0) saturate(100%) invert(50%) sepia(23%) saturate(1405%)
-    hue-rotate(211deg) brightness(96%) contrast(94%);
-}
-
 .search-box {
   display: flex;
   align-items: center;
@@ -33,9 +26,6 @@ body {
   border-radius: 8px;
   padding-left: 10px;
   color: #666;
-}
-
-.search-box input:focus {
 }
 
 .search-btn {
