@@ -24,18 +24,11 @@ body {
   transition: all 0.4s ease;
 }
 
-.logo {
-  font-size: 1.6rem;
-  font-family: "Skate", sans-serif;
-  font-weight: 600;
-  color: var(--primary-color);
-  width: fit-content;
-}
-
-.logo::after {
-  content: ".";
-  font-size: 2.5rem;
-  margin-left: 0.2rem;
+#logo {
+  height: 45px;
+  width: auto;
+  filter: brightness(0) saturate(100%) invert(50%) sepia(23%) saturate(1405%)
+    hue-rotate(211deg) brightness(96%) contrast(94%);
 }
 
 .sidebar.sidebar-collapsed {
