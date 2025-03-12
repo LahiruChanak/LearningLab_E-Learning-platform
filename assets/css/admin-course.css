@@ -71,6 +71,12 @@
   transition: all 0.4s ease;
 }
 
+.btn-delete,
+.btn-danger {
+  background-color: #ff6b6b;
+  color: #fff;
+}
+
 .highlight {
   background-color: #ffd93d !important;
 }
@@ -250,4 +256,83 @@
     width: 48px;
     height: 48px;
   }
+}
+
+/* -------------------------- modal -------------------------- */
+.image-upload {
+  position: relative;
+  width: 130px;
+  height: 130px;
+  margin: 0 auto 1rem;
+  cursor: pointer;
+}
+
+.image-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border: 2px solid #212121;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.course-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: all 0.4s ease;
+}
+
+.overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.upload-icon {
+  color: white;
+  font-size: 1.5rem;
+}
+
+.image-upload:hover .overlay {
+  opacity: 1;
+}
+
+.image-upload:hover .remove-image-btn {
+  opacity: 1;
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.4s ease;
+}
+
+.remove-image-btn:hover {
+  background: #ff6b6b;
+}
+
+#course-img {
+  pointer-events: all !important;
 }
