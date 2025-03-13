@@ -169,56 +169,88 @@
             ></button>
           </div>
           <div class="modal-body">
-            <input
-              type="text"
-              id="eventTitle"
-              class="form-control"
-              placeholder="Event Title (e.g., English Lesson)"
-            />
-            <div class="d-flex align-items-center gap-2">
-              <input type="date" id="eventDate" class="form-control" />
+            <input type="hidden" id="eventIndex" />
+            <div class="mb-3">
+              <label for="eventTitle" class="form-label">Event Title</label>
               <input
-                type="time"
-                id="eventTime"
+                type="text"
+                id="eventTitle"
                 class="form-control"
-                value="08:30"
+                placeholder="Event Title (e.g., English Lesson)"
               />
             </div>
             <div class="d-flex align-items-center gap-2">
-              <select id="eventDuration" class="form-control">
-                <option value="1">1 Hour</option>
-                <option value="1.5">1.5 Hours</option>
-                <option value="2">2 Hours</option>
-                <option value="3">3 Hours</option>
-              </select>
-              <select id="eventInstructor" class="form-control">
-                <option value="instructor1">Instructor 1</option>
-                <option value="instructor2">Instructor 2</option>
-                <option value="instructor3">Instructor 3</option>
-              </select>
+              <div class="mb-3 w-100">
+                <label for="eventDate" class="form-label">Date</label>
+                <input type="date" id="eventDate" class="form-control" />
+              </div>
+              <div class="mb-3 w-100">
+                <label for="eventTime" class="form-label">Time</label>
+                <input
+                  type="time"
+                  id="eventTime"
+                  class="form-control"
+                  value="08:30"
+                />
+              </div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <div class="mb-3 w-100">
+                <label for="eventDuration" class="form-label">Duration</label>
+                <select id="eventDuration" class="form-control">
+                  <option value="1">1 Hour</option>
+                  <option value="1.5">1.5 Hours</option>
+                  <option value="2">2 Hours</option>
+                  <option value="3">3 Hours</option>
+                </select>
+              </div>
+
+              <div class="mb-3 w-100">
+                <label for="eventInstructor" class="form-label">
+                  Instructor
+                </label>
+                <select id="eventInstructor" class="form-control">
+                  <option value="instructor1">Instructor 1</option>
+                  <option value="instructor2">Instructor 2</option>
+                  <option value="instructor3">Instructor 3</option>
+                </select>
+              </div>
             </div>
 
             <div class="d-flex align-items-center gap-2">
-              <select id="eventType" class="form-control">
-                <option value="lecture">Live Lecture</option>
-                <option value="quiz">Quiz</option>
-                <option value="assignment">Assignment Deadline</option>
-                <option value="workshop">Workshop</option>
-              </select>
-              <select id="eventRecurrence" class="form-control">
-                <option value="none">No Recurrence</option>
-                <option value="weekly">Weekly</option>
-                <option value="biweekly">Biweekly</option>
-                <option value="monthly">Monthly</option>
-              </select>
+              <div class="mb-3 w-100">
+                <label for="eventType" class="form-label">Event Type</label>
+                <select id="eventType" class="form-control">
+                  <option value="lecture">Live Lecture</option>
+                  <option value="quiz">Quiz</option>
+                  <option value="assignment">Assignment Deadline</option>
+                  <option value="workshop">Workshop</option>
+                </select>
+              </div>
+              <div class="mb-3 w-100">
+                <label for="eventRecurrence" class="form-label">
+                  Recurrence
+                </label>
+                <select id="eventRecurrence" class="form-control">
+                  <option value="none">No Recurrence</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="biweekly">Biweekly</option>
+                  <option value="monthly">Monthly</option>
+                </select>
+              </div>
             </div>
-            <textarea
-              id="eventDescription"
-              class="form-control mb-0"
-              placeholder="Event Description (e.g., Zoom link, instructions)"
-            ></textarea>
-            <input type="hidden" id="eventIndex" />
+            <div class="mb-0">
+              <label for="eventDescription" class="form-label">
+                Description
+              </label>
+              <textarea
+                id="eventDescription"
+                class="form-control mb-0"
+                placeholder="Event Description (e.g., Zoom link, instructions)"
+              ></textarea>
+            </div>
           </div>
+
           <div class="modal-footer">
             <button
               type="button"
