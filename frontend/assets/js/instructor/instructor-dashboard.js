@@ -1,6 +1,7 @@
 $(document).ready(function () {
   // Revenue Chart
   const revenueCtx = document.getElementById("revenueChart").getContext("2d");
+  
   new Chart(revenueCtx, {
     type: "line",
     data: {

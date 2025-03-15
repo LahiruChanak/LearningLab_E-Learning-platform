@@ -46,7 +46,7 @@ body {
 
 .course-card-container {
   overflow: auto;
-  max-height: 500px;
+  max-height: 520px;
   padding-bottom: 10px;
   padding-top: 10px;
 }

@@ -30,15 +30,18 @@ body {
   background-color: #f5f6f8;
   color: var(--text-color);
   font-family: "Inter", sans-serif;
-    padding: 0;
-    margin: 0;
+  padding: 0;
+  margin: 0;
   overflow: hidden;
 }
 
 .main-content {
+  flex: 1;
+  padding: 20px;
+  padding-top: 0 !important;
   overflow-y: auto;
   max-height: 95vh;
-  padding-top: 0 !important;
+  transition: all 0.4s ease;
 }
 
 .logo-img {

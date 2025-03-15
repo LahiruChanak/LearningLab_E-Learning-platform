@@ -5,7 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="871ac622-ec0f-4cda-944a-f4037773dc1b" name="Changes" comment="update project directories, modules">
+      <change afterPath="$PROJECT_DIR$/frontend/pages/student/student-schedule.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/css/common/header.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/css/common/header.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/css/common/sidebar.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/css/common/sidebar.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/css/student/course.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/css/student/course.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/css/student/schedule.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/css/common/schedule.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/css/student/user-dashboard.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/css/student/user-dashboard.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/css/student/user-profile.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/css/student/user-profile.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/js/student/user-profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/js/student/user-profile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/frontend.iml" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/frontend.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/admin/admin-dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/admin/admin-dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/course-content.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/course.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/forgot-password.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/leaderboard.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/messages.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/common/messages.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/schedule.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/common/schedule.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/signup.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/common/signup.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/student/user-dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/student/user-dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/student/user-profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/student/user-profile.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,10 +50,11 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;com.codeium.enabled&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Lenovo/IdeaProjects/LMS - LearningLab/frontend&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Lenovo/IdeaProjects/LMS - LearningLab/frontend/pages/student&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -47,18 +69,18 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\pages\student" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\js" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\images" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\css" />
-      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\css\common" />
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\pages\common" />
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\pages\student" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\js\common" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\pages" />
-      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\css\common" />
-      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\pages\student" />
-      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\js\student" />
     </key>
   </component>
   <component name="RunManager">
@@ -90,6 +112,8 @@
       <workItem from="1741922895412" duration="505000" />
       <workItem from="1741923446271" duration="9193000" />
       <workItem from="1742014519405" duration="247000" />
+      <workItem from="1742019087005" duration="2933000" />
+      <workItem from="1742026897530" duration="250000" />
     </task>
     <task id="LOCAL-00001" summary="update project directories, modules">
       <option name="closed" value="true" />
