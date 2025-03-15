@@ -423,6 +423,8 @@ $(document).ready(function () {
   };
 
   // Handle quiz submission
+  let isQuizSubmitted = false;
+
   $("#quizForm").on("submit", function (e) {
     e.preventDefault();
 
@@ -454,32 +456,44 @@ $(document).ready(function () {
     const percentage = Math.round((score / totalQuestions) * 100);
     $("#quizScore").text(percentage);
 
+    // Hide the quiz modal
+    const $quizModal = $("#quizModal");
+    if ($quizModal.length) {
+      $quizModal.modal("hide");
+    }
+
     // Show results in modal
-    const quizResultModal = new bootstrap.Modal(
-      document.getElementById("quizResultModal")
-    );
-    const passedImg = $("#quizResultModal #passed-img");
-    const failedImg = $("#quizResultModal #failed-img");
+    const $quizResultModal = $("#quizResultModal");
+    const quizResultModal = new bootstrap.Modal($quizResultModal[0]);
+    const $passedImg = $quizResultModal.find("#passed-img");
+    const $failedImg = $quizResultModal.find("#failed-img");
 
     if (percentage >= 60) {
-      passedImg.removeClass("d-none");
-      failedImg.addClass("d-none");
+      $passedImg.removeClass("d-none");
+      $failedImg.addClass("d-none");
 
       $("#retakeQuiz").addClass("d-none");
       $("#quizForm button[type=submit]").prop("disabled", true);
       $(".result-status").text("Congratulations...!");
       $(".result-message").text("You got " + percentage + "% score. Good job!");
     } else {
-      passedImg.addClass("d-none");
-      failedImg.removeClass("d-none");
+      $passedImg.addClass("d-none");
+      $failedImg.removeClass("d-none");
 
       $("#retakeQuiz").removeClass("d-none");
-      $("#quizForm button[type=submit]").prop("disabled", false);
+      $("#quizForm button[type=submit]").prop("disabled", true);
       $(".result-status").text("Try Again...!");
       $(".result-message").text(
         "You got " + percentage + "% score. Better luck next time!"
       );
     }
+
+    // Mark quiz as submitted and show "View Results" button
+    isQuizSubmitted = true;
+    $(".btn-outline-success[data-bs-target='#quizResultModal']").removeClass(
+      "d-none"
+    );
+
     quizResultModal.show();
   });
 
@@ -488,5 +502,15 @@ $(document).ready(function () {
     $("#quizForm")[0].reset();
     $("#quizResults").addClass("d-none");
     $(this).addClass("d-none");
+    $("#quizForm button[type=submit]").prop("disabled", false);
+    $(".btn-outline-success[data-bs-target='#quizResultModal']").addClass(
+      "d-none"
+    );
+    isQuizSubmitted = false;
   });
+
+  // Initially hide the "View Results" button
+  $(".btn-outline-success[data-bs-target='#quizResultModal']").addClass(
+    "d-none"
+  );
 });
