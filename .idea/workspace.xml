@@ -1,8 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="fee7e0de-4aa2-408c-9055-cb58e3275d5f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/user-dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/user-dashboard.html" afterDir="false" />
+    <list default="true" id="871ac622-ec0f-4cda-944a-f4037773dc1b" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/LMS- system.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/admin-course.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/admin-dashboard.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/alert.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/auth.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/button.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/calendar.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/call.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/color.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/course-content.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/course.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/header.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/instructor-dashboard.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/leaderboard.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/messages.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/password-utils.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/schedule.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/settings.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/sidebar.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/user-dashboard.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/user-leaderboard.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/user-profile.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/font/skate.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/chip.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/contactless.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/developer.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/favicon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/login.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/logo-full.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/logo-mini.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/logo.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/mastercard.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/placeholder.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/send.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/trash-bin.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/user.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/admin-course.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/admin-dashboard.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/alert.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/auth.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/calendar.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/call.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/certificate.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/course-content.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/course.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/emoji-keyboard.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/instructor-dashboard.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/jquery-3.7.1.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/leaderboard.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/messages.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/password-utils.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/schedule.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/sidebar.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/user-dashboard.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/user-leaderboard.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/user-profile.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/certificate.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-content.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/course.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/forgot-password.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/leaderboard.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/messages.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/admin/admin-course.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/admin/admin-dashboard.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/instructor/instructor-dashboard.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/schedule.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/signup.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-dashboard.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-leaderboard.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-profile.html" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -10,29 +88,62 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/frontend" />
+    <option name="ROOT_SYNC" value="SYNC" />
   </component>
   <component name="ProjectColorInfo">{
-  &quot;customColor&quot;: &quot;&quot;,
-  &quot;associatedIndex&quot;: 5
+  &quot;associatedIndex&quot;: 7
 }</component>
-  <component name="ProjectId" id="2tD02qlHfo8qz4f8d6hQfh68oOe" />
+  <component name="ProjectId" id="2uA0n3cE9j4RegCKV2NUi6uwhG7" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
     <option name="showMembers" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;com.codeium.enabled&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "com.codeium.enabled": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/Lenovo/IdeaProjects/LMS - LearningLab/frontend",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.43333334",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend" />
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\js" />
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\images" />
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\css" />
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\js\common" />
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\pages" />
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\css\common" />
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\pages\student" />
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\js\student" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="BackendApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="backend" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="lk.ijse.BackendApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -44,13 +155,15 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="fee7e0de-4aa2-408c-9055-cb58e3275d5f" name="Changes" comment="" />
-      <created>1739871136009</created>
+      <changelist id="871ac622-ec0f-4cda-944a-f4037773dc1b" name="Changes" comment="" />
+      <created>1741676235418</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1739871136009</updated>
-      <workItem from="1739871137836" duration="7000" />
-      <workItem from="1739871193780" duration="5000" />
+      <updated>1741676235418</updated>
+      <workItem from="1741676236705" duration="1113000" />
+      <workItem from="1741922895412" duration="505000" />
+      <workItem from="1741923446271" duration="9193000" />
+      <workItem from="1742014519405" duration="247000" />
     </task>
     <servers />
   </component>
