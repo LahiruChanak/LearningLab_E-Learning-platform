@@ -34,9 +34,12 @@ body {
 }
 
 .main-content {
-  width: 100%;
-  margin: 0;
-  padding: 15px 0 !important;
+  flex: 1;
+  padding-right: 8px;
+  margin-right: 5px;
+  background-color: transparent;
+  height: 96vh;
+  overflow: auto;
 }
 
 #prevMonth,
@@ -54,10 +57,10 @@ body {
 }
 
 .calendar {
-  height: calc(100vh - 40px);
-  overflow-y: auto;
-  overflow-x: hidden;
+  width: 100%;
+  overflow: hidden;
   padding: 30px;
+  margin-bottom: 5px;
   background: #fff;
   border-radius: 20px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
