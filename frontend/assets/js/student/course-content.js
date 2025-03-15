@@ -10,24 +10,32 @@ $(document).ready(function () {
   // Track current video
   let currentVideoId = "";
 
-  // Initialize the first lesson as unlocked
-  initializeLessons();
+  // Flag to track if user is enrolled
+  let isEnrolled = false;
 
   // Function to initialize lessons
   function initializeLessons() {
-    // Unlock the first lesson in each section
-    $(".accordion-item #chapter1").each(function () {
-      const firstLesson = $(this).find(".lesson-item").first();
-      if (firstLesson.length) {
-        unlockLesson(firstLesson);
-      }
-    });
+    // Unlock the first lesson in the first chapter (section) only
+    const firstChapter = $(".accordion-item#chapter1").first();
+    const firstLesson = firstChapter.find(".lesson-item").first();
+
+    if (firstLesson.length) {
+      unlockLesson(firstLesson);
+    }
+
+    // Ensure other lessons remain locked until interacted with
+    $(".lesson-item").not(firstLesson).addClass("locked");
+
+    // Update enrollment status
+    isEnrolled = true;
   }
 
   // Function to unlock a lesson
   function unlockLesson(lessonElement) {
     lessonElement.removeClass("locked");
     lessonElement.find(".hgi-square-lock-02").remove();
+    // Ensure the lesson is now clickable by removing any potential restrictions
+    lessonElement.css("pointer-events", "auto");
   }
 
   // Function to unlock the next lesson
@@ -75,11 +83,64 @@ $(document).ready(function () {
     return allCompleted;
   }
 
+  // Function to check if all lessons in the second chapter are completed
+  function areSecondChapterLessonsCompleted() {
+    const secondChapter = $("#chapter2");
+    const totalLessons = secondChapter.find(".lesson-item").length;
+    const completedLessons = secondChapter.find(
+      ".lesson-item .hgi-check"
+    ).length;
+    return totalLessons === completedLessons && totalLessons > 0;
+  }
+
+  // Function to unlock the third chapter (quiz)
+  function unlockThirdChapter() {
+    if (areSecondChapterLessonsCompleted()) {
+      const thirdChapter = $("#section3");
+      const quizLesson = $("#lesson3_1");
+
+      // Unlock the third chapter header
+      const thirdChapterHeader = $("#chapter3");
+      thirdChapterHeader.removeClass("locked");
+      thirdChapterHeader.find(".hgi-square-lock-02").remove();
+
+      // Unlock the quiz lesson
+      quizLesson.removeClass("locked");
+      quizLesson.find(".hgi-square-lock-02").remove();
+      quizLesson.css("pointer-events", "auto");
+
+      isThirdChapterUnlocked = true;
+    }
+  }
+
   // Handle lesson item clicks
   $(".lesson-item").on("click", function () {
-    // Check if the lesson is locked
-    if ($(this).hasClass("locked")) {
-      return; // Prevent interaction with locked lessons
+    // Check if the lesson is locked or user is not enrolled
+    if ($(this).hasClass("locked") || !isEnrolled) {
+      if (!isEnrolled) {
+        showAlert(
+          "warning",
+          "Please enroll in this course to access the content!"
+        );
+      }
+      return;
+    }
+
+    // Check if this is the quiz lesson
+    if ($(this).attr("id") === "lesson3_1") {
+      if (!isThirdChapterUnlocked) {
+        alert(
+          "Please complete all lessons in the second chapter to access the quiz!"
+        );
+        return;
+      }
+
+      // Manually show the quiz modal if third chapter is unlocked
+      const quizModal = new bootstrap.Modal(
+        document.getElementById("quizModal")
+      );
+      quizModal.show();
+      return;
     }
 
     // Check if this is an intermediate lesson and beginner content isn't completed
@@ -88,6 +149,7 @@ $(document).ready(function () {
       alert("Please complete all beginner lessons first!");
       return;
     }
+
     const videoId = $(this).data("video-id");
     if (videoId && videoId !== currentVideoId) {
       currentVideoId = videoId;
@@ -98,12 +160,11 @@ $(document).ready(function () {
       );
 
       // Update lesson status immediately
-      $(this).find("i.hgi-check").remove(); // Remove existing check mark if any
+      $(this).find("i.hgi-check").remove();
       $(this).find("i.hgi-tick-01").removeClass("d-none").addClass("d-block");
 
       // Check if all beginner lessons are completed
       if (areAllBeginnerLessonsCompleted()) {
-        // Unlock all intermediate sections
         $(".accordion-item[data-level='intermediate']").each(function () {
           const sectionHeader = $(this).find(".accordion-button");
           if (sectionHeader.hasClass("locked")) {
@@ -113,14 +174,11 @@ $(document).ready(function () {
         });
       }
 
-      // Update play icon to indicate current lesson
       $(".lesson-item i.hgi-play").removeClass("text-primary");
       $(this).find("i.hgi-play").addClass("text-primary");
-      // Unlock the next lesson when this one is completed
       unlockNextLesson($(this));
-
-      // Update section progress
       updateSectionProgress();
+      unlockThirdChapter();
     }
   });
 
@@ -132,12 +190,14 @@ $(document).ready(function () {
       '<span class="spinner-border spinner-border-sm me-2"></span>Enrolling...'
     );
 
-    // Simulate enrollment process
     setTimeout(function () {
       $btn.html(
         'Enrolled <i class="hgi-stroke hgi-tick-01 text-white fs-5 align-middle"></i>'
       );
       $btn.removeClass("btn-primary").addClass("btn-success");
+      initializeLessons();
+      updateSectionProgress();
+      unlockThirdChapter();
     }, 1500);
   });
 
@@ -172,42 +232,25 @@ $(document).ready(function () {
     // Update the main progress info
     $("#progress").text(progress);
 
-    // // Update individual section progress
-    // $accordion.each(function () {
-    //   const sectionTotalLessons = $(this).find(".lesson-item").length;
-    //   const sectionCompletedLessons = $(this).find(".hgi-check").length;
-    //   const sectionProgress = Math.round(
-    //     (sectionCompletedLessons / sectionTotalLessons) * 100
-    //   );
-
-    //   // Add progress info to section header
-    //   const $header = $(this).find(".accordion-button");
-    //   const $progressInfo = $header.find(".progress-info");
-
-    //   if ($progressInfo.length === 0 && sectionTotalLessons > 0) {
-    //     $header
-    //       .find(".duration")
-    //       .before(
-    //         `<span class="progress-info ms-2">${sectionProgress}% complete</span>`
-    //       );
-    //   } else {
-    //     $progressInfo.text(`${sectionProgress}% complete`);
-    //   }
-    // });
+    // Update individual section progress
+    $accordion.each(function () {
+      const sectionTotalLessons = $(this).find(".lesson-item").length;
+      const sectionCompletedLessons = $(this).find(".hgi-check").length;
+      const sectionProgress = Math.round(
+        (sectionCompletedLessons / sectionTotalLessons) * 100
+      );
+    });
   }
-
-  // Initial progress update
-  updateSectionProgress();
 
   // Update progress when lessons are completed
   $(".lesson-item").on("click", function () {
-    // Skip if lesson is locked
-    if ($(this).hasClass("locked")) {
+    if ($(this).hasClass("locked") || !isEnrolled) {
       return;
     }
     if (!$(this).find(".hgi-check").length) {
       $(this).append('<i class="hgi-stroke hgi-check"></i>');
       updateSectionProgress();
+      unlockThirdChapter();
     }
   });
 
@@ -379,12 +422,12 @@ $(document).ready(function () {
     q5: "b",
   };
 
+  // Handle quiz submission
   $("#quizForm").on("submit", function (e) {
     e.preventDefault();
+
     let score = 0;
     let totalQuestions = Object.keys(quizAnswers).length;
-
-    // Check if all questions have an answer selected
     let unansweredQuestions = [];
 
     for (let question in quizAnswers) {
@@ -393,10 +436,10 @@ $(document).ready(function () {
       }
     }
 
-    // if (unansweredQuestions.length > 0) {
-    //   alert("Please answer all questions before submitting.");
-    //   return;
-    // }
+    if (unansweredQuestions.length > 0) {
+      showAlert("warning", "Please answer all questions before submitting.");
+      return;
+    }
 
     // Calculate score
     for (let question in quizAnswers) {
@@ -425,9 +468,7 @@ $(document).ready(function () {
       $("#retakeQuiz").addClass("d-none");
       $("#quizForm button[type=submit]").prop("disabled", true);
       $(".result-status").text("Congratulations...!");
-      $(".result-message").text(
-        "You got " + percentage + "% score. Good job!"
-      );
+      $(".result-message").text("You got " + percentage + "% score. Good job!");
     } else {
       passedImg.addClass("d-none");
       failedImg.removeClass("d-none");
