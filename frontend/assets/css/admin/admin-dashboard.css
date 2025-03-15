@@ -1,0 +1,254 @@
+:root {
+  --primary-color: #7269ef;
+  --secondary-color: #f8f7ff;
+  --text-color: #495057;
+  --muted-color: #7a7f9a;
+  --border-radius: 16px;
+  --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  /*margin-top: 20px;*/
+  background: #f1f1f1;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.4s ease;
+}
+
+body {
+  background-color: #f5f6f8;
+  color: var(--text-color);
+  font-family: "Inter", sans-serif;
+    padding: 0;
+    margin: 0;
+  overflow: hidden;
+}
+
+.main-content {
+  overflow-y: auto;
+  max-height: 95vh;
+  padding-top: 0 !important;
+}
+
+.logo-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Stats Cards */
+.stats-card {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 1.5rem 2rem;
+  flex-grow: 1;
+  width: fit-content;
+  box-shadow: var(--card-shadow);
+}
+
+.stats-card h3 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 0;
+  color: var(--text-color);
+}
+
+.stats-card h3::after {
+  content: "";
+  display: block;
+  width: 50px;
+  height: 3px;
+  border-radius: 5px;
+  margin-top: 0.6rem;
+}
+
+.stats-card #i1 {
+  color: #2ebb62;
+}
+#student-count::after {
+  background: #2ebb62;
+}
+
+.stats-card #i2 {
+  color: #3b82f6;
+}
+#instructor-count::after {
+  background: #3b82f6;
+}
+
+.stats-card #i3 {
+  color: #ffd93d;
+}
+#course-count::after {
+  background: #ffd93d;
+}
+
+.stats-card #i4 {
+  color: #ff6b6b;
+}
+#earning-count::after {
+  background: #ff6b6b;
+}
+
+.stats-card p {
+  color: var(--muted-color);
+  margin-bottom: 0;
+  font-size: 0.875rem;
+}
+
+/* Charts */
+.chart-card {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  flex-grow: 1;
+  box-shadow: var(--card-shadow);
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.chart-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.btn-group .btn {
+  padding: 0.375rem 1rem;
+  font-size: 0.875rem;
+}
+
+/* Calendar Widget */
+.calendar-widget {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: var(--card-shadow);
+}
+
+/* Tables */
+.data-table {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+  box-shadow: var(--card-shadow);
+}
+
+.table th {
+  font-weight: 600;
+  color: var(--text-color);
+  border-bottom-width: 1px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.table td {
+  padding: 1rem;
+  font-size: 0.875rem;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 0.75rem;
+}
+
+.btn-action {
+  padding: 3px 8px;
+  border: none;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.text-success {
+  color: #2ebb62 !important;
+}
+
+.text-warning {
+  color: #ffd93d !important;
+}
+
+.text-danger {
+  color: #ff6b6b !important;
+}
+
+.btn-view,
+.btn-success {
+  background-color: #2ebb62;
+  color: #fff;
+  transition: all 0.4s ease;
+}
+
+.btn-edit,
+.btn-warning {
+  background-color: #ffd93d;
+  color: #000;
+  transition: all 0.4s ease;
+}
+
+.btn-delete {
+  background-color: #ff6b6b;
+  color: #fff;
+}
+
+.btn-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+}
+
+.nav-tabs .nav-link {
+  border-radius: 8px 8px 0 0;
+  border: 1.5px solid transparent;
+  border-bottom: none;
+  color: #808080;
+}
+
+.nav-tabs .nav-link:not(.active):hover {
+  border-color: transparent;
+}
+
+.nav-tabs .nav-link.active {
+  border-radius: 8px 8px 0 0;
+  font-weight: 600;
+  /* background-color: var(--secondary-color); */
+}
+
+.form-control,
+.form-select {
+  border-radius: 8px;
+  transition: all 0.4s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: none;
+}
+
+.btn-light {
+  height: 40px;
+  border-radius: 8px;
+  border: none;
+}

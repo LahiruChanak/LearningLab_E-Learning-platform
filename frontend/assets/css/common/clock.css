@@ -1,0 +1,12 @@
+#greeting {
+  font-weight: bold;
+}
+
+#clock {
+  display: inline-block;
+  font-size: 1.5rem;
+  font-family: "Courier New", monospace;
+  font-weight: bold;
+  color: #212121;
+  padding: 0 0 0 30px;
+}
