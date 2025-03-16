@@ -40,11 +40,19 @@
             <div class="input-container mb-4">
               <input placeholder="" type="text" class="input" id="fullName" />
               <label class="iLabel" for="fullName">Full Name</label>
+              <div class="error-text"></div>
             </div>
 
             <div class="input-container mb-4">
-              <input placeholder="" type="email" class="input" id="email" />
+              <input
+                placeholder=""
+                type="email"
+                class="input"
+                id="email"
+                required
+              />
               <label class="iLabel" for="email">Email</label>
+              <div class="error-text"></div>
             </div>
 
             <div class="input-container mb-4">
@@ -53,8 +61,17 @@
                 type="password"
                 class="input"
                 id="password"
+                required
               />
               <label class="iLabel" for="password">Password</label>
+              <button
+                type="button"
+                class="password-toggle"
+                aria-label="Toggle password visibility"
+              >
+                <i class="hgi hgi-stroke hgi-view-off-slash fs-5"></i>
+              </button>
+              <div class="error-text"></div>
             </div>
 
             <div class="input-container mb-4">
@@ -63,13 +80,22 @@
                 type="password"
                 class="input"
                 id="confirm-password"
+                required
               />
               <label class="iLabel" for="confirm-password">
                 Repeat Password
               </label>
+              <button
+                type="button"
+                class="password-toggle"
+                aria-label="Toggle password visibility"
+              >
+                <i class="hgi hgi-stroke hgi-view-off-slash fs-5"></i>
+              </button>
+              <div class="error-text"></div>
             </div>
             <button
-              type="button"
+              type="submit"
               class="signup-btn"
               data-bs-toggle="modal"
               data-bs-target="#otpModal"
@@ -87,13 +113,14 @@
     </div>
 
     <!-- OTP Modal -->
-
     <div
       class="modal fade"
       id="otpModal"
       tabindex="-1"
       aria-labelledby="otpModalLabel"
       aria-hidden="true"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
     >
       <div
         class="modal-dialog modal-dialog-centered modal-sm justify-content-center"
@@ -152,6 +179,8 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <script src="../../assets/js/common/jquery-3.7.1.min.js"></script>
     <script src="../../assets/js/common/auth.js"></script>
+    <script src="../../assets/js/common/alert.js"></script>
   </body>
 </html>
