@@ -4,23 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="871ac622-ec0f-4cda-944a-f4037773dc1b" name="Changes" comment="configure application.properties file">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/config/SecurityConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/config/WebAppConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/controller/AuthController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/util/EmailUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/util/OtpUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/util/ResponseUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/assets/css/common/auth.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/css/common/auth.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/assets/js/common/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/js/common/auth.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/pages/common/forgot-password.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/common/forgot-password.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/pages/common/signup.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/common/signup.html" afterDir="false" />
-    </list>
+    <list default="true" id="871ac622-ec0f-4cda-944a-f4037773dc1b" name="Changes" comment=".idea directory changes" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -133,7 +117,7 @@
       <workItem from="1742019087005" duration="2933000" />
       <workItem from="1742026897530" duration="250000" />
       <workItem from="1742105706755" duration="6937000" />
-      <workItem from="1742127725290" duration="8028000" />
+      <workItem from="1742127725290" duration="8395000" />
     </task>
     <task id="LOCAL-00001" summary="update project directories, modules">
       <option name="closed" value="true" />
@@ -175,7 +159,31 @@
       <option name="project" value="LOCAL" />
       <updated>1742142547416</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="otp send via email to register and pw reset.">
+      <option name="closed" value="true" />
+      <created>1742142807297</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1742142807297</updated>
+    </task>
+    <task id="LOCAL-00007" summary="update the pom.xml file with required dependencies">
+      <option name="closed" value="true" />
+      <created>1742142873618</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1742142873618</updated>
+    </task>
+    <task id="LOCAL-00008" summary=".idea directory changes">
+      <option name="closed" value="true" />
+      <created>1742142966624</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1742142966624</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -195,6 +203,9 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="update project directories, modules" />
     <MESSAGE value="configure application.properties file" />
-    <option name="LAST_COMMIT_MESSAGE" value="configure application.properties file" />
+    <MESSAGE value="otp send via email to register and pw reset." />
+    <MESSAGE value="update the pom.xml file with required dependencies" />
+    <MESSAGE value=".idea directory changes" />
+    <option name="LAST_COMMIT_MESSAGE" value=".idea directory changes" />
   </component>
 </project>
