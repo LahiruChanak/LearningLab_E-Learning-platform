@@ -4,7 +4,31 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="871ac622-ec0f-4cda-944a-f4037773dc1b" name="Changes" comment=".idea directory changes" />
+    <list default="true" id="871ac622-ec0f-4cda-944a-f4037773dc1b" name="Changes" comment=".idea directory changes">
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Achievement.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Category.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Certificate.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Course.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/CourseResource.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Enrollment.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Lesson.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Message.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Notification.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Orders.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Payment.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Quiz.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/QuizAttempt.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Review.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Schedule.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Skill.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/User.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/UserSkill.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/util/EmailUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/util/EmailUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/common/messages.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/common/messages.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -45,7 +69,7 @@
     "com.codeium.enabled": "true",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Lenovo/IdeaProjects/LMS - LearningLab/backend/src/main/java/lk/ijse",
+    "last_opened_file_path": "C:/Users/Lenovo/IdeaProjects/LMS - LearningLab/backend/src/main/java/lk/ijse/entity",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -65,11 +89,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\backend\src\main\java\lk\ijse\entity" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\backend\src\main\java\lk\ijse" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\pages\student" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\js" />
-      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\images" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\css\common" />
@@ -117,7 +141,7 @@
       <workItem from="1742019087005" duration="2933000" />
       <workItem from="1742026897530" duration="250000" />
       <workItem from="1742105706755" duration="6937000" />
-      <workItem from="1742127725290" duration="8395000" />
+      <workItem from="1742127725290" duration="17790000" />
     </task>
     <task id="LOCAL-00001" summary="update project directories, modules">
       <option name="closed" value="true" />
@@ -183,7 +207,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742142966624</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary=".idea directory changes">
+      <option name="closed" value="true" />
+      <created>1742143395379</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1742143395381</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
