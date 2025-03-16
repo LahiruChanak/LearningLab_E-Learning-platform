@@ -4,29 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="871ac622-ec0f-4cda-944a-f4037773dc1b" name="Changes" comment=".idea directory changes">
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Achievement.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Category.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Certificate.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Course.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/CourseResource.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Enrollment.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Lesson.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Message.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Notification.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Orders.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Payment.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Quiz.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/QuizAttempt.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Review.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Schedule.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Skill.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/UserSkill.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/util/EmailUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/util/EmailUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.properties" afterDir="false" />
+    <list default="true" id="871ac622-ec0f-4cda-944a-f4037773dc1b" name="Changes" comment="configure application.properties file">
       <change beforePath="$PROJECT_DIR$/frontend/pages/common/messages.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/common/messages.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -141,7 +119,7 @@
       <workItem from="1742019087005" duration="2933000" />
       <workItem from="1742026897530" duration="250000" />
       <workItem from="1742105706755" duration="6937000" />
-      <workItem from="1742127725290" duration="17790000" />
+      <workItem from="1742127725290" duration="18105000" />
     </task>
     <task id="LOCAL-00001" summary="update project directories, modules">
       <option name="closed" value="true" />
@@ -215,7 +193,39 @@
       <option name="project" value="LOCAL" />
       <updated>1742143395381</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="database for LearningLab">
+      <option name="closed" value="true" />
+      <created>1742152887658</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1742152887658</updated>
+    </task>
+    <task id="LOCAL-00011" summary=".idea directory changes">
+      <option name="closed" value="true" />
+      <created>1742152942075</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1742152942075</updated>
+    </task>
+    <task id="LOCAL-00012" summary="update the pom.xml file with required dependencies">
+      <option name="closed" value="true" />
+      <created>1742152962533</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1742152962534</updated>
+    </task>
+    <task id="LOCAL-00013" summary="configure application.properties file">
+      <option name="closed" value="true" />
+      <created>1742153028998</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1742153028998</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -234,10 +244,11 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="update project directories, modules" />
-    <MESSAGE value="configure application.properties file" />
     <MESSAGE value="otp send via email to register and pw reset." />
-    <MESSAGE value="update the pom.xml file with required dependencies" />
+    <MESSAGE value="database for LearningLab" />
     <MESSAGE value=".idea directory changes" />
-    <option name="LAST_COMMIT_MESSAGE" value=".idea directory changes" />
+    <MESSAGE value="update the pom.xml file with required dependencies" />
+    <MESSAGE value="configure application.properties file" />
+    <option name="LAST_COMMIT_MESSAGE" value="configure application.properties file" />
   </component>
 </project>
