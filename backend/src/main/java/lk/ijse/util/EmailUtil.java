@@ -19,7 +19,7 @@ public class EmailUtil {
         message.setSubject("LearningLab - Your OTP Code");
         message.setText("Your One-Time Password (OTP) for LearningLab " + purpose + " is: " + otp +
                 "\n\nThis code is valid for 10 minutes. Please do not share this code with anyone.");
-        message.setFrom("noreply@learninglab.com"); // Ensure this matches your SMTP "from" allowance
+        message.setFrom("noreply@fitlifeifms.com");
 
         mailSender.send(message);
     }
