@@ -2,13 +2,15 @@ package lk.ijse.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +23,13 @@ public class JwtUtil {
     private String secretKey;
 
     private static final long JWT_TOKEN_VALIDITY = 24 * 60 * 60; // 24 hours
+    private static final String HMAC_SHA256 = "HmacSHA256";
+
+    private Key getSigningKey() {
+        // Treat the secret key as raw bytes, avoiding base64 decoding
+        byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
+        return new SecretKeySpec(keyBytes, HMAC_SHA256);
+    }
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
@@ -33,7 +42,7 @@ public class JwtUtil {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
-                .signWith(SignatureAlgorithm.HS512, secretKey)
+                .signWith(getSigningKey()) // Use SecretKeySpec
                 .compact();
     }
 
@@ -42,8 +51,9 @@ public class JwtUtil {
     }
 
     public Claims getClaimsFromToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(secretKey)
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
