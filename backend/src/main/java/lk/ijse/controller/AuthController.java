@@ -1,9 +1,8 @@
 package lk.ijse.controller;
 
-import jakarta.validation.Valid;
 import lk.ijse.dto.AuthDTO;
 import lk.ijse.dto.ResponseDTO;
-import lk.ijse.dto.UserDTO;
+import lk.ijse.dto.VerifyOtpRequest;
 import lk.ijse.service.UserService;
 import lk.ijse.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,23 +48,20 @@ public class AuthController {
     }
 
     @PostMapping("/verify-otp")
-    public ResponseEntity<ResponseDTO> verifyOtpAndRegister(
-            @RequestParam String email,
-            @RequestParam String otp,
-            @RequestBody @Valid UserDTO userDTO) {
-        if (!otpUtil.validateOtp(email, otp)) {
+    public ResponseEntity<ResponseDTO> verifyOtp(@RequestBody VerifyOtpRequest request) {
+        if (!otpUtil.validateOtp(request.getEmail(), request.getOtp())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ResponseDTO(400, "Invalid OTP", null));
         }
 
         try {
-            int res = userService.saveUser(userDTO);
+            int res = userService.saveUser(request.getUserDTO());
             switch (res) {
                 case VarList.Created:
-                    UserDetails userDetails = userService.loadUserByUsername(userDTO.getEmail());
+                    UserDetails userDetails = userService.loadUserByUsername(request.getUserDTO().getEmail());
                     String token = jwtUtil.generateToken(userDetails);
-                    AuthDTO authDTO = new AuthDTO(userDTO.getEmail(), token);
-                    otpUtil.removeOtp(email);
+                    AuthDTO authDTO = new AuthDTO(request.getUserDTO().getEmail(), token);
+                    otpUtil.removeOtp(request.getEmail());
                     return ResponseEntity.status(HttpStatus.CREATED)
                             .body(new ResponseDTO(VarList.Created, "Registration successful", authDTO));
                 case VarList.Not_Acceptable:

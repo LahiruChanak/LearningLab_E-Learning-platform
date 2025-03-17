@@ -98,7 +98,6 @@ $(document).ready(function () {
     // Main function -> handle OTP verification and registration
     $(".otp-Form").on("submit", function (e) {
         e.preventDefault();
-
         const signupData = JSON.parse(localStorage.getItem("signupData"));
         const otp = $(".otp-input").map(function () {
             return $(this).val();
@@ -111,8 +110,11 @@ $(document).ready(function () {
             data: JSON.stringify({
                 email: signupData.email,
                 otp: otp,
-                fullName: signupData.fullName,
-                password: signupData.password
+                userDTO: {
+                    fullName: signupData.fullName,
+                    password: signupData.password,
+                    email: signupData.email
+                }
             }),
             success: function (response) {
                 $("#otpModal").modal("hide");

@@ -1,6 +1,5 @@
 package lk.ijse.dto;
 
-import lk.ijse.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,9 +7,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UserDTO {
-    private String fullName;
+public class VerifyOtpRequest {
+
     private String email;
-    private String password;
-    private User.Role role;
+    private String otp;
+    private UserDTO userDTO;
+
 }
