@@ -45,6 +45,28 @@ $(document).ready(function () {
         }
     });
 
+    // Main function -> handle login form submission
+    $("#login-btn").on("click", function (e) {
+        e.preventDefault();
+        const email = $("#login-email").val();
+        const password = $("#login-password").val();
+
+        $.ajax({
+            url: "http://localhost:8080/api/v1/auth/authenticate",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ email, password }),
+            success: function (response) {
+                localStorage.setItem("token", response.data.token);
+                showAlert("success", "Login successful!");
+                window.location.href = "../../../pages/student/user-dashboard.html";
+            },
+            error: function (xhr) {
+                showAlert("danger", "Login failed: " + (xhr.responseJSON?.message || xhr.statusText));
+            }
+        });
+    });
+
     // Main function -> handle signup form submission
     $("#signup-btn").on("click", function (e) {
         e.preventDefault();
@@ -62,22 +84,22 @@ $(document).ready(function () {
         $.ajax({
             url: "http://localhost:8080/api/v1/auth/send-otp",
             type: "POST",
-            data: {email: email},
+            data: { email: email },
             success: function (response) {
-                console.log("OTP sent:", response);
                 $("#otpModal").modal("show");
+                localStorage.setItem("signupData", JSON.stringify({ email, fullName, password }));
             },
             error: function (xhr) {
-                console.error("Error:", xhr);
                 showAlert("danger", "Error sending OTP: " + (xhr.responseJSON?.message || xhr.statusText));
             }
         });
     });
 
-    // Main function -> handle OTP verification
+    // Main function -> handle OTP verification and registration
     $(".otp-Form").on("submit", function (e) {
         e.preventDefault();
-        const email = $("#email").val();
+
+        const signupData = JSON.parse(localStorage.getItem("signupData"));
         const otp = $(".otp-input").map(function () {
             return $(this).val();
         }).get().join("");
@@ -85,13 +107,21 @@ $(document).ready(function () {
         $.ajax({
             url: "http://localhost:8080/api/v1/auth/verify-otp",
             type: "POST",
-            data: {email: email, otp: otp},
+            contentType: "application/json",
+            data: JSON.stringify({
+                email: signupData.email,
+                otp: otp,
+                fullName: signupData.fullName,
+                password: signupData.password
+            }),
             success: function (response) {
                 $("#otpModal").modal("hide");
+                localStorage.setItem("token", response.data.token);
                 showAlert("success", "Registration successful!");
+                localStorage.removeItem("signupData");
             },
             error: function (xhr) {
-                showAlert("danger", "Error verifying OTP: " + xhr.responseJSON.message || xhr.statusText);
+                showAlert("danger", "Error: " + (xhr.responseJSON?.message || xhr.statusText));
                 $(".otp-input").val("");
                 $("#otp-input1").focus();
             }
