@@ -63,7 +63,7 @@ $(document).ready(function () {
 
                 // Redirect to dashboard after 1.5 seconds
                 setTimeout(function () {
-                    window.location.href = "../../../../frontend/pages/student/user-dashboard.html";
+                    window.location.href = "../../../pages/student/student-dashboard.html";
                 }, 1500);
             },
             error: function (xhr) {

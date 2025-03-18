@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>User Dashboard - LearnWave</title>
+    <title>Student Dashboard - LearningLab</title>
     <link rel="icon" href="../../assets/images/icons/favicon.png" />
 
     <link
@@ -45,7 +45,7 @@
           <nav class="nav flex-column mb-4">
             <a
               class="nav-link active"
-              href="user-dashboard.html"
+              href="student-dashboard.html"
               data-bs-toggle="tooltip"
               data-bs-placement="right"
               data-bs-title="Dashboard"
@@ -116,7 +116,10 @@
           </nav>
 
           <div class="premium-card">
-            <img src="../../assets/images/developer.png" alt="Student studying" />
+            <img
+              src="../../assets/images/developer.png"
+              alt="Student studying"
+            />
             <h6>Premium subscription</h6>
             <p class="text-muted small">
               Buy Premium and get access to new courses
@@ -148,8 +151,10 @@
               <!-- Notification icon -->
               <div class="position-relative me-3 notification-icon">
                 <a
-                  href="user-profile.html#notifications"
+                  href="#"
                   class="text-decoration-none text-dark"
+                  data-bs-toggle="modal"
+                  data-bs-target="#notificationsModal"
                 >
                   <i class="hgi-stroke hgi-notification-02 fs-5"></i>
                 </a>
@@ -179,11 +184,7 @@
                 <h5 class="mb-4">New Courses</h5>
                 <div class="col-md-4">
                   <div class="course-card geography">
-                    <img
-                      src="/api/placeholder/60/60"
-                      alt="Geography"
-                      class="mb-3"
-                    />
+                    <img src="#" alt="Geography" class="mb-3" />
                     <h6>Geography</h6>
                     <p class="small text-muted">12 lessons</p>
                     <div
@@ -191,17 +192,17 @@
                     >
                       <div class="avatar-group">
                         <img
-                          src="/api/placeholder/32/32"
+                          src="../../assets/images/user.jpg"
                           alt="Student"
                           class="avatar"
                         />
                         <img
-                          src="/api/placeholder/32/32"
+                          src="../../assets/images/user.jpg"
                           alt="Student"
                           class="avatar"
                         />
                         <img
-                          src="/api/placeholder/32/32"
+                          src="../../assets/images/user.jpg"
                           alt="Student"
                           class="avatar"
                         />
@@ -334,6 +335,123 @@
       </div>
     </div>
 
+    <!-- Notifications Modal -->
+    <div
+      class="modal fade"
+      id="notificationsModal"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="notificationsModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 rounded-4">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="notificationsModalLabel">
+              <i
+                class="hgi-stroke hgi-notification-02 fs-4 me-2 align-middle"
+              ></i>
+              Notifications
+            </h1>
+            <button
+              type="button"
+              class="btn-close shadow-none"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body p-0">
+            <div class="d-flex justify-content-end p-3 pb-0">
+              <button
+                class="text-primary border-0 bg-transparent"
+                id="markAllRead"
+              >
+                Read All
+              </button>
+            </div>
+            <div class="notification-list p-3 pt-0" id="notificationList">
+              <div class="notification-item">
+                <div class="notification-content">
+                  <p>Your profile has been updated successfully.</p>
+                  <small>2 hours ago</small>
+                </div>
+                <button
+                  class="btn btn-delete"
+                  data-id="1"
+                  data-bs-toggle="tooltip"
+                  data-bs-title="Remove"
+                  data-bs-placement="bottom"
+                >
+                  <i class="hgi-stroke hgi-delete-02"></i>
+                </button>
+              </div>
+              <div class="notification-item">
+                <div class="notification-content">
+                  <p>New course available: "Introduction to Python".</p>
+                  <small>1 day ago</small>
+                </div>
+                <button
+                  class="btn btn-delete"
+                  data-id="2"
+                  data-bs-toggle="tooltip"
+                  data-bs-title="Remove"
+                  data-bs-placement="bottom"
+                >
+                  <i class="hgi-stroke hgi-delete-02"></i>
+                </button>
+              </div>
+              <div class="notification-item">
+                <div class="notification-content">
+                  <p>You earned a new achievement: "Quick Learner".</p>
+                  <small>3 days ago</small>
+                </div>
+                <button
+                  class="btn btn-delete"
+                  data-id="3"
+                  data-bs-toggle="tooltip"
+                  data-bs-title="Remove"
+                  data-bs-placement="bottom"
+                >
+                  <i class="hgi-stroke hgi-delete-02"></i>
+                </button>
+              </div>
+              <div class="notification-item">
+                <div class="notification-content">
+                  <p>Your subscription renewal is due in 5 days.</p>
+                  <small>5 days ago</small>
+                </div>
+                <button
+                  class="btn btn-delete"
+                  data-id="4"
+                  data-bs-toggle="tooltip"
+                  data-bs-title="Remove"
+                  data-bs-placement="bottom"
+                >
+                  <i class="hgi-stroke hgi-delete-02"></i>
+                </button>
+              </div>
+              <div class="notification-item">
+                <div class="notification-content">
+                  <p>Course "Advanced JavaScript" has new content added.</p>
+                  <small>1 week ago</small>
+                </div>
+                <button
+                  class="btn btn-delete"
+                  data-id="5"
+                  data-bs-toggle="tooltip"
+                  data-bs-title="Remove"
+                  data-bs-placement="bottom"
+                >
+                  <i class="hgi-stroke hgi-delete-02"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
@@ -345,7 +463,8 @@
 
     <script src="../../assets/js/common/jquery-3.7.1.min.js"></script>
     <script src="../../assets/js/student/user-dashboard.js"></script>
-    <script src="../../assets/js/common/sidebar.js"></script>
+    <script src="../../assets/js/common/header.js"></script>
+    <script src="../../assets//js/common/sidebar.js"></script>
     <script src="../../assets/js/common/calendar.js"></script>
     <script src="../../assets/js/common/alert.js"></script>
   </body>
