@@ -1,6 +1,6 @@
 package lk.ijse.dto;
 
-import lk.ijse.entity.User;
+import lk.ijse.entity.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,4 +13,5 @@ public class UserDTO {
     private String email;
     private String password;
     private User.Role role;
+    private String profileImage;
 }

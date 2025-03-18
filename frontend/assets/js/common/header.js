@@ -1,34 +1,72 @@
-// -------------------------- Notification Modal --------------------------
-document.addEventListener("DOMContentLoaded", () => {
-  const markAllReadBtn = document.getElementById("markAllRead");
-  const notificationList = document.getElementById("notificationList");
-  const deleteButtons = document.querySelectorAll(".btn-delete");
+$(document).ready(function () {
 
-  // Mark All as Read functionality
-  markAllReadBtn.addEventListener("click", () => {
-    const notifications =
-      notificationList.querySelectorAll(".notification-item");
-    notifications.forEach((item) => {
-      item.classList.add("read");
+    /* ---------------------------------- User Profile Functions ---------------------------------- */
+
+    // load user profile details
+    function loadUserProfile() {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            showAlert("danger", "You are not logged in. Please login to view your profile.");
+            return;
+        }
+
+        $.ajax({
+            url: "http://localhost:8080/api/v1/user/profile",
+            type: "GET",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            success: function (response) {
+                if (response.status === 200) {
+                    const userData = response.data;
+
+                    $("#header-name").text(userData.fullName);
+                    $("#header-role").text(
+                        userData.role ? userData.role.charAt(0).toUpperCase() + userData.role.slice(1).toLowerCase() : "-"
+                    );
+
+                    if (userData.profileImage) {
+                        $("#header-profile-image").attr("src", userData.profileImage);
+                    }
+                } else {
+                    showAlert("danger", "Failed to load profile: " + response.message);
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", "Error fetching profile:", xhr.responseJSON ? xhr.responseJSON.message : xhr.statusText);
+            }
+        });
+    }
+
+    /* ---------------------------------- Notification Modal Functions ---------------------------------- */
+
+    // mark all as read
+    $("#markAllRead").on("click", function () {
+        $("#notificationList .notification-item").addClass("read");
     });
-  });
 
-  // Delete individual notification functionality
-  deleteButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      // Hide tooltip before removing notification
-      const tooltip = bootstrap.Tooltip.getInstance(button);
-      if (tooltip) {
-        tooltip.dispose();
-      }
+    // Delete individual notification
+    $(document).on("click", ".btn-delete", function () {
+        const $button = $(this);
+        const $notification = $button.closest(".notification-item");
 
-      const notification = button.closest(".notification-item");
-      notification.remove();
+        // Dispose Bootstrap tooltip if present
+        const tooltip = bootstrap.Tooltip.getInstance($button[0]);
+        if (tooltip) {
+            tooltip.dispose();
+        }
 
-      if (!notificationList.children.length) {
-        notificationList.innerHTML =
-          '<p class="no-notifications">No notifications available.</p>';
-      }
+        $notification.remove();
+
+        // check if the notification list is empty
+        if ($("#notificationList").children().length === 0) {
+            $("#notificationList").html('<p class="no-notifications">No notifications available.</p>');
+        }
     });
-  });
+
+    // Initialize tooltips for delete buttons
+    $('[data-bs-toggle="tooltip"]').tooltip();
+
+    loadUserProfile();
 });
