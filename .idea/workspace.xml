@@ -4,16 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="871ac622-ec0f-4cda-944a-f4037773dc1b" name="Changes" comment="implement password reset password with JWT function">
+    <list default="true" id="871ac622-ec0f-4cda-944a-f4037773dc1b" name="Changes" comment=".idea file">
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/controller/UserController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/config/WebSecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/config/WebSecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/dto/UserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/dto/UserDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/service/UserService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/service/impl/UserServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/util/JwtFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/util/JwtFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/assets/js/common/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/js/common/auth.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/pages/common/forgot-password.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/common/forgot-password.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/pages/common/signup.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/common/signup.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/js/common/header.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/js/common/header.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/js/student/user-profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/js/student/user-profile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/student/student-dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/student/student-dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/student/user-profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/student/user-profile.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -130,7 +133,7 @@
       <workItem from="1742026897530" duration="250000" />
       <workItem from="1742105706755" duration="6937000" />
       <workItem from="1742127725290" duration="18574000" />
-      <workItem from="1742286492918" duration="12618000" />
+      <workItem from="1742286492918" duration="20561000" />
     </task>
     <task id="LOCAL-00001" summary="update project directories, modules">
       <option name="closed" value="true" />
@@ -316,7 +319,23 @@
       <option name="project" value="LOCAL" />
       <updated>1742310499679</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="implement authentication functions with JWT.">
+      <option name="closed" value="true" />
+      <created>1742316796461</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1742316796461</updated>
+    </task>
+    <task id="LOCAL-00025" summary=".idea file">
+      <option name="closed" value="true" />
+      <created>1742316822001</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1742316822001</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -344,8 +363,9 @@
     <MESSAGE value="implemented JWT into the project" />
     <MESSAGE value="fix an incorrect path" />
     <MESSAGE value="remove an unwanted file" />
-    <MESSAGE value=".idea file" />
     <MESSAGE value="implement password reset password with JWT function" />
-    <option name="LAST_COMMIT_MESSAGE" value="implement password reset password with JWT function" />
+    <MESSAGE value="implement authentication functions with JWT." />
+    <MESSAGE value=".idea file" />
+    <option name="LAST_COMMIT_MESSAGE" value=".idea file" />
   </component>
 </project>
