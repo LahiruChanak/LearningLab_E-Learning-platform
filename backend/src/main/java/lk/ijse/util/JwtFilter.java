@@ -19,6 +19,7 @@ import java.util.List;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
+
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -28,7 +29,9 @@ public class JwtFilter extends OncePerRequestFilter {
     private static final List<String> EXCLUDE_URLS = Arrays.asList(
             "/api/v1/auth/send-otp",
             "/api/v1/auth/verify-otp",
-            "/api/v1/auth/authenticate"
+            "/api/v1/auth/authenticate",
+            "/api/v1/auth/reset-password",
+            "/api/v1/auth/reset-pw-otp"
     );
 
     @Override

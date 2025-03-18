@@ -26,6 +26,7 @@ import java.util.Arrays;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class WebSecurityConfig {
+
     private final UserService userService;
     private final JwtFilter jwtFilter;
 
@@ -54,6 +55,8 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/send-otp").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/verify-otp").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/authenticate").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/reset-password").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/reset-pw-otp").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

@@ -18,9 +18,7 @@ $(document).ready(function () {
         const index = $(".otp-input").index(this);
 
         if (e.key === "Backspace" && !$this.val() && index > 0) {
-            $(".otp-input")
-                .eq(index - 1)
-                .focus();
+            $(".otp-input").eq(index - 1).focus();
         }
     });
 
@@ -52,8 +50,10 @@ $(document).ready(function () {
         const email = $("#login-email").val();
         const password = $("#login-password").val();
 
+        const loginUrl = `http://localhost:8080/api/v1/auth/authenticate`;
+
         $.ajax({
-            url: "http://localhost:8080/api/v1/auth/authenticate",
+            url: loginUrl,
             type: "POST",
             contentType: "application/json",
             data: JSON.stringify({email, password}),
@@ -63,7 +63,7 @@ $(document).ready(function () {
 
                 // Redirect to dashboard after 1.5 seconds
                 setTimeout(function () {
-                    window.location.href = "../../../pages/student/student-dashboard.html";
+                    window.location.href = "../../../../frontend/pages/student/student-dashboard.html";
                 }, 1500);
             },
             error: function (xhr) {
@@ -86,8 +86,10 @@ $(document).ready(function () {
             return;
         }
 
+        const signupOtpUrl = `http://localhost:8080/api/v1/auth/send-otp`;
+
         $.ajax({
-            url: "http://localhost:8080/api/v1/auth/send-otp",
+            url: signupOtpUrl,
             type: "POST",
             data: {email: email},
             success: function (response) {
@@ -101,18 +103,18 @@ $(document).ready(function () {
     });
 
     // Main function -> handle OTP verification and registration
-    $(".otp-Form").on("submit", function (e) {
+    $("#signupOtpForm").on("submit", function (e) {
         e.preventDefault();
+
         const signupData = JSON.parse(localStorage.getItem("signupData"));
         const otp = $(".otp-input").map(function () {
             return $(this).val();
         }).get().join("");
 
-        const encodeEmail = encodeURIComponent(signupData.email);
-        const encodeOtp = encodeURIComponent(otp);
+        const registerUrl = `http://localhost:8080/api/v1/auth/verify-otp?email=${encodeURIComponent(signupData.email)}&otp=${encodeURIComponent(otp)}`;
 
         $.ajax({
-            url: "http://localhost:8080/api/v1/auth/verify-otp?email=" + encodeEmail + "&otp=" + encodeOtp,
+            url: registerUrl,
             type: "POST",
             contentType: "application/json",
             data: JSON.stringify({
@@ -141,24 +143,81 @@ $(document).ready(function () {
     });
 
     // Main function -> handle forgot password form submission
-    // $("#forgot-btn").on("click", function (e) {
-    //     e.preventDefault();
-    //
-    //     const email = $("#email").val();
-    //
-    //     $.ajax({
-    //         url: "http://localhost:8080/api/v1/auth/send-otp",
-    //         type: "POST",
-    //         data: {email: email},
-    //         success: function (response) {
-    //             $("#otpModal").modal("show");
-    //             localStorage.setItem("forgotData", JSON.stringify({email}));
-    //         },
-    //         error: function (xhr) {
-    //             showAlert("danger", "Error sending OTP: " + (xhr.responseJSON?.message || xhr.statusText));
-    //         }
-    //     });
-    // });
+    $("#forgotPWForm").on("submit", function (e) {
+        e.preventDefault();
+        const email = $("#email").val();
+
+        if (!email) {
+            showAlert("warning", "Please enter your email!");
+            return;
+        }
+
+        const resetOtpUrl = `http://localhost:8080/api/v1/auth/reset-pw-otp?email=${encodeURIComponent(email)}`;
+
+        $.ajax({
+            url: resetOtpUrl,
+            type: "POST",
+            data: {},
+            success: function (response) {
+                if (response.status === 200) {
+                    showAlert("success", "Reset OTP sent to your email. Please check your inbox!");
+                    $("#otpModal").modal("show");
+                    localStorage.setItem("resetEmail", email);
+                } else {
+                    showAlert("danger", response.message || "Failed to send reset OTP. Please try again!");
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON?.message || xhr.statusText);
+            }
+        });
+    });
+
+    // Main function -> handle reset password OTP verify and password reset
+    $("#resetPWOtpForm").on("submit", function (e) {
+        e.preventDefault();
+
+        const email = localStorage.getItem("resetEmail");
+        const otp = $(".otp-input").map(function () {
+            return $(this).val();
+        }).get().join("");
+        const newPassword = $("#new-password").val();
+        const confirmPassword = $("#confirm-password").val();
+
+        if (!otp || !newPassword || newPassword !== confirmPassword) {
+            showAlert("warning", "Please fill all fields correctly!");
+            return;
+        }
+
+        const resetPasswordUrl = `http://localhost:8080/api/v1/auth/reset-password?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}&newPassword=${encodeURIComponent(newPassword)}`;
+
+        $.ajax({
+            url: resetPasswordUrl,
+            type: "POST",
+            data: {},
+            success: function (response) {
+                if (response.status === 200) {
+                    showAlert("success", "Password reset successful!");
+                    $("#otpModal").modal("hide");
+                    localStorage.removeItem("resetEmail");
+                    $("#forgotPWForm")[0].reset();
+
+                    // Redirect to login page after 1.5 seconds
+                    setTimeout(function () {
+                        window.location.href = "../../index.html";
+                    }, 1500);
+                } else {
+                    showAlert("danger", response.message || "Failed to reset password");
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON?.message || xhr.statusText);
+                $("#reset-otp").val("");
+                $("#new-password").val("");
+                $("#confirm-new-password").val("");
+            }
+        });
+    });
 
     // Main function -> handle resend OTP
     $(".resendBtn").on("click", function (e) {

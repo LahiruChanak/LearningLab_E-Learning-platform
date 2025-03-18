@@ -21,6 +21,7 @@ import java.util.Set;
 @Service
 @Transactional
 public class UserServiceImpl implements UserService, UserDetailsService {
+
     @Autowired
     private UserRepo userRepo;
 
@@ -49,7 +50,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         User user = modelMapper.map(userDTO, User.class);
         user.setPasswordHash(passwordEncoder.encode(userDTO.getPassword()));
-        user.setRole(User.Role.STUDENT); // Default role
+        user.setRole(User.Role.STUDENT); // Default role.
+        userRepo.save(user);
+        return VarList.Created;
+    }
+
+    @Override
+    public int resetPassword(UserDTO userDTO) throws UsernameNotFoundException {
+        User user = userRepo.findByEmail(userDTO.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + userDTO.getEmail()));
+
+        user.setPasswordHash(passwordEncoder.encode(userDTO.getPassword()));
         userRepo.save(user);
         return VarList.Created;
     }

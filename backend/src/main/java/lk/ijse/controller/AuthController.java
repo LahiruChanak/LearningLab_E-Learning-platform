@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -21,6 +22,7 @@ import java.util.Map;
 @RequestMapping("api/v1/auth")
 @CrossOrigin(origins = "*")
 public class AuthController {
+
     @Autowired
     private OtpUtil otpUtil;
 
@@ -36,6 +38,7 @@ public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    // Send OTP for User Registration
     @PostMapping("/send-otp")
     public ResponseDTO sendOtp(@RequestParam String email) {
         try {
@@ -47,6 +50,7 @@ public class AuthController {
         }
     }
 
+    // User Registration
     @PostMapping("/verify-otp")
     public ResponseEntity<ResponseDTO> verifyOtp(
             @RequestParam String email,
@@ -80,9 +84,9 @@ public class AuthController {
         }
     }
 
+    // User Login
     @PostMapping("/authenticate")
-    public ResponseEntity<ResponseDTO> authenticate(
-            @RequestBody Map<String, String> credentials) {
+    public ResponseEntity<ResponseDTO> authenticate(@RequestBody Map<String, String> credentials) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -100,6 +104,52 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new ResponseDTO(401, "Invalid credentials", null));
+        }
+    }
+
+    // Send OTP for Password Reset
+    @PostMapping("/reset-pw-otp")
+    public ResponseDTO sendResetPasswordOtp(@RequestParam String email) {
+        try {
+            String otp = otpUtil.generateOtp(email);
+            emailUtil.sendOtpEmail(email, otp, "password reset");
+            return new ResponseDTO(200, "Reset OTP sent successfully", null);
+        } catch (UsernameNotFoundException e) {
+            return new ResponseDTO(404, "User not found", null);
+        } catch (Exception e) {
+            return new ResponseDTO(500, "Failed to send reset OTP: " + e.getMessage(), null);
+        }
+    }
+
+    // Reset Password
+    @PostMapping("/reset-password")
+    public ResponseEntity<ResponseDTO> resetPassword(
+            @RequestParam String email,
+            @RequestParam String otp,
+            @RequestParam String newPassword) {
+        if (!otpUtil.validateOtp(email, otp)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ResponseDTO(400, "Invalid OTP. Please try again", null));
+        }
+
+        try {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setEmail(email);
+            userDTO.setPassword(newPassword);
+            int res = userService.resetPassword(userDTO);
+            if (res == VarList.Created) {
+                otpUtil.removeOtp(email);
+                return ResponseEntity.ok(new ResponseDTO(200, "Password reset successful", null));
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+                        .body(new ResponseDTO(VarList.Bad_Gateway, "Error resetting password", null));
+            }
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(404, "User not found", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(VarList.Internal_Server_Error, e.getMessage(), null));
         }
     }
 }

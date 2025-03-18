@@ -10,4 +10,6 @@ public interface UserService {
 
     int saveUser(UserDTO userDTO);
 
+    int resetPassword(UserDTO userDTO) throws UsernameNotFoundException;
+
 }
