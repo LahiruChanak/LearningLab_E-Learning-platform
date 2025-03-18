@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
+import java.io.Serial;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
@@ -18,9 +20,13 @@ import java.util.stream.Collectors;
 
 @Component
 @PropertySource("classpath:application.properties")
-public class JwtUtil {
+public class JwtUtil implements Serializable {
+
     @Value("${jwt.secret}")
     private String secretKey;
+
+    @Serial
+    private static final long serialVersionUID = 234234523523L;
 
     private static final long JWT_TOKEN_VALIDITY = 24 * 60 * 60; // 24 hours
     private static final String HMAC_SHA256 = "HmacSHA256";

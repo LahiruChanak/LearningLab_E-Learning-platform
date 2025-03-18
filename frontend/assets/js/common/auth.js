@@ -48,6 +48,7 @@ $(document).ready(function () {
     // Main function -> handle login form submission
     $("#login-btn").on("click", function (e) {
         e.preventDefault();
+
         const email = $("#login-email").val();
         const password = $("#login-password").val();
 
@@ -55,11 +56,15 @@ $(document).ready(function () {
             url: "http://localhost:8080/api/v1/auth/authenticate",
             type: "POST",
             contentType: "application/json",
-            data: JSON.stringify({ email, password }),
+            data: JSON.stringify({email, password}),
             success: function (response) {
                 localStorage.setItem("token", response.data.token);
                 showAlert("success", "Login successful!");
-                window.location.href = "../../../pages/student/user-dashboard.html";
+
+                // Redirect to dashboard after 1.5 seconds
+                setTimeout(function () {
+                    window.location.href = "../../../../frontend/pages/student/user-dashboard.html";
+                }, 1500);
             },
             error: function (xhr) {
                 showAlert("danger", "Login failed: " + (xhr.responseJSON?.message || xhr.statusText));
@@ -84,10 +89,10 @@ $(document).ready(function () {
         $.ajax({
             url: "http://localhost:8080/api/v1/auth/send-otp",
             type: "POST",
-            data: { email: email },
+            data: {email: email},
             success: function (response) {
                 $("#otpModal").modal("show");
-                localStorage.setItem("signupData", JSON.stringify({ email, fullName, password }));
+                localStorage.setItem("signupData", JSON.stringify({email, fullName, password}));
             },
             error: function (xhr) {
                 showAlert("danger", "Error sending OTP: " + (xhr.responseJSON?.message || xhr.statusText));
@@ -103,24 +108,29 @@ $(document).ready(function () {
             return $(this).val();
         }).get().join("");
 
+        const encodeEmail = encodeURIComponent(signupData.email);
+        const encodeOtp = encodeURIComponent(otp);
+
         $.ajax({
-            url: "http://localhost:8080/api/v1/auth/verify-otp",
+            url: "http://localhost:8080/api/v1/auth/verify-otp?email=" + encodeEmail + "&otp=" + encodeOtp,
             type: "POST",
             contentType: "application/json",
             data: JSON.stringify({
+                fullName: signupData.fullName,
                 email: signupData.email,
-                otp: otp,
-                userDTO: {
-                    fullName: signupData.fullName,
-                    password: signupData.password,
-                    email: signupData.email
-                }
+                password: signupData.password
             }),
             success: function (response) {
                 $("#otpModal").modal("hide");
                 localStorage.setItem("token", response.data.token);
-                showAlert("success", "Registration successful!");
+                showAlert("success", "Registration successful! You can now login.");
                 localStorage.removeItem("signupData");
+                $("#signupForm")[0].reset();
+
+                // Redirect to dashboard after 1.5 seconds
+                setTimeout(function () {
+                    window.location.href = "../../../index.html";
+                }, 1500);
             },
             error: function (xhr) {
                 showAlert("danger", "Error: " + (xhr.responseJSON?.message || xhr.statusText));
@@ -129,6 +139,26 @@ $(document).ready(function () {
             }
         });
     });
+
+    // Main function -> handle forgot password form submission
+    // $("#forgot-btn").on("click", function (e) {
+    //     e.preventDefault();
+    //
+    //     const email = $("#email").val();
+    //
+    //     $.ajax({
+    //         url: "http://localhost:8080/api/v1/auth/send-otp",
+    //         type: "POST",
+    //         data: {email: email},
+    //         success: function (response) {
+    //             $("#otpModal").modal("show");
+    //             localStorage.setItem("forgotData", JSON.stringify({email}));
+    //         },
+    //         error: function (xhr) {
+    //             showAlert("danger", "Error sending OTP: " + (xhr.responseJSON?.message || xhr.statusText));
+    //         }
+    //     });
+    // });
 
     // Main function -> handle resend OTP
     $(".resendBtn").on("click", function (e) {

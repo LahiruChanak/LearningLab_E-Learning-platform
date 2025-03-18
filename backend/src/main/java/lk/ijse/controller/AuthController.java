@@ -2,7 +2,7 @@ package lk.ijse.controller;
 
 import lk.ijse.dto.AuthDTO;
 import lk.ijse.dto.ResponseDTO;
-import lk.ijse.dto.VerifyOtpRequest;
+import lk.ijse.dto.UserDTO;
 import lk.ijse.service.UserService;
 import lk.ijse.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,25 +48,28 @@ public class AuthController {
     }
 
     @PostMapping("/verify-otp")
-    public ResponseEntity<ResponseDTO> verifyOtp(@RequestBody VerifyOtpRequest request) {
-        if (!otpUtil.validateOtp(request.getEmail(), request.getOtp())) {
+    public ResponseEntity<ResponseDTO> verifyOtp(
+            @RequestParam String email,
+            @RequestParam String otp,
+            @RequestBody UserDTO userDTO) {
+        if (!otpUtil.validateOtp(email, otp)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ResponseDTO(400, "Invalid OTP", null));
         }
 
         try {
-            int res = userService.saveUser(request.getUserDTO());
+            int res = userService.saveUser(userDTO);
             switch (res) {
                 case VarList.Created:
-                    UserDetails userDetails = userService.loadUserByUsername(request.getUserDTO().getEmail());
+                    UserDetails userDetails = userService.loadUserByUsername(userDTO.getEmail());
                     String token = jwtUtil.generateToken(userDetails);
-                    AuthDTO authDTO = new AuthDTO(request.getUserDTO().getEmail(), token);
-                    otpUtil.removeOtp(request.getEmail());
+                    AuthDTO authDTO = new AuthDTO(userDTO.getEmail(), token);
+                    otpUtil.removeOtp(email);
                     return ResponseEntity.status(HttpStatus.CREATED)
-                            .body(new ResponseDTO(VarList.Created, "Registration successful", authDTO));
+                            .body(new ResponseDTO(VarList.Created, "Registration successful. Login to continue", authDTO));
                 case VarList.Not_Acceptable:
                     return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-                            .body(new ResponseDTO(VarList.Not_Acceptable, "Email already used", null));
+                            .body(new ResponseDTO(VarList.Not_Acceptable, "Email already used. Use another email!", null));
                 default:
                     return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
                             .body(new ResponseDTO(VarList.Bad_Gateway, "Error", null));

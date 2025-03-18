@@ -27,7 +27,7 @@
 
       <div class="row justify-content-around gap-3 p-4">
         <div class="col-md-4 mb-3">
-          <form>
+          <form id="loginForm">
             <h2 class="text-center mb-4">Login.</h2>
 
             <div class="input-container mb-4">
@@ -35,10 +35,10 @@
                 placeholder=""
                 type="text"
                 class="input"
-                id="username"
+                id="login-email"
                 required
               />
-              <label class="iLabel" for="username">Username</label>
+              <label class="iLabel" for="login-email">Email</label>
               <div class="error-text d-none"></div>
             </div>
 
@@ -47,10 +47,10 @@
                 placeholder=""
                 type="password"
                 class="input"
-                id="password"
+                id="login-password"
                 required
               />
-              <label class="iLabel" for="password">Password</label>
+              <label class="iLabel" for="login-password">Password</label>
               <button
                 type="button"
                 class="password-toggle"
@@ -84,7 +84,7 @@
               </label>
             </div>
 
-            <button class="login-btn w-100">Login</button>
+            <button type="submit" class="login-btn w-100" id="login-btn">Login</button>
           </form>
         </div>
 
