@@ -226,7 +226,7 @@
               </div>
             </div>
 
-              <!-- Personal Info Section -->
+            <!-- Personal Info Section -->
             <div class="section">
               <div class="section-header">
                 <h3>Personal Information</h3>
@@ -273,11 +273,21 @@
                 <div>
                   <div class="form-field">
                     <label>Contact</label>
-                    <input type="tel" placeholder="+94 771234567" data-field="contact" disabled />
+                    <input
+                      type="tel"
+                      placeholder="+94 771234567"
+                      data-field="contact"
+                      disabled
+                    />
                   </div>
                   <div class="form-field">
                     <label>Address</label>
-                    <input type="text" placeholder="No. 123, Galle Road, Colombo 03, Sri Lanka" data-field="address" disabled />
+                    <input
+                      type="text"
+                      placeholder="No. 123, Galle Road, Colombo 03, Sri Lanka"
+                      data-field="address"
+                      disabled
+                    />
                   </div>
                 </div>
               </div>
@@ -326,7 +336,12 @@
                 </div>
                 <div class="form-field">
                   <label>Website URL</label>
-                  <input type="url" placeholder="www.john-doe.com" data-field="websiteLink" disabled />
+                  <input
+                    type="url"
+                    placeholder="www.john-doe.com"
+                    data-field="websiteLink"
+                    disabled
+                  />
                 </div>
               </div>
             </div>
@@ -1072,7 +1087,7 @@
       </div>
     </div>
 
-    <!-- Profile Edit Modal -->
+    <!-- Profile Picture Modal -->
     <div
       class="modal fade"
       id="profileModal"
@@ -1090,21 +1105,23 @@
             </h1>
             <button
               type="button"
-              class="btn-close shadow-none"
+              class="btn-close shadow-none small"
               data-bs-dismiss="modal"
               aria-label="Close"
             ></button>
           </div>
           <div class="modal-body">
             <div class="d-flex flex-column align-items-center">
-              <div class="profile-preview">
-                <img
-                  id="imagePreview"
-                  src="../../assets/images/user.jpg"
-                  alt="Profile Preview"
-                  class="rounded-circle"
-                />
-                <div class="fs-5 text-danger position-absolute top-0 end-0 z-3">
+              <div class="profile-preview-container">
+                <div class="profile-preview">
+                  <img
+                    id="imagePreview"
+                    src="../../assets/images/icons/placeholder.svg"
+                    alt="Profile Preview"
+                    class="rounded-circle"
+                  />
+                </div>
+                <div class="remove-image">
                   <i class="hgi-stroke hgi-multiplication-sign"></i>
                 </div>
               </div>

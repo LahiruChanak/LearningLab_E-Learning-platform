@@ -39,7 +39,7 @@ public class User {
     @Column(name = "bio", columnDefinition = "TEXT")
     private String bio;
 
-    @Column(name = "contact_number", length = 15)
+    @Column(name = "contact_number", length = 15, unique = true, columnDefinition = "CHAR(15)")
     private String contact;
 
     @Column(name = "address", length = 255)

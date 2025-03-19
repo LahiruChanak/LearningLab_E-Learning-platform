@@ -61,6 +61,7 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/user/profile").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/user/profile").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/v1/user/profile/image").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/user/profile/image").authenticated()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

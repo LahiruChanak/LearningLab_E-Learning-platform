@@ -12,10 +12,6 @@ $(document).ready(function () {
   const profileModal =
     bootstrap.Modal.getInstance($("#profileModal")[0]) ||
     new bootstrap.Modal($("#profileModal")[0]);
-  const profileImage = $("#profileImage");
-  const imageUpload = $("#imageUpload");
-  const imagePreview = $("#imagePreview");
-  const profilePreview = $("#profilePreview");
   let currentFile = null;
 
   // Password and Email Modal Initialization
@@ -230,7 +226,7 @@ $(document).ready(function () {
                                     <i class="hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i>
                                     Edit
                                 `);
-                retrieveUserProfile(); // Refresh entire profile
+                retrieveUserProfile();
               } else {
                 showAlert("danger", "Failed to update profile: " + response.message);
               }
@@ -246,9 +242,10 @@ $(document).ready(function () {
 
   retrieveUserProfile();
 
-  // Profile Modal System
-  $("#profileImage").on("click", function () {
-    profileModal.show();
+  // Update modal preview with current profile picture when modal is shown
+  $("#profileModal").on("show.bs.modal", function() {
+    const currentProfileSrc = $("#profilePreview").attr("src");
+    $("#imagePreview").attr("src", currentProfileSrc);
   });
 
   // Profile Picture System
@@ -350,6 +347,52 @@ $(document).ready(function () {
       showAlert("danger", "Camera not supported on this device/browser.");
     }
   };
+
+  // Function to update remove-image visibility based on image source
+  function updateRemoveImageVisibility() {
+    const defaultImage = "../../assets/images/icons/placeholder.svg";
+    if ($("#profilePreview").attr("src") === defaultImage) {
+        $(".profile-preview-container .remove-image").hide();
+    } else {
+        $(".profile-preview-container .remove-image").css("display", "");
+    }
+  }
+
+  updateRemoveImageVisibility();
+
+  // Update visibility when image changes (e.g., after save or remove)
+  $("#profilePreview").on("load", updateRemoveImageVisibility);
+
+  // Remove profile image
+  $(".remove-image").on("click", function () {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      showAlert("danger", "Please log in to the system to remove your profile image.");
+      return;
+    }
+
+    if (confirm("Are you sure you want to remove your profile image?")) {
+      $.ajax({
+        url: "http://localhost:8080/api/v1/user/profile/image",
+        type: "DELETE",
+        headers: {
+          "Authorization": "Bearer " + token
+        },
+        success: function (response) {
+          if (response.status === 200) {
+            showAlert("success", "Profile image removed successfully!");
+            window.location.reload();
+          } else {
+            showAlert("danger", "Failed to remove image: " + response.message);
+          }
+        },
+        error: function (xhr) {
+          showAlert("danger", "Error removing image: " + (xhr.responseJSON ? xhr.responseJSON.message : xhr.statusText));
+        }
+      });
+    }
+  });
 
   // Edit button functionality
   // const editButtons = $(".edit-btn");

@@ -121,4 +121,25 @@ public class UserController {
         }
     }
 
+    @DeleteMapping("/profile/image")
+    public ResponseEntity<ResponseDTO> removeProfileImage(Authentication authentication) {
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO(401, "Unauthorized", null));
+        }
+
+        String email = authentication.getName();
+        try {
+            User user = userService.findByEmail(email)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            user.setProfilePicture(null);
+            userService.updateProfile(user);
+            return ResponseEntity.ok(new ResponseDTO(200, "Profile image removed", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(500, "Error removing image: " + e.getMessage(), null));
+        }
+    }
+
 }
