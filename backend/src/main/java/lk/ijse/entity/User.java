@@ -33,11 +33,29 @@ public class User {
     private Role role;
 
     @Lob
-    @Column(name = "profile_picture")
+    @Column(name = "profile_picture" , columnDefinition = "LONGBLOB")
     private byte[] profilePicture;
 
     @Column(name = "bio", columnDefinition = "TEXT")
     private String bio;
+
+    @Column(name = "contact_number", length = 15)
+    private String contact;
+
+    @Column(name = "address", length = 255)
+    private String address;
+
+    @Column(name = "github_link")
+    private String githubLink;
+
+    @Column(name = "linkedin_link")
+    private String linkedinLink;
+
+    @Column(name = "stackOverflow_link")
+    private String stackOverflowLink;
+
+    @Column(name = "website_link")
+    private String websiteLink;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();

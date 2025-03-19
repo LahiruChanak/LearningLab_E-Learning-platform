@@ -52,14 +52,14 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Add CORS configuration
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/api/v1/auth/**").permitAll() // Permit OPTIONS for all auth endpoints
-                        .requestMatchers(HttpMethod.OPTIONS, "/api/v1/user/**").permitAll() // Permit OPTIONS for all user endpoints
+                        .requestMatchers(HttpMethod.OPTIONS, "/api/v1/**").permitAll() // Permit OPTIONS for all endpoints
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/send-otp").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/verify-otp").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/authenticate").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/reset-password").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/reset-pw-otp").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/user/profile").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/user/profile").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/v1/user/profile/image").authenticated()
                         .anyRequest().authenticated()
                 )
@@ -75,7 +75,7 @@ public class WebSecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("*")); // Or specify your frontend origin
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "*"));
         configuration.setAllowCredentials(false);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/api/v1/**", configuration);

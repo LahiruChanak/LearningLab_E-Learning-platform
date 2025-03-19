@@ -78,9 +78,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void saveProfilePicture(User user) {
+    public void updateProfile(User user) {
         userRepo.save(user);
     }
-
 
 }

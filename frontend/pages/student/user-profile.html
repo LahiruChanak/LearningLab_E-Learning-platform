@@ -191,9 +191,9 @@
                   </div>
                 </div>
                 <div class="profile-info">
-                  <h2>Esther Howard</h2>
-                  <p>Student</p>
-                  <p>
+                  <h2 id="fullName">Esther Howard</h2>
+                  <p id="role">Student</p>
+                  <p id="bio">
                     Hey, I'm a Software Engineer from New York. I've been coding
                     for 3 years. I've worked on a lot of projects. I'm currently
                     working on a project called "Project X" I'm also a student
@@ -226,6 +226,7 @@
               </div>
             </div>
 
+              <!-- Personal Info Section -->
             <div class="section">
               <div class="section-header">
                 <h3>Personal Information</h3>
@@ -239,32 +240,53 @@
               <div class="form-group">
                 <div class="form-field">
                   <label>First Name</label>
-                  <input type="text" value="Rafiqur" disabled />
+                  <input
+                    type="text"
+                    placeholder="Anonymous"
+                    data-field="firstName"
+                    disabled
+                    required
+                  />
                 </div>
                 <div class="form-field">
                   <label>Last Name</label>
-                  <input type="text" value="Rahman" disabled />
+                  <input
+                    type="text"
+                    placeholder="Anonymous Waffle"
+                    data-field="lastName"
+                    disabled
+                    required
+                  />
                 </div>
               </div>
               <div class="form-group">
                 <div class="form-field">
-                  <label>Email Address</label>
-                  <input
-                    type="email"
-                    value="rafiqurrahman51@gmail.com"
+                  <label>Bio</label>
+                  <textarea
+                    name=""
+                    placeholder="Are you looking for a job, internships, or learning new skills? Share with others why you are passionate about data science..."
+                    data-field="bio"
+                    rows="5"
                     disabled
-                  />
+                  ></textarea>
                 </div>
-                <div class="form-field">
-                  <label>Phone</label>
-                  <input type="tel" value="+09 345 366 46" disabled />
+                <div>
+                  <div class="form-field">
+                    <label>Contact</label>
+                    <input type="tel" placeholder="+94 771234567" data-field="contact" disabled />
+                  </div>
+                  <div class="form-field">
+                    <label>Address</label>
+                    <input type="text" placeholder="No. 123, Galle Road, Colombo 03, Sri Lanka" data-field="address" disabled />
+                  </div>
                 </div>
               </div>
             </div>
 
+            <!-- URL Section -->
             <div class="section">
               <div class="section-header">
-                <h3>Address</h3>
+                <h3>Social Links</h3>
                 <button class="edit-btn">
                   <i
                     class="hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"
@@ -274,22 +296,37 @@
               </div>
               <div class="form-group">
                 <div class="form-field">
-                  <label>Country</label>
-                  <input type="text" value="United Kingdom" disabled />
+                  <label>GitHub</label>
+                  <input
+                    type="url"
+                    placeholder="www.github.com/john-doe"
+                    data-field="githubLink"
+                    disabled
+                  />
                 </div>
                 <div class="form-field">
-                  <label>City/State</label>
-                  <input type="text" value="Leeds, East London" disabled />
+                  <label>LinkedIn</label>
+                  <input
+                    type="url"
+                    placeholder="www.linkedin.com/john-doe"
+                    data-field="linkedinLink"
+                    disabled
+                  />
                 </div>
               </div>
               <div class="form-group">
                 <div class="form-field">
-                  <label>Postal Code</label>
-                  <input type="text" value="E8T 2J6A" disabled />
+                  <label>Stack Overflow</label>
+                  <input
+                    type="url"
+                    placeholder="www.stackoverflow.com/john-doe"
+                    data-field="stackOverflowLink"
+                    disabled
+                  />
                 </div>
                 <div class="form-field">
-                  <label>Tax ID</label>
-                  <input type="text" value="AS5566756" disabled />
+                  <label>Website URL</label>
+                  <input type="url" placeholder="www.john-doe.com" data-field="websiteLink" disabled />
                 </div>
               </div>
             </div>

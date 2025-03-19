@@ -163,16 +163,25 @@ body {
   font-weight: bold;
 }
 
-.form-field input {
+.form-field ::placeholder {
+  color: #aaa;
+}
+
+.form-field input,
+.form-field textarea,
+.form-field select {
   width: 100%;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
+  resize: none;
   transition: border-color 0.3s ease;
 }
 
-.form-field input:focus {
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus {
   border-color: #2563eb;
   outline: none;
 }
