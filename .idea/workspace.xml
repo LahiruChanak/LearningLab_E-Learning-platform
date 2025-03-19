@@ -4,18 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="871ac622-ec0f-4cda-944a-f4037773dc1b" name="Changes" comment=".idea file">
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/controller/UserController.java" afterDir="false" />
+    <list default="true" id="871ac622-ec0f-4cda-944a-f4037773dc1b" name="Changes" comment="convert normal JS into jQuery and some fixes in other files">
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/config/WebSecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/config/WebSecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/controller/UserController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/dto/UserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/dto/UserDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/service/UserService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/service/impl/UserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/util/JwtFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/util/JwtFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/assets/js/common/header.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/js/common/header.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/css/common/header.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/css/common/header.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/css/student/user-profile.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/css/student/user-profile.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/assets/js/student/user-profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/js/student/user-profile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/pages/student/student-dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/student/student-dashboard.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/pages/student/user-profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/student/user-profile.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -133,7 +133,9 @@
       <workItem from="1742026897530" duration="250000" />
       <workItem from="1742105706755" duration="6937000" />
       <workItem from="1742127725290" duration="18574000" />
-      <workItem from="1742286492918" duration="20561000" />
+      <workItem from="1742286492918" duration="21128000" />
+      <workItem from="1742359892107" duration="13530000" />
+      <workItem from="1742397250143" duration="13176000" />
     </task>
     <task id="LOCAL-00001" summary="update project directories, modules">
       <option name="closed" value="true" />
@@ -335,7 +337,39 @@
       <option name="project" value="LOCAL" />
       <updated>1742316822001</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="load profile details into the header section">
+      <option name="closed" value="true" />
+      <created>1742331135717</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1742331135717</updated>
+    </task>
+    <task id="LOCAL-00027" summary=".idea file">
+      <option name="closed" value="true" />
+      <created>1742331159311</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1742331159311</updated>
+    </task>
+    <task id="LOCAL-00028" summary="load profile details into the header section">
+      <option name="closed" value="true" />
+      <created>1742331191667</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1742331191667</updated>
+    </task>
+    <task id="LOCAL-00029" summary="convert normal JS into jQuery and some fixes in other files">
+      <option name="closed" value="true" />
+      <created>1742392673112</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1742392673112</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -366,6 +400,8 @@
     <MESSAGE value="implement password reset password with JWT function" />
     <MESSAGE value="implement authentication functions with JWT." />
     <MESSAGE value=".idea file" />
-    <option name="LAST_COMMIT_MESSAGE" value=".idea file" />
+    <MESSAGE value="load profile details into the header section" />
+    <MESSAGE value="convert normal JS into jQuery and some fixes in other files" />
+    <option name="LAST_COMMIT_MESSAGE" value="convert normal JS into jQuery and some fixes in other files" />
   </component>
 </project>
