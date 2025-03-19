@@ -32,8 +32,9 @@ public class User {
     @Column(name = "role", nullable = false)
     private Role role;
 
-    @Column(name = "profile_picture", length = 255)
-    private String profilePicture;
+    @Lob
+    @Column(name = "profile_picture")
+    private byte[] profilePicture;
 
     @Column(name = "bio", columnDefinition = "TEXT")
     private String bio;

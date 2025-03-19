@@ -95,6 +95,7 @@ $(document).ready(function () {
             success: function (response) {
                 $("#otpModal").modal("show");
                 localStorage.setItem("signupData", JSON.stringify({email, fullName, password}));
+                showAlert("success", "OTP sent to your email. Please check your inbox!");
             },
             error: function (xhr) {
                 showAlert("danger", "Error sending OTP: " + (xhr.responseJSON?.message || xhr.statusText));
@@ -131,7 +132,7 @@ $(document).ready(function () {
 
                 // Redirect to dashboard after 1.5 seconds
                 setTimeout(function () {
-                    window.location.href = "../../../index.html";
+                    window.location.href = "../../../../frontend/index.html";
                 }, 1500);
             },
             error: function (xhr) {

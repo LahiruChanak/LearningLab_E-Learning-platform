@@ -1,86 +1,76 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const tooltipTriggerList = document.querySelectorAll(
-    '[data-bs-toggle="tooltip"]'
-  );
-  const tooltipList = [...tooltipTriggerList].map(
-    (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
-  );
+$(document).ready(function () {
+  const tooltipTriggerList = $('[data-bs-toggle="tooltip"]');
+  const tooltipList = tooltipTriggerList.map(function () {
+    return new bootstrap.Tooltip(this);
+  }).get();
 
   // Initialize all required elements
-  const tabItems = document.querySelectorAll(".sub-navigation-menu li");
-  const pages = document.querySelectorAll(".page");
-  const profileModal = new bootstrap.Modal(
-    document.getElementById("profileModal")
-  );
-  const profileImage = document.getElementById("profileImage");
-  const imageUpload = document.getElementById("imageUpload");
-  const imagePreview = document.getElementById("imagePreview");
-  const profilePreview = document.getElementById("profilePreview");
+  const tabItems = $(".sub-navigation-menu li");
+  const pages = $(".page");
+  const profileModal = bootstrap.Modal.getInstance($("#profileModal")[0]) || new bootstrap.Modal($("#profileModal")[0]);
+  const profileImage = $("#profileImage");
+  const imageUpload = $("#imageUpload");
+  const imagePreview = $("#imagePreview");
+  const profilePreview = $("#profilePreview");
   let currentFile = null;
 
   // Password and Email Modal Initialization
-  const passwordModal = new bootstrap.Modal(
-    document.getElementById("passwordModal")
-  );
-  const emailModal = new bootstrap.Modal(document.getElementById("emailModal"));
-  const passwordForm = document.getElementById("passwordUpdateForm");
-  const emailForm = document.getElementById("emailUpdateForm");
+  const passwordModal = new bootstrap.Modal($("#passwordModal")[0]);
+  const emailModal = new bootstrap.Modal($("#emailModal")[0]);
+  const passwordForm = $("#passwordUpdateForm");
+  const emailForm = $("#emailUpdateForm");
 
   // Password Strength Elements
-  const newPasswordInput = document.getElementById("newPassword");
-  const confirmNewPasswordInput = document.getElementById("confirmNewPassword");
+  const newPasswordInput = $("#newPassword");
+  const confirmNewPasswordInput = $("#confirmNewPassword");
 
   // Navigation System
   function showPage(pageName) {
     // Hide all pages
-    pages.forEach((page) => {
-      page.classList.remove("active");
+    pages.each(function () {
+      $(this).removeClass("active");
     });
 
     // Deactivate all tab items
-    tabItems.forEach((item) => {
-      item.classList.remove("active");
+    tabItems.each(function () {
+      $(this).removeClass("active");
     });
 
     // Show the selected page
-    const selectedPage = document.getElementById(pageName);
-    if (selectedPage) {
-      selectedPage.classList.add("active");
+    const selectedPage = $("#" + pageName);
+    if (selectedPage.length) {
+      selectedPage.addClass("active");
     }
 
     // Activate the corresponding tab
-    const selectedTab = document.querySelector(
-      `.sub-navigation-menu li[data-page="${pageName}"]`
-    );
-    if (selectedTab) {
-      selectedTab.classList.add("active");
+    const selectedTab = $(`.sub-navigation-menu li[data-page="${pageName}"]`);
+    if (selectedTab.length) {
+      selectedTab.addClass("active");
     }
   }
 
   // Add click event listeners to each tab item
-  tabItems.forEach((item) => {
-    item.addEventListener("click", function () {
-      const pageName = this.getAttribute("data-page");
-      if (pageName) {
-        showPage(pageName);
-      }
-    });
+  tabItems.on("click", function () {
+    const pageName = $(this).attr("data-page");
+    if (pageName) {
+      showPage(pageName);
+    }
   });
 
-  // Function to handle hash and show tab
+// Function to handle hash and show tab
   function handleHashChange() {
     const hash = window.location.hash.substring(1); // Remove the '#'
     if (hash) {
       // Prevent browser from scrolling to hash
       history.pushState(
-        "",
-        document.title,
-        window.location.pathname + window.location.search
+          "",
+          document.title,
+          window.location.pathname + window.location.search
       );
       showPage(hash);
-      window.scrollTo(0, 0);
+      $(window).scrollTop(0);
     } else if (tabItems.length > 0) {
-      const initialPage = tabItems[0].getAttribute("data-page");
+      const initialPage = tabItems.eq(0).attr("data-page");
       showPage(initialPage);
     }
   }
@@ -89,56 +79,75 @@ document.addEventListener("DOMContentLoaded", function () {
   handleHashChange();
 
   // Listen for hash changes (ex:-, clicking notification icon on same page)
-  window.addEventListener("hashchange", handleHashChange);
+  $(window).on("hashchange", handleHashChange);
 
   // lock scroll position on load
-  window.addEventListener("load", () => {
-    window.scrollTo(0, 0);
+  $(window).on("load", function () {
+    $(window).scrollTop(0);
   });
 
   // Profile Modal System
-  if (profileImage) {
-    profileImage.onclick = function () {
-      profileModal.style.display = "block";
-    };
-  }
+  $("#profileImage").on("click", function () {
+    profileModal.show();
+  });
 
   // Profile Picture System
-  if (imageUpload) {
-    imageUpload.addEventListener("change", function (e) {
-      const file = e.target.files[0];
-      if (file) {
-        if (file.size > 5 * 1024 * 1024) {
-          alert("File size must be less than 5MB");
-          return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          imagePreview.src = e.target.result;
-          currentFile = file;
-        };
-        reader.readAsDataURL(file);
+  $("#imageUpload").on("change", function (e) {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        showAlert("danger", "File size must be less than 5MB");
+        return;
       }
-    });
-  }
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        $("#imagePreview").attr("src", e.target.result);
+        currentFile = file;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
 
   // Handle save changes for profile picture
   window.saveChanges = function () {
     if (currentFile) {
-      // Update the main profile picture
-      profilePreview.src = imagePreview.src;
+      const formData = new FormData();
+      formData.append("image", currentFile);
+      const token = localStorage.getItem("token");
 
-      // Also update the header profile image
-      const headerImage = document.querySelector(".header-image");
-      if (headerImage) {
-        headerImage.src = imagePreview.src;
-      }
+      $.ajax({
+        url: "http://localhost:8080/api/v1/user/profile/image",
+        type: "POST",
+        headers: {
+          "Authorization": "Bearer " + token
+        },
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+          if (response.status === 200) {
+            // Update the main profile picture
+            $("#profilePreview").attr("src", response.data);
 
-      // Close the modal
-      if (profileModal) {
-        profileModal.hide();
-      }
+            // Also update the header profile image
+            const $headerImage = $(".header-image");
+            if ($headerImage.length) {
+              $headerImage.attr("src", response.data);
+            }
+
+            // Close the modal
+            if (profileModal) {
+              profileModal.hide();
+            }
+          } else {
+            showAlert("danger", "Failed to upload image: " + response.message);
+          }
+        },
+        error: function (xhr) {
+          showAlert("danger", "Error uploading image: " + (xhr.responseJSON ? xhr.responseJSON.message : xhr.statusText));
+        }
+      });
     }
   };
 
@@ -146,551 +155,515 @@ document.addEventListener("DOMContentLoaded", function () {
   window.takePhoto = function () {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then(function (stream) {
-          const video = document.createElement("video");
-          const canvas = document.createElement("canvas");
-          video.srcObject = stream;
-          video.play();
+          .getUserMedia({video: true})
+          .then(function (stream) {
+            const $video = $("<video>").attr("srcObject", stream).get(0);
+            const $canvas = $("<canvas>").get(0);
+            $video.play();
 
-          setTimeout(() => {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext("2d").drawImage(video, 0, 0);
+            setTimeout(function () {
+              $canvas.width = $video.videoWidth;
+              $canvas.height = $video.videoHeight;
+              $canvas.getContext("2d").drawImage($video, 0, 0);
 
-            canvas.toBlob(function (blob) {
-              const file = new File([blob], "camera-photo.jpg", {
-                type: "image/jpeg",
-              });
-              currentFile = file;
-              imagePreview.src = canvas.toDataURL("image/jpeg");
+              $canvas.toBlob(function (blob) {
+                const file = new File([blob], "camera-photo.jpg", {
+                  type: "image/jpeg"
+                });
+                currentFile = file;
+                $("#imagePreview").attr("src", $canvas.toDataURL("image/jpeg"));
 
-              stream.getTracks().forEach((track) => track.stop());
-            }, "image/jpeg");
-          }, 500);
-        })
-        .catch(function (error) {
-          alert("Error accessing camera: " + error.message);
-        });
+                stream.getTracks().forEach(function (track) {
+                  track.stop();
+                });
+              }, "image/jpeg");
+            }, 500);
+          })
+          .catch(function (error) {
+            showAlert("danger", "Error accessing camera: " + error.message);
+          });
     } else {
-      alert("Camera not supported on this device/browser");
+      showAlert("danger", "Camera not supported on this device/browser.");
     }
   };
 
   // Edit button functionality
-  const editButtons = document.querySelectorAll(".edit-btn");
+  const editButtons = $(".edit-btn");
 
-  editButtons.forEach((button) => {
-    button.addEventListener("click", function () {
-      const section = this.closest(".section");
-      const inputs = section.querySelectorAll("input");
+  editButtons.on("click", function () {
+    const section = $(this).closest(".section");
+    const inputs = section.find("input");
 
-      inputs.forEach((input) => {
-        input.disabled = !input.disabled;
-      });
+    inputs.each(function () {
+      $(this).prop("disabled", !$(this).prop("disabled"));
+    });
 
-      if (inputs[0].disabled) {
-        this.innerHTML = `
+    if (inputs.eq(0).prop("disabled")) {
+      $(this).html(`
           <i class="hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i>
           Edit
-        `;
+        `);
 
-        // Remove action buttons
-        const actionButtons = section.querySelector(".action-buttons");
-        if (actionButtons) {
-          actionButtons.remove();
-        }
-
-        inputs.forEach((input) => {
-          input.value = input.dataset.originalValue || input.value;
-        });
-      } else {
-        this.innerHTML = '<span class="text-body-tertiary">Cancel</span>';
-
-        inputs.forEach((input) => {
-          input.dataset.originalValue = input.value;
-        });
-
-        if (!section.querySelector(".action-buttons")) {
-          const actionDiv = document.createElement("div");
-          actionDiv.className =
-            "action-buttons d-flex justify-content-end mt-3";
-          actionDiv.innerHTML = `
-            <button class="btn btn-primary save-changes-btn">Save Changes</button>
-          `;
-          section.appendChild(actionDiv);
-
-          const saveBtn = actionDiv.querySelector(".save-changes-btn");
-          saveBtn.addEventListener("click", function () {
-            alert("Changes saved successfully!");
-
-            inputs.forEach((input) => {
-              input.disabled = true;
-            });
-
-            actionDiv.remove();
-
-            button.innerHTML = `
-              <i class="hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i>
-              Edit
-            `;
-          });
-        }
+      // Remove action buttons
+      const actionButtons = section.find(".action-buttons");
+      if (actionButtons.length) {
+        actionButtons.remove();
       }
-    });
+
+      inputs.each(function () {
+        $(this).val($(this).data("originalValue") || $(this).val());
+      });
+    } else {
+      $(this).html('<span class="text-body-tertiary">Cancel</span>');
+
+      inputs.each(function () {
+        $(this).data("originalValue", $(this).val());
+      });
+
+      if (!section.find(".action-buttons").length) {
+        const actionDiv = $('<div class="action-buttons d-flex justify-content-end mt-3"></div>');
+        actionDiv.html(`
+                <button class="btn btn-primary save-changes-btn">Save Changes</button>
+            `);
+        section.append(actionDiv);
+
+        const saveBtn = actionDiv.find(".save-changes-btn");
+        saveBtn.on("click", function () {
+          alert("Changes saved successfully!");
+
+          inputs.each(function () {
+            $(this).prop("disabled", true);
+          });
+
+          actionDiv.remove();
+
+          $(button).html(`
+                    <i class="hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i>
+                    Edit
+                `);
+        });
+      }
+    }
   });
 
   // Skill tag system
-  const editSkillsBtn = document.querySelector(".edit-btn");
-  const skillTagsContainer = document.querySelector(".skill-tags");
+  const editSkillsBtn = $(".skills-section .edit-skill-btn");
+  const skillTagsContainer = $(".skill-tags");
 
-  editSkillsBtn.addEventListener("click", function () {
-    const isEditMode = editSkillsBtn.getAttribute("data-state") === "edit";
+  editSkillsBtn.on("click", function () {
+    const isEditMode = editSkillsBtn.attr("data-state") === "edit";
 
     if (isEditMode) {
-      editSkillsBtn.innerHTML = `<span class="text-body-tertiary">Done</span>`;
-      editSkillsBtn.setAttribute("data-state", "done");
+      editSkillsBtn.html(`<span class="text-body-tertiary">Done</span>`);
+      editSkillsBtn.attr("data-state", "done");
 
       // Add "x" mark to each existing tag
-      const skillTags = skillTagsContainer.querySelectorAll(
-        ".skill-tag:not(.empty-skill)"
-      );
-      skillTags.forEach((tag) => {
-        tag.classList.add("edit-mode");
-        if (!tag.querySelector(".remove-skill")) {
-          const removeIcon = document.createElement("span");
-          removeIcon.className = "remove-skill";
-          removeIcon.innerHTML = "&times;";
-          removeIcon.addEventListener("click", function () {
-            tag.remove(); // Remove the skill tag
+      const skillTags = skillTagsContainer.find(".skill-tag:not(.empty-skill)");
+      skillTags.each(function () {
+        $(this).addClass("edit-mode");
+        if (!$(this).find(".remove-skill").length) {
+          const removeIcon = $('<span class="remove-skill">×</span>');
+          removeIcon.on("click", function () {
+            $(this).parent().remove(); // Remove the skill tag
           });
-          tag.appendChild(removeIcon);
+          $(this).append(removeIcon);
         }
       });
 
       // Add an empty skill tag for new skills
-      const emptySkillTag = document.createElement("span");
-      emptySkillTag.className = "skill-tag empty-skill";
-      emptySkillTag.innerHTML = `
-        <input type="text" placeholder="Add skill" />
-        <i class="hgi-stroke hgi-tick-01 save-tick-input"></i>
-      `;
-      skillTagsContainer.appendChild(emptySkillTag);
+      const emptySkillTag = $('<span class="skill-tag empty-skill"></span>');
+      emptySkillTag.html(`
+            <input type="text" placeholder="Add skill" />
+            <i class="hgi-stroke hgi-tick-01 save-tick-input"></i>
+        `);
+      skillTagsContainer.append(emptySkillTag);
 
       // Handle saving a new skill
-      const inputField = emptySkillTag.querySelector("input");
-      const saveTick = emptySkillTag.querySelector(".save-tick-input");
+      const inputField = emptySkillTag.find("input");
+      const saveTick = emptySkillTag.find(".save-tick-input");
 
-      saveTick.addEventListener("click", function () {
-        if (inputField.value.trim() !== "") {
-          const newSkillTag = document.createElement("span");
-          newSkillTag.className = "skill-tag edit-mode"; // Ensure "x" mark is visible
-          newSkillTag.textContent = inputField.value.trim();
+      saveTick.on("click", function () {
+        if (inputField.val().trim() !== "") {
+          const newSkillTag = $('<span class="skill-tag edit-mode"></span>');
+          newSkillTag.text(inputField.val().trim());
 
           // Add "x" mark for the new skill
-          const removeIcon = document.createElement("span");
-          removeIcon.className = "remove-skill";
-          removeIcon.innerHTML = "&times;";
-          removeIcon.addEventListener("click", function () {
+          const removeIcon = $('<span class="remove-skill">×</span>');
+          removeIcon.on("click", function () {
             newSkillTag.remove();
           });
-          newSkillTag.appendChild(removeIcon);
+          newSkillTag.append(removeIcon);
 
           // Insert the new skill before the empty skill tag
-          skillTagsContainer.insertBefore(newSkillTag, emptySkillTag);
+          skillTagsContainer.find(".empty-skill").before(newSkillTag);
 
           // Clear the input field
-          inputField.value = "";
+          inputField.val("");
         }
       });
     } else {
       // Switch back to Edit state
-      editSkillsBtn.innerHTML = `
-        <i class="hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i>
-        Edit
-      `;
-      editSkillsBtn.setAttribute("data-state", "edit");
+      editSkillsBtn.html(`
+            <i class="hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i>
+            Edit
+        `);
+      editSkillsBtn.attr("data-state", "edit");
 
       // Remove "x" marks from tags
-      const skillTags = skillTagsContainer.querySelectorAll(".skill-tag");
-      skillTags.forEach((tag) => {
-        tag.classList.remove("edit-mode");
-        const removeIcon = tag.querySelector(".remove-skill");
-        if (removeIcon) {
+      const skillTags = skillTagsContainer.find(".skill-tag");
+      skillTags.each(function () {
+        $(this).removeClass("edit-mode");
+        const removeIcon = $(this).find(".remove-skill");
+        if (removeIcon.length) {
           removeIcon.remove();
         }
       });
 
       // Remove the empty skill tag
-      const emptySkillTag = skillTagsContainer.querySelector(".empty-skill");
-      if (emptySkillTag) {
+      const emptySkillTag = skillTagsContainer.find(".empty-skill");
+      if (emptySkillTag.length) {
         emptySkillTag.remove();
       }
     }
   });
-});
 
 // Two Factor Authentication
 function moveToNext(currentInput) {
-  const inputs = document.querySelectorAll(".code-input");
-  const currentIndex = Array.from(inputs).indexOf(currentInput);
+  const inputs = $(".code-input");
+  const currentIndex = inputs.index(currentInput);
 
-  if (currentInput.value.length === 1 && currentIndex < inputs.length - 1) {
-    inputs[currentIndex + 1].focus();
+  if ($(currentInput).val().length === 1 && currentIndex < inputs.length - 1) {
+    inputs.eq(currentIndex + 1).focus();
   }
 }
 
 // Enable 2FA functionality
 function enable2FA() {
-  const inputs = document.querySelectorAll(".code-input");
+  const inputs = $(".code-input");
   let code = "";
-  inputs.forEach((input) => {
-    code += input.value;
+  inputs.each(function() {
+    code += $(this).val();
   });
 
-  const errorMessage = document.getElementById("error-message");
+  const errorMessage = $("#error-message");
 
   // Simulated valid code (e.g., "123456")
   if (code === "123456") {
-    errorMessage.textContent = "";
+    errorMessage.text("");
     alert("2FA has been successfully enabled!");
     // Close the modal
-    const modal = bootstrap.Modal.getInstance(
-      document.getElementById("twoFactorModal")
-    );
+    const modal = bootstrap.Modal.getInstance($("#twoFactorModal")[0]);
     modal.hide();
   } else {
-    errorMessage.textContent = "Invalid verification code. Please try again.";
+    errorMessage.text("Invalid verification code. Please try again.");
   }
 }
 
 // Function to copy the code to clipboard
 function copyCode() {
-  const codeInput = document.getElementById("codeInput");
-  const code = codeInput.value;
+  const codeInput = $("#codeInput");
+  const code = codeInput.val();
 
   // Use the Clipboard API to copy the text
   navigator.clipboard
-    .writeText(code)
-    .then(() => {
-      alert("Code copied to clipboard.");
-    })
-    .catch((error) => {
-      console.error("Failed to copy code:", error);
-      alert("Failed to copy code. Please try again.");
-    });
+      .writeText(code)
+      .then(() => {
+        alert("Code copied to clipboard.");
+      })
+      .catch((error) => {
+        console.error("Failed to copy code:", error);
+        alert("Failed to copy code. Please try again.");
+      });
 }
 
 // -------------------------- Achievements --------------------------
-document.addEventListener("DOMContentLoaded", () => {
-  const viewAllBtn = document.getElementById("viewAllBtn");
-  const hiddenItems = document.querySelectorAll(".hidden");
-  const achievementCount = document.getElementById("achievement-count");
-  let showingAll = false;
+  const viewAllBtn = $("#viewAllBtn");
+  const hiddenAchievements = $(".hidden");
+  const achievementCount = $("#achievement-count");
+  let showingAllAchieve = false;
 
-  viewAllBtn.addEventListener("click", () => {
-    showingAll = !showingAll;
-    hiddenItems.forEach((item) => {
-      item.style.display = showingAll ? "flex" : "none";
+  viewAllBtn.on("click", function() {
+    showingAllAchieve = !showingAllAchieve;
+    hiddenAchievements.each(function() {
+      $(this).css("display", showingAllAchieve ? "flex" : "none");
     });
-    viewAllBtn.textContent = showingAll ? "Show Less" : "View All";
+    viewAllBtn.text(showingAllAchieve ? "Show Less" : "View All");
   });
-});
 
 // -------------------------- Courses --------------------------
 
-document.addEventListener("DOMContentLoaded", () => {
-  const viewAll = document.getElementById("viewAll");
-  const hiddenItems = document.querySelectorAll(".hidden");
-  const progressCircles = document.querySelectorAll(".progress");
-  let showingAll = false;
+  const viewAll = $("#viewAll");
+  const hiddenCourse = $(".hidden");
+  const progressCircles = $(".progress");
+  let showingAllCourses = false;
 
-  viewAll.addEventListener("click", () => {
-    showingAll = !showingAll;
-    hiddenItems.forEach((item) => {
-      item.style.display = showingAll ? "flex" : "none";
+  viewAll.on("click", function() {
+    showingAllCourses = !showingAllCourses;
+    hiddenCourse.each(function() {
+      $(this).css("display", showingAllCourses ? "flex" : "none");
     });
-    viewAll.textContent = showingAll ? "Show Less" : "View All";
+    viewAll.text(showingAllCourses ? "Show Less" : "View All");
   });
 
-  progressCircles.forEach((circle) => {
-    const progress = circle.getAttribute("data-progress");
+  progressCircles.each(function() {
+    const progress = $(this).attr("data-progress");
     const circumference = 2 * Math.PI * 45;
     const offset = circumference - (progress / 100) * circumference;
 
-    circle.style.strokeDasharray = `${circumference} ${circumference}`;
-    circle.style.strokeDashoffset = offset;
+    $(this).css({
+      "strokeDasharray": `${circumference} ${circumference}`,
+      "strokeDashoffset": offset
+    });
   });
-});
 
 // -------------------------- Billing --------------------------
-document.addEventListener("DOMContentLoaded", () => {
-  const viewHistoryBtn = document.getElementById("viewHistory");
-  const billingInfo = document.getElementById("billingInfo");
-  const billingHistory = document.getElementById("billingHistory");
-  const cardNumber = document.getElementById("card-number");
-  const cvvCode = document.getElementById("cvv-code");
+
+  const viewHistoryBtn = $("#viewHistory");
+  const billingInfo = $("#billingInfo");
+  const billingHistory = $("#billingHistory");
+  const cardNumber = $("#card-number");
+  const cvvCode = $("#cvv-code");
   let isHistoryVisible = false;
 
-  // Mask card number
-  const cardOriginal = cardNumber.getAttribute("data-original");
+// Mask card number
+  const cardOriginal = cardNumber.attr("data-original");
   const cardParts = cardOriginal.split(" ");
   const maskedParts = cardParts.map((part, index) =>
-    index < 3 ? "****" : part
+      index < 3 ? "****" : part
   );
-  cardNumber.textContent = maskedParts.join(" ");
+  cardNumber.text(maskedParts.join(" "));
 
   // Mask CVV
-  const cvvOriginal = cvvCode.getAttribute("data-original");
-  cvvCode.textContent = "*".repeat(cvvOriginal.length);
+  const cvvOriginal = cvvCode.attr("data-original");
+  cvvCode.text("*".repeat(cvvOriginal.length));
 
-  // Initially hide billing history
-  billingHistory.style.display = "none";
+// Initially hide billing history
+  billingHistory.css("display", "none");
 
-  viewHistoryBtn.addEventListener("click", () => {
+  viewHistoryBtn.on("click", function() {
     isHistoryVisible = !isHistoryVisible;
 
     if (isHistoryVisible) {
-      billingInfo.style.display = "none";
-      billingHistory.style.display = "block";
-      viewHistoryBtn.textContent = "Back";
-      viewHistoryBtn.classList.add("me-5");
+      billingInfo.css("display", "none");
+      billingHistory.css("display", "block");
+      viewHistoryBtn.text("Back");
+      viewHistoryBtn.addClass("me-5");
     } else {
-      billingInfo.style.display = "block";
-      billingHistory.style.display = "none";
-      viewHistoryBtn.textContent = "Payment history";
-      viewHistoryBtn.classList.remove("me-5");
+      billingInfo.css("display", "block");
+      billingHistory.css("display", "none");
+      viewHistoryBtn.text("Payment history");
+      viewHistoryBtn.removeClass("me-5");
     }
   });
 
   // Toggle Manage Mode
-  document.getElementById("manageCards").addEventListener("click", function () {
-    const isManageMode = this.textContent === "Done";
+  $("#manageCards").on("click", function() {
+    const isManageMode = $(this).text() === "Done";
 
-    this.style.transition = "none";
+    $(this).css("transition", "none");
 
     if (!isManageMode) {
       // Enter manage mode
-      const removeButtons = document.querySelectorAll(".remove-card-btn");
-      removeButtons.forEach((button) => (button.style.display = "block"));
+      const removeButtons = $(".remove-card-btn");
+      removeButtons.each(function() {
+        $(this).css("display", "block");
+      });
 
       // Disable card flip for all cards
-      const flipCardInners = document.querySelectorAll(".flip-card-inner");
-      flipCardInners.forEach((inner) => {
-        inner.style.transform = "rotateY(0deg)";
-        inner.style.transition = "none";
+      const flipCardInners = $(".flip-card-inner");
+      flipCardInners.each(function() {
+        $(this).css({
+          "transform": "rotateY(0deg)",
+          "transition": "none"
+        });
       });
 
       // Show Add Card button
-      const addCardBtn = document.getElementById("addCard");
-      addCardBtn.style.display = "block";
+      const addCardBtn = $("#addCard");
+      addCardBtn.css("display", "block");
 
-      this.textContent = "Done";
-      this.className = "text-secondary border-0 bg-transparent";
+      $(this).text("Done");
+      $(this).attr("class", "text-secondary border-0 bg-transparent");
     } else {
       // Exit manage mode
-      const removeButtons = document.querySelectorAll(".remove-card-btn");
-      removeButtons.forEach((button) => (button.style.display = "none"));
+      const removeButtons = $(".remove-card-btn");
+      removeButtons.each(function() {
+        $(this).css("display", "none");
+      });
 
       // Restore card flip for all cards
-      const flipCardInners = document.querySelectorAll(".flip-card-inner");
-      flipCardInners.forEach((inner) => {
-        inner.style.transition = "";
-        inner.style.transform = "";
+      const flipCardInners = $(".flip-card-inner");
+      flipCardInners.each(function() {
+        $(this).css({
+          "transition": "",
+          "transform": ""
+        });
       });
 
       // Hide Add Card button
-      const addCardBtn = document.getElementById("addCard");
-      addCardBtn.style.display = "none";
+      const addCardBtn = $("#addCard");
+      addCardBtn.css("display", "none");
 
-      this.textContent = "Manage Cards";
-      this.className = "text-primary border-0 bg-transparent";
+      $(this).text("Manage Cards");
+      $(this).attr("class", "text-primary border-0 bg-transparent");
     }
 
     void this.offsetWidth;
-    this.style.transition = "";
+    $(this).css("transition", "");
   });
 
   // Add new card functionality
-  document.getElementById("saveCardBtn").addEventListener("click", function () {
-    const cardNumber = document.getElementById("newCardNumber").value;
-    const cardName = document.getElementById("newCardName").value;
-    const expDate = document.getElementById("newExpDate").value;
-    const cvvCode = document.getElementById("newCvvCode").value;
+  $("#saveCardBtn").on("click", function () {
+    const cardNumber = $("#newCardNumber").val();
+    const cardName = $("#newCardName").val();
+    const expDate = $("#newExpDate").val();
+    const cvvCode = $("#newCvvCode").val();
 
     if (!cardNumber || !cardName || !expDate || !cvvCode) {
       showAlert("warning", "Please fill in all card details.");
       return;
     }
 
-    const newCard = document.createElement("div");
-    newCard.className = "flip-card d-flex flex-row align-items-center";
-    newCard.innerHTML = `
-        <div class="flip-card-inner flex-grow-1">
-            <div class="flip-card-front">
-                <div class="card-content">
-                              <div class="flex-row top-row">
-                                <img
-                                  src="/assets/images/chip.svg"
-                                  alt="Card Chip"
-                                  class="chip mt-3"
-                                />
-                                <p class="card-heading">MASTERCARD</p>
-                              </div>
-                              <div class="flex-row middle-row">
-                                <p
-                                  class="card-number"
-                                  id="card-number"
-                                  data-original="${cardNumber}"
-                                >
-                                  ${cardNumber}
-                                </p>
-                                <img
-                                  src="assets/images/contactless.svg"
-                                  alt="Contactless"
-                                  class="contactless"
-                                />
-                              </div>
-                              <div class="flex-row bottom-row">
-                                <p class="card-name" data-original="${cardName}">${cardName}</p>
-                                <div class="validity">
-                                  <p class="valid-thru">
-                                    VALID <br />
-                                    THRU
-                                  </p>
-                                  <p class="exp-date" data-original="${expDate}">${expDate}</p>
-                                </div>
-                                <img
-                                  src="assets/images/mastercard.svg"
-                                  alt="Mastercard logo"
-                                  class="card-logo"
-                                />
-                              </div>
+    const newCard = $('<div class="flip-card d-flex flex-row align-items-center"></div>');
+    newCard.html(`
+    <div class="flip-card-inner flex-grow-1">
+        <div class="flip-card-front">
+            <div class="card-content">
+                          <div class="flex-row top-row">
+                            <img
+                              src="/assets/images/chip.svg"
+                              alt="Card Chip"
+                              class="chip mt-3"
+                            />
+                            <p class="card-heading">MASTERCARD</p>
+                          </div>
+                          <div class="flex-row middle-row">
+                            <p
+                              class="card-number"
+                              id="card-number"
+                              data-original="${cardNumber}"
+                            >
+                              ${cardNumber}
+                            </p>
+                            <img
+                              src="assets/images/contactless.svg"
+                              alt="Contactless"
+                              class="contactless"
+                            />
+                          </div>
+                          <div class="flex-row bottom-row">
+                            <p class="card-name" data-original="${cardName}">${cardName}</p>
+                            <div class="validity">
+                              <p class="valid-thru">
+                                VALID <br />
+                                THRU
+                              </p>
+                              <p class="exp-date" data-original="${expDate}">${expDate}</p>
                             </div>
-                <button class="remove-card-btn" style="display: none;">
-                    <i class="hgi hgi-stroke hgi-cancel-01 fw-bold small"></i>
-                </button>
-            </div>
-            <div class="flip-card-back">
-                <div class="strip"></div>
-                <div class="mstrip"></div>
-                <div class="sstrip">
-                    <p class="code" data-original="${cvvCode}">${cvvCode}</p>
-                </div>
+                            <img
+                              src="assets/images/mastercard.svg"
+                              alt="Mastercard logo"
+                              class="card-logo"
+                            />
+                          </div>
+                        </div>
+            <button class="remove-card-btn" style="display: none;">
+                <i class="hgi hgi-stroke hgi-cancel-01 fw-bold small"></i>
+            </button>
+        </div>
+        <div class="flip-card-back">
+            <div class="strip"></div>
+            <div class="mstrip"></div>
+            <div class="sstrip">
+                <p class="code" data-original="${cvvCode}">${cvvCode}</p>
             </div>
         </div>
-    `;
+    </div>
+`);
 
     // Append new card to the card container div
-    const cardContainer = document.getElementById("cardContainer");
-    if (cardContainer) {
-      cardContainer.appendChild(newCard);
+    const cardContainer = $("#cardContainer");
+    if (cardContainer.length) {
+      cardContainer.append(newCard);
     } else {
       console.error("Card container not found!");
-      document.getElementById("paymentMethod").appendChild(newCard);
+      $("#paymentMethod").append(newCard);
     }
+  });
 
-    // Add event listener to new remove button
-    const newRemoveBtn = newCard.querySelector(".remove-card-btn");
-    newRemoveBtn.addEventListener("click", function (e) {
+// Add event listener to new remove button
+    const newRemoveBtn = newCard.find(".remove-card-btn");
+    newRemoveBtn.on("click", function(e) {
       e.stopPropagation();
-      const card = this.closest(".flip-card");
+      const card = $(this).closest(".flip-card");
       card.remove();
-
-      // If no cards remain, exit manage mode
-      const remainingCards = document.querySelector(".flip-card");
-      const manageBtn = document.getElementById("manageCards");
-      if (!remainingCards && manageBtn && manageBtn.textContent === "Done") {
-        manageBtn.style.transition = "none";
-        manageBtn.textContent = "Manage Cards";
-        manageBtn.className = "text-primary border-0 bg-transparent";
-        const addCardBtn = document.getElementById("addCard");
-        addCardBtn.style.display = "none";
-        // Hide all remove buttons
-        const removeButtons = document.querySelectorAll(".remove-card-btn");
-        removeButtons.forEach((button) => (button.style.display = "none"));
-        // Restore all card flips
-        const flipCardInners = document.querySelectorAll(".flip-card-inner");
-        flipCardInners.forEach((inner) => {
-          inner.style.transition = "";
-          inner.style.transform = "";
-        });
-        void manageBtn.offsetWidth;
-        manageBtn.style.transition = "";
-      }
     });
 
-    // Check if in manage mode and show remove button immediately
-    const manageBtn = document.getElementById("manageCards");
-    if (manageBtn && manageBtn.textContent === "Done") {
-      newRemoveBtn.style.display = "block";
+    // If no cards remain, exit manage mode
+    const remainingCards = $(".flip-card");
+    const manageBtn = $("#manageCards");
+    if (!remainingCards.length && manageBtn.length && manageBtn.text() === "Done") {
+      manageBtn.css("transition", "none");
+      manageBtn.text("Manage Cards");
+      manageBtn.attr("class", "text-primary border-0 bg-transparent");
+      const addCardBtn = $("#addCard");
+      addCardBtn.css("display", "none");
+      // Hide all remove buttons
+      const removeButtons = $(".remove-card-btn");
+      removeButtons.each(function() {
+        $(this).css("display", "none");
+      });
+      // Restore all card flips
+      const flipCardInners = $(".flip-card-inner");
+      flipCardInners.each(function() {
+        $(this).css({
+          "transition": "",
+          "transform": ""
+        });
+      });
+      void manageBtn[0].offsetWidth;
+      manageBtn.css("transition", "");
+    }
+
+// Check if in manage mode and show remove button immediately
+    const manageBtnCheck = $("#manageCards");
+    if (manageBtnCheck.length && manageBtnCheck.text() === "Done") {
+      newRemoveBtn.css("display", "block");
 
       // Disable flip for new card same as others
-      const newFlipCardInner = newCard.querySelector(".flip-card-inner");
-      if (newFlipCardInner) {
-        newFlipCardInner.style.transform = "rotateY(0deg)";
-        newFlipCardInner.style.transition = "none";
+      const newFlipCardInner = newCard.find(".flip-card-inner");
+      if (newFlipCardInner.length) {
+        newFlipCardInner.css({
+          "transform": "rotateY(0deg)",
+          "transition": "none"
+        });
       }
     }
 
     // Clear form and close modal
-    document.getElementById("newCardNumber").value = "";
-    document.getElementById("newCardName").value = "";
-    document.getElementById("newExpDate").value = "";
-    document.getElementById("newCvvCode").value = "";
-    const modal = bootstrap.Modal.getInstance(
-      document.getElementById("addCardModal")
-    );
+    $("#newCardNumber").val("");
+    $("#newCardName").val("");
+    $("#newExpDate").val("");
+    $("#newCvvCode").val("");
+    const modal = bootstrap.Modal.getInstance($("#addCardModal")[0]);
     modal.hide();
-  });
 
-  // Card flip for new card modal
-  document.getElementById("flipCardBtn").addEventListener("click", function () {
-    const newCardInner = document.getElementById("newCardInner");
-    const isFlipped = newCardInner.style.transform === "rotateY(180deg)";
-    newCardInner.style.transform = isFlipped
-      ? "rotateY(0deg)"
-      : "rotateY(180deg)";
-  });
+// Card flip for new card modal
+    $("#flipCardBtn").on("click", function() {
+      const newCardInner = $("#newCardInner");
+      const isFlipped = newCardInner.css("transform") === "rotateY(180deg)";
+      newCardInner.css("transform", isFlipped ? "rotateY(0deg)" : "rotateY(180deg)");
+    });
 
-  // Handle expiry date input formatting
-  document.getElementById("newExpDate").addEventListener("input", function (e) {
-    let value = e.target.value.replace(/\D/g, "");
-    if (value.length >= 2) {
-      const month = parseInt(value.substring(0, 2));
-      if (month > 12) value = "12" + value.substring(2);
-      value = value.substring(0, 2) + "/" + value.substring(2);
-    }
-    e.target.value = value.substring(0, 5);
-  });
+    // Handle expiry date input formatting
+    $("#newExpDate").on("input", function(e) {
+      let value = $(e.target).val().replace(/\D/g, "");
+      if (value.length >= 2) {
+        const month = parseInt(value.substring(0, 2));
+        if (month > 12) value = "12" + value.substring(2);
+        value = value.substring(0, 2) + "/" + value.substring(2);
+      }
+      $(e.target).val(value.substring(0, 5));
+    });
 });
 
-// // Password visibility toggle functionality
-// const passwordFields = document.querySelectorAll(
-//   '.password-container input[type="password"]'
-// );
-// const toggleButtons = document.querySelectorAll(".password-container .btn");
-
-// toggleButtons.forEach((button, index) => {
-//   button.addEventListener("click", () => {
-//     const passwordField = passwordFields[index];
-//     const icon = button.querySelector("i");
-
-//     if (passwordField.type === "password") {
-//       button.setAttribute("data-bs-title", "Hide Password");
-//       passwordField.type = "text";
-//       icon.className = "hgi-stroke hgi-view-off-slash fs-5 align-middle";
-//     } else {
-//       button.setAttribute("data-bs-title", "Show Password");
-//       passwordField.type = "password";
-//       icon.className = "hgi-stroke hgi-view fs-5 align-middle";
-//     }
-
-//     // Update the tooltip
-//     const tooltip = bootstrap.Tooltip.getInstance(button);
-//     if (tooltip) {
-//       tooltip.dispose();
-//       new bootstrap.Tooltip(button);
-//     }
-//   });
-// });

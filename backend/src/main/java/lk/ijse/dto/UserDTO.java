@@ -13,5 +13,5 @@ public class UserDTO {
     private String email;
     private String password;
     private User.Role role;
-    private String profileImage;
+    private String profilePicture;  // Base64 encoded String.
 }

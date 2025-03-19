@@ -26,8 +26,8 @@ $(document).ready(function () {
                         userData.role ? userData.role.charAt(0).toUpperCase() + userData.role.slice(1).toLowerCase() : "-"
                     );
 
-                    if (userData.profileImage) {
-                        $("#header-profile-image").attr("src", userData.profileImage);
+                    if (userData.profilePicture) {
+                        $("#header-profile-image").attr("src", userData.profilePicture);
                     }
                 } else {
                     showAlert("danger", "Failed to load profile: " + response.message);
