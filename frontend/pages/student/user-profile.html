@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="../../assets/css/common/alert.css" />
     <link rel="stylesheet" href="../../assets/css/common/header.css" />
     <link rel="stylesheet" href="../../assets/css/common/sidebar.css" />
+    <link rel="stylesheet" href="../../assets/css/common/button.css" />
     <link rel="stylesheet" href="../../assets/css/common/password-utils.css" />
   </head>
   <body class="overflow-hidden">
@@ -1207,7 +1208,12 @@
                 <label for="newPassword">New Password</label>
                 <div class="input-container">
                   <div class="position-relative">
-                    <input type="password" id="newPassword" class="password-input" required />
+                    <input
+                      type="password"
+                      id="newPassword"
+                      class="password-input"
+                      required
+                    />
                     <button type="button" class="btn password-toggle">
                       <i class="hgi-stroke hgi-view"></i>
                     </button>
@@ -1229,7 +1235,12 @@
                 <label for="confirmNewPassword"> Confirm New Password </label>
                 <div class="input-container">
                   <div class="position-relative">
-                    <input type="password" id="confirmNewPassword" class="password-input" required />
+                    <input
+                      type="password"
+                      id="confirmNewPassword"
+                      class="password-input"
+                      required
+                    />
                     <button type="button" class="btn password-toggle">
                       <i class="hgi-stroke hgi-view"></i>
                     </button>
@@ -1656,6 +1667,54 @@
                   <i class="hgi-stroke hgi-delete-02"></i>
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal (Profile Picture) -->
+    <div
+      class="modal fade"
+      id="deleteConfirmModal"
+      tabindex="-1"
+      aria-hidden="true"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow rounded-4">
+          <div class="modal-body text-center p-4">
+            <div class="mb-1">
+              <i
+                class="hgi hgi-stroke hgi-delete-01 fs-4 align-middle text-danger"
+              ></i>
+            </div>
+            <h5 class="mb-2" id="deleteModalTitle">Delete Profile Picture</h5>
+            <p class="text-muted small mb-4">
+              Are you sure you want to delete this profile picture? This action cannot be
+              undone.
+            </p>
+            <div class="d-flex justify-content-center align-items-center gap-3">
+              <button
+                type="button"
+                class="btn btn-light"
+                data-bs-dismiss="modal"
+                id="cancelDelete"
+              >
+                No, Cancel
+              </button>
+              <button
+                type="button"
+                class="btn delete-btn px-4"
+                id="confirmDelete"
+              >
+                <img
+                  src="../../assets/images/icons/trash-bin.svg"
+                  alt="Delete Icon"
+                  class="svgIcon"
+                />
+              </button>
             </div>
           </div>
         </div>
