@@ -1,8 +1,10 @@
 package lk.ijse.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lk.ijse.dto.AuthDTO;
 import lk.ijse.dto.ResponseDTO;
 import lk.ijse.dto.UserDTO;
+import lk.ijse.entity.User;
 import lk.ijse.service.UserService;
 import lk.ijse.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +16,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/auth")
@@ -152,4 +159,44 @@ public class AuthController {
                     .body(new ResponseDTO(VarList.Internal_Server_Error, e.getMessage(), null));
         }
     }
+
+    @GetMapping("/google")
+    public void redirectToGoogle(HttpServletResponse response) throws IOException {
+        response.sendRedirect("/oauth2/authorization/google");
+    }
+
+//    @GetMapping("/google/callback")
+//    public void googleCallback(OAuth2AuthenticationToken authentication, HttpServletResponse response) throws IOException {
+//        OAuth2User oAuth2User = authentication.getPrincipal();
+//        String email = oAuth2User.getAttribute("email");
+//        String fullName = oAuth2User.getAttribute("name");
+//
+//        Optional<User> existingUser = userService.findByEmail(email);
+//        String token;
+//
+//        if (existingUser.isEmpty()) {
+//            UserDTO userDTO = new UserDTO();
+//            userDTO.setEmail(email);
+//            userDTO.setFullName(fullName);
+//            userDTO.setPassword(new BCryptPasswordEncoder().encode("google-authenticated")); // mock password
+//            userDTO.setRole(User.Role.STUDENT);
+//
+//            int saveResult = userService.saveUser(userDTO);
+//            if (saveResult == VarList.Created) {
+//                UserDetails userDetails = userService.loadUserByUsername(email);
+//                token = jwtUtil.generateToken(userDetails);
+//            } else if (saveResult == VarList.Not_Acceptable) {
+//                UserDetails userDetails = userService.loadUserByUsername(email);
+//                token = jwtUtil.generateToken(userDetails);
+//            } else {
+//                throw new RuntimeException("Unexpected save result: " + saveResult);
+//            }
+//        } else {
+//            // Login: Use existing user
+//            UserDetails userDetails = userService.loadUserByUsername(email);
+//            token = jwtUtil.generateToken(userDetails);
+//        }
+//
+//        response.sendRedirect("http://localhost:5500/frontend/pages/student/student-dashboard.html?token=" + token);
+//    }
 }

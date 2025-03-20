@@ -72,6 +72,31 @@ $(document).ready(function () {
         });
     });
 
+    /* ---------------------------------- Google through login ---------------------------------- */
+
+    $("#google-login-btn").on("click", function (e) {
+        e.preventDefault();
+        window.location.href = "http://localhost:8080/api/v1/auth/google";
+    });
+
+    function handleGoogleCallback() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get("token");
+        const error = urlParams.get("error");
+
+        if (token) {
+            localStorage.setItem("token", token);
+            showAlert("success", "Google login successful!");
+            setTimeout(function () {
+                window.location.href = "../../../../frontend/pages/student/student-dashboard.html";
+            }, 1500);
+        } else if (error) {
+            showAlert("danger", "Google login failed: " + error);
+        }
+    }
+
+    handleGoogleCallback();
+
     // Main function -> handle signup form submission
     $("#signup-btn").on("click", function (e) {
         e.preventDefault();
