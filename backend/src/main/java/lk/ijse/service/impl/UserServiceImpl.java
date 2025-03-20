@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         User user = modelMapper.map(userDTO, User.class);
         user.setPasswordHash(passwordEncoder.encode(userDTO.getPassword()));
-        user.setRole(User.Role.STUDENT); // Default role.
+        user.setRole(User.Role.STUDENT);
         userRepo.save(user);
         return VarList.Created;
     }
