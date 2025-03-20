@@ -1010,7 +1010,6 @@ body {
 }
 
 .remove-image {
-  display: flex;
   justify-content: center;
   align-items: center;
   position: absolute;
@@ -1060,7 +1059,7 @@ body {
   border-color: var(--primary-color);
 }
 
-.password-container .password-toggle {
+.input-container .password-toggle {
   border: 0;
   position: absolute;
   right: 5px;
@@ -1071,11 +1070,11 @@ body {
   transition: color 0.4s ease;
 }
 
-.password-container .password-toggle:hover {
+.input-container .password-toggle:hover {
   color: var(--primary-color);
 }
 
-.password-container .password-toggle i {
+.input-container .password-toggle i {
   font-size: 1.2rem;
   vertical-align: middle;
 }

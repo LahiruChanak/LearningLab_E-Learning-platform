@@ -20,9 +20,19 @@ $(document).ready(function () {
   const passwordForm = $("#passwordUpdateForm");
   const emailForm = $("#emailUpdateForm");
 
-  // Password Strength Elements
-  const newPasswordInput = $("#newPassword");
-  const confirmNewPasswordInput = $("#confirmNewPassword");
+  // Password visibility toggle
+  $(".password-toggle").on("click", function() {
+    const $input = $(this).closest(".position-relative").find("input");
+    const $icon = $(this).find("i");
+
+    if ($input.attr("type") === "password") {
+      $input.attr("type", "text");
+      $icon.removeClass("hgi-view").addClass("hgi-view-off-slash");
+    } else {
+      $input.attr("type", "password");
+      $icon.removeClass("hgi-view-off-slash").addClass("hgi-view");
+    }
+  });
 
   // Navigation System
   function showPage(pageName) {
@@ -266,7 +276,7 @@ $(document).ready(function () {
     }
   });
 
-  // Handle save changes for profile picture
+  // Profile picture upload using file chooser
   window.saveChanges = function () {
     if (currentFile) {
       const formData = new FormData();
@@ -312,7 +322,7 @@ $(document).ready(function () {
     }
   };
 
-  // Camera capture functionality
+  // Camera capture functionality for profile picure
   window.takePhoto = function () {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       navigator.mediaDevices

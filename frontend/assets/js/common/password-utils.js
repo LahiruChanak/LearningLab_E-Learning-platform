@@ -45,13 +45,13 @@ function getStrengthColor(percentage) {
 }
 
 function initializePasswordFields() {
-  const passwordFields = ["newPassword", "confirmNewPassword"];
+  const passwordFields = ["newPassword", "confirmNewPassword", "password"];
 
   passwordFields.forEach((fieldId) => {
     const input = document.getElementById(fieldId);
     if (!input) return;
 
-    const container = input.closest(".password-container");
+    const container = input.closest(".input-container");
     const strengthBar = container.querySelector(".password-strength-bar");
     const requirementsCard = container.querySelector(
       ".password-requirements-card"
@@ -62,7 +62,7 @@ function initializePasswordFields() {
         // Reset bar when cleared or backspaced to empty
         strengthBar.style.width = "0%";
         strengthBar.style.background = "#e0e0e0"; // Reset to gray
-        if (requirementsCard && fieldId === "newPassword") {
+        if (requirementsCard && (fieldId === "newPassword" || fieldId === "password")) {
           requirementsCard.style.display = "none";
         }
       } else {
@@ -70,7 +70,7 @@ function initializePasswordFields() {
         const percentage = getPasswordStrength(criteria);
         strengthBar.style.width = `${percentage}%`;
         strengthBar.style.background = getStrengthColor(percentage);
-        if (requirementsCard && fieldId === "newPassword") {
+        if (requirementsCard && (fieldId === "newPassword" || fieldId === "password")) {
           requirementsCard.style.display = "block";
         }
       }
@@ -80,7 +80,7 @@ function initializePasswordFields() {
     input.addEventListener("focus", () => {
       if (
         requirementsCard &&
-        fieldId === "newPassword" &&
+          (fieldId === "newPassword" || fieldId === "password") &&
         input.value.length > 0
       ) {
         requirementsCard.style.display = "block";
@@ -89,24 +89,10 @@ function initializePasswordFields() {
 
     // Hide requirements card on blur
     input.addEventListener("blur", () => {
-      if (requirementsCard && fieldId === "newPassword") {
+      if (requirementsCard && (fieldId === "newPassword" || fieldId === "password")) {
         requirementsCard.style.display = "none";
       }
     });
-
-    // Password visibility toggle
-    const toggleBtn = container.querySelector(".password-toggle");
-    if (toggleBtn) {
-      toggleBtn.addEventListener("click", () => {
-        const type = input.type === "password" ? "text" : "password";
-        input.type = type;
-        const icon = toggleBtn.querySelector("i");
-        icon.className =
-          type === "password"
-            ? "hgi-stroke hgi-view"
-            : "hgi-stroke hgi-view-off-slash";
-      });
-    }
   });
 }
 

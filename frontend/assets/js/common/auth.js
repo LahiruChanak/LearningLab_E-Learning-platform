@@ -182,7 +182,7 @@ $(document).ready(function () {
         const otp = $(".otp-input").map(function () {
             return $(this).val();
         }).get().join("");
-        const newPassword = $("#new-password").val();
+        const newPassword = $("#newPassword").val();
         const confirmPassword = $("#confirm-password").val();
 
         if (!otp || !newPassword || newPassword !== confirmPassword) {
@@ -214,7 +214,7 @@ $(document).ready(function () {
             error: function (xhr) {
                 showAlert("danger", xhr.responseJSON?.message || xhr.statusText);
                 $("#reset-otp").val("");
-                $("#new-password").val("");
+                $("#newPassword").val("");
                 $("#confirm-new-password").val("");
             }
         });
