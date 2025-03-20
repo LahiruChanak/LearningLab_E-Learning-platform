@@ -227,7 +227,7 @@ $(document).ready(function () {
                         data: JSON.stringify(updatedProfile),
                         success: function (response) {
                             if (response.status === 200) {
-                                showAlert("success", "Profile section updated successfully!");
+                                showAlert("success", "Profile details updated successfully!");
                                 inputs.each(function () {
                                     $(this).prop("disabled", true);
                                 });
@@ -251,6 +251,42 @@ $(document).ready(function () {
     });
 
     retrieveUserProfile();
+
+    // Word counter for bio textarea
+    const MAX_WORDS = 50;
+
+    function countWords(text) {
+        const trimmedText = text.trim();
+        if (!trimmedText) return 0;
+        return trimmedText.split(/\s+/).length;
+    }
+
+    function updateWordCounter() {
+        const $textarea = $("textarea[data-field='bio']");
+        const wordCount = countWords($textarea.val());
+        const remainingWords = MAX_WORDS - wordCount;
+        const $counter = $(".count");
+
+        $counter.text(`${remainingWords}`);
+
+        if (remainingWords < 10 && remainingWords > 5) {
+            $counter.removeClass("danger").addClass("warning");
+        } else if (remainingWords <= 5 && remainingWords >= 0) {
+            $counter.removeClass("warning").addClass("danger");
+        } else {
+            $counter.removeClass("warning danger");
+        }
+
+        // Truncate if limit exceeded
+        if (remainingWords < 0) {
+            $textarea.val($textarea.val().split(/\s+/).slice(0, MAX_WORDS).join(" "));
+            $counter.text("0");
+            $counter.removeClass("warning").addClass("danger");
+        }
+    }
+
+    updateWordCounter();
+    $("textarea[data-field='bio']").on("input", updateWordCounter);
 
     // Update modal preview with current profile picture
     $("#profileModal").on("show.bs.modal", function () {
@@ -300,7 +336,7 @@ $(document).ready(function () {
 
                         setTimeout(() => {
                             window.location.reload();
-                        }, 2000);
+                        }, 1500);
                     } else {
                         showAlert("danger", "Failed to upload image: " + response.message);
                     }
@@ -316,7 +352,7 @@ $(document).ready(function () {
         }
     };
 
-    // Camera capture functionality for profile picure
+    // Camera capture functionality for profile picture
     window.takePhoto = function () {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             navigator.mediaDevices
@@ -342,7 +378,7 @@ $(document).ready(function () {
                                 track.stop();
                             });
                         }, "image/jpeg");
-                    }, 500);
+                    }, 1500);
                 })
                 .catch(function (error) {
                     showAlert("danger", "Error accessing camera: " + error.message);
@@ -390,7 +426,10 @@ $(document).ready(function () {
                     if (response.status === 200) {
                         showAlert("success", "Profile image removed successfully!");
                         $("#deleteConfirmModal").modal("hide");
-                        window.location.reload();
+
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
                     } else {
                         showAlert("danger", "Failed to remove image: " + response.message);
                         $("#deleteConfirmModal").modal("hide");
