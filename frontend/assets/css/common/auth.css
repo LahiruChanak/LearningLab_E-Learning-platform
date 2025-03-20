@@ -433,7 +433,7 @@ h1 span::after {
   padding: 20px 30px;
   gap: 20px;
   position: relative;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.082);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.082);
   border-radius: 15px;
 }
 
@@ -501,7 +501,7 @@ h1 span::after {
   position: absolute;
   top: 8px;
   right: 8px;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   background-color: #fff;
   border-radius: 50%;
   width: 25px;
