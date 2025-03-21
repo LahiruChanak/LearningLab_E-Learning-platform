@@ -87,30 +87,4 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userRepo.save(user);
     }
 
-    @Service
-    public static class CustomOAuth2UserService extends DefaultOAuth2UserService {
-        @Autowired
-        private UserService userService;
-
-        @Override
-        public OAuth2User loadUser(OAuth2UserRequest userRequest) {
-            OAuth2User oAuth2User = super.loadUser(userRequest);
-            String email = oAuth2User.getAttribute("email");
-            String fullName = oAuth2User.getAttribute("name");
-
-            Optional<User> existingUser = userService.findByEmail(email);
-            if (existingUser.isEmpty()) {
-                UserDTO userDTO = new UserDTO();
-                userDTO.setEmail(email);
-                userDTO.setFullName(fullName);
-                userDTO.setPassword("google-authenticated");
-                userDTO.setRole(User.Role.STUDENT);
-                userService.saveUser(userDTO);
-            }
-
-            Set<GrantedAuthority> authorities = new HashSet<>();
-            authorities.add(new SimpleGrantedAuthority("ROLE_STUDENT"));
-            return new DefaultOAuth2User(authorities, oAuth2User.getAttributes(), "email");
-        }
-    }
 }

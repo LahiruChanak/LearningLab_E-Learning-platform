@@ -165,38 +165,4 @@ public class AuthController {
         response.sendRedirect("/oauth2/authorization/google");
     }
 
-//    @GetMapping("/google/callback")
-//    public void googleCallback(OAuth2AuthenticationToken authentication, HttpServletResponse response) throws IOException {
-//        OAuth2User oAuth2User = authentication.getPrincipal();
-//        String email = oAuth2User.getAttribute("email");
-//        String fullName = oAuth2User.getAttribute("name");
-//
-//        Optional<User> existingUser = userService.findByEmail(email);
-//        String token;
-//
-//        if (existingUser.isEmpty()) {
-//            UserDTO userDTO = new UserDTO();
-//            userDTO.setEmail(email);
-//            userDTO.setFullName(fullName);
-//            userDTO.setPassword(new BCryptPasswordEncoder().encode("google-authenticated")); // mock password
-//            userDTO.setRole(User.Role.STUDENT);
-//
-//            int saveResult = userService.saveUser(userDTO);
-//            if (saveResult == VarList.Created) {
-//                UserDetails userDetails = userService.loadUserByUsername(email);
-//                token = jwtUtil.generateToken(userDetails);
-//            } else if (saveResult == VarList.Not_Acceptable) {
-//                UserDetails userDetails = userService.loadUserByUsername(email);
-//                token = jwtUtil.generateToken(userDetails);
-//            } else {
-//                throw new RuntimeException("Unexpected save result: " + saveResult);
-//            }
-//        } else {
-//            // Login: Use existing user
-//            UserDetails userDetails = userService.loadUserByUsername(email);
-//            token = jwtUtil.generateToken(userDetails);
-//        }
-//
-//        response.sendRedirect("http://localhost:5500/frontend/pages/student/student-dashboard.html?token=" + token);
-//    }
 }

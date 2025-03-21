@@ -1,6 +1,7 @@
 package lk.ijse.config;
 
 import lk.ijse.service.UserService;
+import lk.ijse.service.impl.CustomOAuth2UserService;
 import lk.ijse.service.impl.UserServiceImpl;
 import lk.ijse.util.JwtFilter;
 import lk.ijse.util.JwtUtil;
@@ -18,7 +19,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -26,6 +31,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
@@ -40,6 +47,12 @@ public class WebSecurityConfig {
 
     @Autowired
     private final JwtUtil jwtUtil;
+
+    @Autowired
+    private CustomOAuth2UserService customOAuth2UserService;
+
+    @Autowired
+    private ClientRegistrationRepository clientRegistrationRepository;
 
     public WebSecurityConfig(UserService userService, JwtFilter jwtFilter, JwtUtil jwtUtil) {
         this.userService = userService;
@@ -58,8 +71,17 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public OAuth2UserService oauth2UserService() {
-        return new UserServiceImpl.CustomOAuth2UserService();
+    public OAuth2AuthorizationRequestResolver authorizationRequestResolver() {
+        DefaultOAuth2AuthorizationRequestResolver resolver =
+                new DefaultOAuth2AuthorizationRequestResolver(clientRegistrationRepository, "/oauth2/authorization");
+        resolver.setAuthorizationRequestCustomizer(
+                request -> {
+                    Map<String, Object> additionalParams = new HashMap<>();
+                    additionalParams.put("prompt", "consent");
+                    request.additionalParameters(additionalParams);
+                }
+        );
+        return resolver;
     }
 
     @Bean
@@ -82,15 +104,17 @@ public class WebSecurityConfig {
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(authorization -> authorization
                                 .baseUri("/oauth2/authorization")
+                                .authorizationRequestResolver(authorizationRequestResolver())
                         )
                         .redirectionEndpoint(redirection -> redirection
                                 .baseUri("/api/v1/auth/google/callback")
                         )
                         .userInfoEndpoint(userInfo -> userInfo
-                                .userService(oauth2UserService())
+                                .userService(customOAuth2UserService)
                         )
                         .successHandler((request, response, authentication) -> {
-                            String email = authentication.getName();
+                            OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+                            String email = oAuth2User.getAttribute("email");
                             String token = jwtUtil.generateToken(userService.loadUserByUsername(email));
                             response.sendRedirect("http://localhost:5500/frontend/pages/student/student-dashboard.html?token=" + token);
                         })
