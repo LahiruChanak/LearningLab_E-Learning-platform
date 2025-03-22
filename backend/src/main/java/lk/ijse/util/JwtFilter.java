@@ -31,8 +31,7 @@ public class JwtFilter extends OncePerRequestFilter {
             "/api/v1/auth/verify-otp",
             "/api/v1/auth/authenticate",
             "/api/v1/auth/reset-password",
-            "/api/v1/auth/reset-pw-otp",
-            "/api/v1/user/profile"
+            "/api/v1/auth/reset-pw-otp"
     );
 
     @Override
