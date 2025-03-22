@@ -177,4 +177,36 @@ public class UserController {
         }
     }
 
+    @PostMapping("/profile/email")
+    public ResponseEntity<ResponseDTO> updateEmail(
+            @RequestBody Map<String, String> request,
+            Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO(401, "Unauthorized", null));
+        }
+        try {
+            String currentEmail = authentication.getName();
+            String password = request.get("password");
+            String newEmail = request.get("newEmail");
+
+            if (password == null || newEmail == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ResponseDTO(400, "Password and new email are required", null));
+            }
+
+            int result = userService.updateEmail(currentEmail, password, newEmail);
+
+            if (result == VarList.Created) {
+                return ResponseEntity.ok(new ResponseDTO(200, "Email updated successfully", null));
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+                        .body(new ResponseDTO(502, "Error updating email", null));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ResponseDTO(400, e.getMessage(), null));
+        }
+    }
+
 }

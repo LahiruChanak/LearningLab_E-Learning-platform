@@ -159,7 +159,7 @@ $(document).ready(function () {
 
     // Connect to backend using jQuery AJAX
     $.ajax({
-      url: "http://localhost:8080/api/v1/user/update-password",
+      url: "http://localhost:8080/api/v1/user/profile/password",
       method: "POST",
       headers: {
         "Authorization": "Bearer " + token,
@@ -175,6 +175,7 @@ $(document).ready(function () {
           $("#passwordModal").modal("hide");
           $("#passwordUpdateForm")[0].reset();
           $(".password-strength-bar").css({width: "0%", background: "#e0e0e0"});
+          window.location.reload();
         } else {
           errorSpan.text(response.message || "Error updating password.");
           errorContainer.show();

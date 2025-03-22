@@ -21,5 +21,6 @@ public class UserDTO {
     private String linkedinLink;
     private String stackOverflowLink;
     private String websiteLink;
-    private String updatedAt;
+    private String passwordUpdatedAt;
+    private String emailUpdatedAt;
 }

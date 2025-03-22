@@ -21,4 +21,6 @@ public interface UserService {
 
     int updatePassword(String email, String currentPassword, String newPassword) throws Exception;
 
+    int updateEmail(String currentEmail, String password, String newEmail) throws Exception;
+
 }

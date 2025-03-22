@@ -339,7 +339,7 @@
                 <i class="hgi-stroke hgi-lock-password security-icon"></i>
                 <div class="security-info">
                   <h3>Password</h3>
-                  <p>Last changed 2 months ago</p>
+                <p>Last changed: <span id="lastPasswordChange"></span></p>
                 </div>
                 <button
                   class="link-button"
@@ -354,7 +354,10 @@
                 <i class="hgi-stroke hgi-mail-at-sign-02 security-icon"></i>
                 <div class="security-info">
                   <h3>Email verification</h3>
-                  <p>rafiqurrahman51@gmail.com</p>
+                  <div class="d-flex align-items-center">
+                    <p id="userEmail"></p>
+                    <p><span class="mx-3 text-black">|</span> Last changed: <span id="lastEmailChange"></span></p>
+                  </div>
                 </div>
                 <button
                   class="link-button"
@@ -1264,13 +1267,12 @@
             ></button>
           </div>
           <div class="modal-body px-4">
-            <form id="emailUpdateForm" onsubmit="handleEmailUpdate(event)">
+            <form id="emailUpdateForm">
               <div class="form-field">
                 <label for="currentEmail">Current Email</label>
                 <input
                   type="email"
                   id="currentEmail"
-                  value="rafiqurrahman51@gmail.com"
                   disabled
                 />
               </div>
@@ -1282,7 +1284,10 @@
                 <label for="emailPassword">Password</label>
                 <input type="password" id="emailPassword" required />
               </div>
-              <div class="error" id="emailError" style="display: none"></div>
+              <div class="error">
+                <i class="hgi hgi-stroke hgi-alert-circle fs-5 align-middle me-2"></i>
+                <span id="emailError"></span>
+              </div>
               <button type="submit" class="btn btn-save w-100 mt-3">
                 Update Email
               </button>

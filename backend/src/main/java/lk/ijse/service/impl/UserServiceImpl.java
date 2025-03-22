@@ -20,6 +20,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -65,6 +66,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + userDTO.getEmail()));
 
         user.setPasswordHash(passwordEncoder.encode(userDTO.getPassword()));
+        user.setPasswordUpdatedAt(LocalDateTime.now());
         userRepo.save(user);
         return VarList.Created;
     }
@@ -95,6 +97,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         user.setPasswordHash(passwordEncoder.encode(newPassword));
+        user.setPasswordUpdatedAt(LocalDateTime.now());
+        userRepo.save(user);
+        return VarList.Created;
+    }
+
+    @Override
+    public int updateEmail(String currentEmail, String password, String newEmail) throws Exception {
+        User user = userRepo.findByEmail(currentEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + currentEmail));
+        if (!passwordEncoder.matches(password, user.getPasswordHash())) {
+            throw new Exception("Password is incorrect");
+        }
+        if (userRepo.existsByEmail(newEmail)) {
+            throw new Exception("New email is already in use");
+        }
+        user.setEmail(newEmail);
+        user.setEmailUpdatedAt(LocalDateTime.now());
         userRepo.save(user);
         return VarList.Created;
     }

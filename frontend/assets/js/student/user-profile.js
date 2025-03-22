@@ -14,12 +14,6 @@ $(document).ready(function () {
         new bootstrap.Modal($("#profileModal")[0]);
     let currentFile = null;
 
-    // Password and Email Modal Initialization
-    const passwordModal = new bootstrap.Modal($("#passwordModal")[0]);
-    const emailModal = new bootstrap.Modal($("#emailModal")[0]);
-    const passwordForm = $("#passwordUpdateForm");
-    const emailForm = $("#emailUpdateForm");
-
     // Password visibility toggle
     $(".password-toggle").on("click", function () {
         const $input = $(this).closest(".position-relative").find("input");
@@ -97,6 +91,75 @@ $(document).ready(function () {
 
 /* -------------------------------------------------- User Profile -------------------------------------------------- */
 
+    // ------------- Email Update -------------
+    $("#emailUpdateForm").on("submit", function (event) {
+        event.preventDefault();
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+            showAlert("danger", "You are not logged in. Please log in to update your email.");
+            window.location.href = "../../../../frontend/index.html";
+            return;
+        }
+
+        const currentEmail = $("#currentEmail").val().trim();
+        const newEmail = $("#newEmail").val().trim();
+        const password = $("#emailPassword").val().trim();
+        const errorContainer = $(".error");
+        const errorSpan = $("#emailError");
+
+        // Reset error display
+        errorContainer.hide();
+        errorSpan.text("");
+
+        if (!newEmail || !password) {
+            errorSpan.text("All fields are required.")
+            errorContainer.show();
+            return;
+        }
+        if (newEmail === currentEmail) {
+            errorSpan.text("New email must be different from the current email.");
+            errorContainer.show();
+            return;
+        }
+
+        $.ajax({
+            url: "http://localhost:8080/api/v1/user/profile/email",
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            data: JSON.stringify({
+                password: password,
+                newEmail: newEmail
+            }),
+            success: function(response) {
+                if (response.status === 200) {
+                    showAlert("success", "Email updated successfully! Please log in with your new email.");
+                    $("#emailModal").modal("hide");
+                    $("#emailUpdateForm")[0].reset();
+                    localStorage.removeItem("token"); // Clear token since email changed
+                    setTimeout(() => {
+                        window.location.href = "../../../../frontend/index.html";
+                    }, 2000);
+                } else {
+                    errorSpan.text(response.message || "Error updating email.");
+                    errorContainer.show();
+                }
+            },
+            error: function(xhr) {
+                const errorMsg = xhr.responseJSON ? xhr.responseJSON.message : "Failed to update email.";
+                errorSpan.text(errorMsg)
+                errorContainer.show();
+                if (xhr.status === 401) {
+                    showAlert("danger", "You are not authorized to update your email. Please login.");
+                    window.location.href = "/login";
+                }
+            }
+        });
+    });
+
     // ------------ retrieve user profile details ------------
     function retrieveUserProfile() {
         const token = localStorage.getItem("token");
@@ -145,8 +208,35 @@ $(document).ready(function () {
                         section.find("[data-field='websiteLink']").val(userData.websiteLink || "").data("originalValue", userData.websiteLink || "");
                     });
 
+                    // password last changed date
+                    if (userData.passwordUpdatedAt || userData.emailUpdatedAt) {
+                        ["passwordUpdatedAt", "emailUpdatedAt"].forEach((key) => {
+                            if (userData[key]) {
+                                const lastChanged = new Date(userData[key].replace(" ", "T") + "Z"); // Parse "yyyy-MM-dd HH:mm:ss"
+                                const now = new Date();
+                                const diffMs = now - lastChanged;
+                                const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                                const diffMonths = Math.floor(diffDays / 30);
+
+                                let displayText = diffDays < 1 ? "Today" : diffDays < 30 ? diffDays + " day" + (diffDays > 1 ? "s" : "") + " ago" : diffMonths + " month" + (diffMonths > 1 ? "s" : "") + " ago";
+
+                                $("#" + (key === "passwordUpdatedAt" ? "lastPasswordChange" : "lastEmailChange")).text(displayText);
+                            } else {
+                                $("#" + (key === "passwordUpdatedAt" ? "lastPasswordChange" : "lastEmailChange")).text("Never");
+                            }
+                        });
+                    }
+
+                    $("#userEmail").text(userData.email || "No email provided");
+
+                    // Set the current email in modal when it opens
+                    $("#emailModal").on("show.bs.modal", function () {
+                        $("#currentEmail").val(userData.email || "");
+                    });
+
                 } else {
                     showAlert("danger", "Failed to load profile: " + response.message);
+                    $("#lastPasswordChange, #lastEmailChange").text("Failed to load");
                 }
             },
             error: function (xhr) {
