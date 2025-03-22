@@ -78,4 +78,12 @@ public class SkillServiceImpl implements SkillService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<String> getSkillSuggestions(String query) {
+        return skillRepo.findBySkillNameContainingIgnoreCase(query)
+                .stream()
+                .map(Skill::getSkillName)
+                .collect(Collectors.toList());
+    }
+
 }

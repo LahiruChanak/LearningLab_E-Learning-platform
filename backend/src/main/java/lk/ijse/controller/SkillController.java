@@ -90,4 +90,22 @@ public class SkillController {
         }
     }
 
+    @GetMapping("/suggestions")
+    public ResponseEntity<ResponseDTO> getSkillSuggestions(
+            @RequestParam("query") String query,
+            Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO(401, "Unauthorized", null));
+        }
+
+        try {
+            List<String> suggestions = skillService.getSkillSuggestions(query);
+            return ResponseEntity.ok(new ResponseDTO(200, "Skill suggestions retrieved", suggestions));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(500, "Error retrieving suggestions: " + e.getMessage(), null));
+        }
+    }
+
 }

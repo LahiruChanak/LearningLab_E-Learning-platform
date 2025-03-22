@@ -15,4 +15,6 @@ public interface SkillService {
 
     List<String> getUserSkills(String email);
 
+    List<String> getSkillSuggestions(String query);
+
 }

@@ -526,17 +526,61 @@ $(document).ready(function () {
 
             const emptySkillTag = $('<span class="skill-tag empty-skill"></span>');
             emptySkillTag.html(`
-            <input type="text" placeholder="Add skill" />
+            <div class="suggestion-hint-container">
+                <div class="suggestion-hint"></div>
+                <input type="text" placeholder="Add skill" />
+            </div>
             <i class="hgi-stroke hgi-tick-01 save-tick-input"></i>
-        `);
+            `);
             skillTagsContainer.append(emptySkillTag);
 
             const inputField = emptySkillTag.find("input");
             const saveTick = emptySkillTag.find(".save-tick-input");
+            const suggestionHint = emptySkillTag.find(".suggestion-hint");
+
+            // Live suggestion as the background hint
+            inputField.on("input", function () {
+                const query = $(this).val().trim();
+                suggestionHint.text(""); // Clear previous suggestion
+                if (query.length > 0) {
+                    $.ajax({
+                        url: "http://localhost:8080/api/v1/user/skills/suggestions",
+                        method: "GET",
+                        headers: {
+                            "Authorization": "Bearer " + token
+                        },
+                        data: { query: query },
+                        success: function(response) {
+                            if (response.status === 200 && response.data.length > 0) {
+                                const suggestion = response.data[0]; // First suggestion
+                                if (suggestion.toLowerCase().startsWith(query.toLowerCase())) {
+                                    suggestionHint.text(suggestion); // Show full suggestion in grey
+                                }
+                            }
+                        },
+                        error: function(xhr) {
+                            console.error("Error fetching suggestions:", xhr.responseText);
+                        }
+                    });
+                }
+            });
+
+            // Accept suggestion with Enter or Tab
+            inputField.on("keydown", function(e) {
+                if ((e.key === "Enter" || e.key === "Tab") && suggestionHint.text()) {
+                    e.preventDefault();
+                    $(this).val(suggestionHint.text());
+                    suggestionHint.text("");
+                }
+            });
 
             saveTick.on("click", function () {
-                if (inputField.val().trim() !== "") {
-                    const skillName = inputField.val().trim();
+                let skillName = inputField.val().trim();
+                if (!skillName && suggestionHint.text()) {
+                    skillName = suggestionHint.text();
+                }
+
+                if (skillName) {
                     $.ajax({
                         url: "http://localhost:8080/api/v1/user/skills",
                         method: "POST",
@@ -573,18 +617,18 @@ $(document).ready(function () {
                                     });
                                 });
                                 newSkillTag.append(removeIcon);
-
                                 skillTagsContainer.find(".empty-skill").before(newSkillTag);
-                                inputField.val("");
+                                inputField.val(""); // Clear input
+                                suggestionHint.text(""); // Clear suggestion after adding
+                            } else if (response.status === 409) {
+                                alert(response.message);
                             }
                         },
                         error: function(xhr) {
                             if (xhr.status === 409) {
-                                const response = JSON.parse(xhr.responseText);
-                                showAlert("warning", response.message);
-                            } else {
-                                showAlert("danger", "Error adding skill: " + (xhr.responseJSON ? xhr.responseJSON.message : xhr.statusText));
+                                alert(xhr.responseJSON.message);
                             }
+                            showAlert("danger", "Error adding skill: " + (xhr.responseJSON ? xhr.responseJSON.message : xhr.statusText));
                         }
                     });
                 }

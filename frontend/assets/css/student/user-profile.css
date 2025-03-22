@@ -255,6 +255,7 @@ body {
   flex-direction: column;
   align-items: flex-end;
   max-width: 50%;
+  position: relative;
 }
 
 .skill-tags {
@@ -298,12 +299,30 @@ body {
   border: none;
   outline: none;
   width: 80px;
+  background: #ffffff60;
+  position: relative;
+  z-index: 1;
 }
 
 .save-tick-input {
   font-size: 1rem;
   color: green;
   cursor: pointer;
+}
+
+.suggestion-hint-container {
+  position: relative;
+  display: inline-block;
+  height: fit-content;
+  width: fit-content;
+}
+
+.suggestion-hint {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #aaa;
+  pointer-events: none;
 }
 
 /* -------------------------- Security Page -------------------------- */
