@@ -85,10 +85,9 @@ $(document).ready(function () {
         }
     }
 
-    // Handle initial page load
     handleHashChange();
 
-    // Listen for hash changes (ex:-, clicking notification icon on same page)
+    // Listen for hash changes (ex:-, clicking notification icon on the same page)
     $(window).on("hashchange", handleHashChange);
 
     // lock scroll position on load
@@ -399,8 +398,6 @@ $(document).ready(function () {
     }
 
     updateRemoveImageVisibility();
-
-    // Update visibility when image removed
     $("#profilePreview").on("load", updateRemoveImageVisibility);
 
     // Remove profile image
@@ -448,31 +445,95 @@ $(document).ready(function () {
         });
     });
 
-    // Skill tag system
+//     // Function to get token from URL query parameter
+//     function getTokenFromUrl() {
+//         const urlParams = new URLSearchParams(window.location.search);
+//         return urlParams.get("token");
+//     }
+//
+// // Store token in localStorage after login
+//     const tokenFromUrl = getTokenFromUrl();
+//     if (tokenFromUrl) {
+//         localStorage.setItem("token", tokenFromUrl); // Changed to "token"
+//         console.log("Token stored:", tokenFromUrl);
+//     }
+
+// Skill tag system
     const editSkillsBtn = $(".skills-section .edit-skill-btn");
     const skillTagsContainer = $(".skill-tags");
 
+    function loadUserSkills() {
+        const token = localStorage.getItem("token"); // Changed to "token"
+        if (!token) {
+            console.error("No token found. Redirecting to login...");
+            window.location.href = "/login";
+            return;
+        }
+
+        $.ajax({
+            url: "http://localhost:8080/api/v1/user/skills",
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            success: function(response) {
+                if (response.status === 200) {
+                    skillTagsContainer.empty();
+                    response.data.forEach(skill => {
+                        const skillTag = $('<span class="skill-tag"></span>').text(skill);
+                        skillTagsContainer.append(skillTag);
+                    });
+                }
+            },
+            error: function(xhr) {
+                console.error("Error loading skills:", xhr.responseText);
+                if (xhr.status === 401 || xhr.status === 403) {
+                    window.location.href = "/login";
+                }
+            }
+        });
+    }
+
+// Load skills on page load
+    loadUserSkills();
+
     editSkillsBtn.on("click", function () {
+        const token = localStorage.getItem("token"); // Changed to "token"
         const isEditMode = editSkillsBtn.attr("data-state") === "edit";
 
         if (isEditMode) {
             editSkillsBtn.html(`<span class="text-body-tertiary">Done</span>`);
             editSkillsBtn.attr("data-state", "done");
 
-            // Add "x" mark to each existing tag
             const skillTags = skillTagsContainer.find(".skill-tag:not(.empty-skill)");
             skillTags.each(function () {
                 $(this).addClass("edit-mode");
                 if (!$(this).find(".remove-skill").length) {
                     const removeIcon = $('<span class="remove-skill">×</span>');
                     removeIcon.on("click", function () {
-                        $(this).parent().remove(); // Remove the skill tag
+                        const skillName = $(this).parent().text().replace('×', '').trim();
+                        $.ajax({
+                            url: "http://localhost:8080/api/v1/user/skills",
+                            method: "DELETE",
+                            contentType: "application/json",
+                            headers: {
+                                "Authorization": "Bearer " + token
+                            },
+                            data: JSON.stringify({ skillName: skillName }),
+                            success: function(response) {
+                                if (response.status === 200) {
+                                    $(this).parent().remove();
+                                }
+                            }.bind(this),
+                            error: function(xhr) {
+                                console.error("Error removing skill:", xhr.responseText);
+                            }
+                        });
                     });
                     $(this).append(removeIcon);
                 }
             });
 
-            // Add an empty skill tag for new skills
             const emptySkillTag = $('<span class="skill-tag empty-skill"></span>');
             emptySkillTag.html(`
             <input type="text" placeholder="Add skill" />
@@ -480,38 +541,64 @@ $(document).ready(function () {
         `);
             skillTagsContainer.append(emptySkillTag);
 
-            // Handle saving a new skill
             const inputField = emptySkillTag.find("input");
             const saveTick = emptySkillTag.find(".save-tick-input");
 
             saveTick.on("click", function () {
                 if (inputField.val().trim() !== "") {
-                    const newSkillTag = $('<span class="skill-tag edit-mode"></span>');
-                    newSkillTag.text(inputField.val().trim());
+                    const skillName = inputField.val().trim();
+                    $.ajax({
+                        url: "http://localhost:8080/api/v1/user/skills",
+                        method: "POST",
+                        contentType: "application/json",
+                        headers: {
+                            "Authorization": "Bearer " + token
+                        },
+                        data: JSON.stringify({ skillName: skillName }),
+                        success: function(response) {
+                            if (response.status === 200) {
+                                const newSkillTag = $('<span class="skill-tag edit-mode"></span>');
+                                newSkillTag.text(skillName);
 
-                    // Add "x" mark for the new skill
-                    const removeIcon = $('<span class="remove-skill">×</span>');
-                    removeIcon.on("click", function () {
-                        newSkillTag.remove();
+                                const removeIcon = $('<span class="remove-skill">×</span>');
+                                removeIcon.on("click", function () {
+                                    $.ajax({
+                                        url: "http://localhost:8080/api/v1/user/skills",
+                                        method: "DELETE",
+                                        contentType: "application/json",
+                                        headers: {
+                                            "Authorization": "Bearer " + token
+                                        },
+                                        data: JSON.stringify({ skillName: skillName }),
+                                        success: function(response) {
+                                            if (response.status === 200) {
+                                                newSkillTag.remove();
+                                            }
+                                        },
+                                        error: function(xhr) {
+                                            console.error("Error removing skill:", xhr.responseText);
+                                        }
+                                    });
+                                });
+                                newSkillTag.append(removeIcon);
+
+                                skillTagsContainer.find(".empty-skill").before(newSkillTag);
+                                inputField.val("");
+                            }
+                        },
+                        error: function(xhr) {
+                            console.error("Error adding skill:", xhr.responseText);
+                        }
                     });
-                    newSkillTag.append(removeIcon);
-
-                    // Insert the new skill before the empty skill tag
-                    skillTagsContainer.find(".empty-skill").before(newSkillTag);
-
-                    // Clear the input field
-                    inputField.val("");
                 }
             });
         } else {
-            // Switch back to Edit state
             editSkillsBtn.html(`
             <i class="hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i>
             Edit
         `);
             editSkillsBtn.attr("data-state", "edit");
 
-            // Remove "x" marks from tags
             const skillTags = skillTagsContainer.find(".skill-tag");
             skillTags.each(function () {
                 $(this).removeClass("edit-mode");
@@ -521,7 +608,6 @@ $(document).ready(function () {
                 }
             });
 
-            // Remove the empty skill tag
             const emptySkillTag = skillTagsContainer.find(".empty-skill");
             if (emptySkillTag.length) {
                 emptySkillTag.remove();
@@ -529,7 +615,7 @@ $(document).ready(function () {
         }
     });
 
-    // Two Factor Authentication
+    // Two-Factor Authentication
     function moveToNext(currentInput) {
         const inputs = $(".code-input");
         const currentIndex = inputs.index(currentInput);

@@ -17,11 +17,11 @@ public class Skill {
     @Column(name = "skill_id")
     private Long skillId;
 
-    @Column(name = "name", nullable = false, unique = true, length = 100)
-    private String name;
+    @Column(name = "skill_name", nullable = false, unique = true, length = 100)
+    private String skillName;
 
-    @Column(name = "description", columnDefinition = "TEXT")
-    private String description;
+//    @Column(name = "description", columnDefinition = "TEXT")
+//    private String description;
 
     @OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UserSkill> userSkills;
