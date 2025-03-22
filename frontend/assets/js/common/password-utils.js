@@ -1,151 +1,196 @@
-// Password validation and strength checking
-function validatePassword(password) {
-  const criteria = {
-    length: password.length >= 8,
-    uppercase: /[A-Z]/.test(password),
-    lowercase: /[a-z]/.test(password),
-    number: /[0-9]/.test(password),
-    special: /[!@#$%^&*(),.?":{}|<>]/.test(password),
-  };
+$(document).ready(function () {
 
-  // Update password length display
-  const lengthElement = document.getElementById("new-length");
-  if (lengthElement) {
-    lengthElement.textContent = `At least 8 characters (${password.length}/8)`;
-    lengthElement.style.color = criteria.length ? "#00cc66" : "#ff4d4d";
-    lengthElement.classList.toggle("valid", criteria.length);
-  }
+  // Password validation and strength checking
+  function validatePassword(password) {
+    const criteria = {
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      number: /[0-9]/.test(password),
+      special: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+    };
 
-  // Update requirement list items
-  Object.keys(criteria).forEach((criterion) => {
-    if (criterion !== "length") {
-      const newElement = document.getElementById("new-" + criterion);
-      if (newElement) {
-        newElement.classList.toggle("valid", criteria[criterion]);
-        newElement.style.color = criteria[criterion] ? "#00cc66" : "#ff4d4d";
-      }
+    // Update password length display
+    const $lengthElement = $("#new-length");
+    if ($lengthElement.length) {
+      $lengthElement.text(`At least 8 characters (${password.length}/8)`);
+      $lengthElement.css("color", criteria.length ? "#00cc66" : "#ff4d4d");
+      $lengthElement.toggleClass("valid", criteria.length);
     }
-  });
 
-  return criteria;
-}
-
-function getPasswordStrength(criteria) {
-  const validCriteria = Object.values(criteria).filter(Boolean).length;
-
-  return (validCriteria / 5) * 100; // calculate percentage and return it.
-}
-
-function getStrengthColor(percentage) {
-  if (percentage === 0) return "#e0e0e0";
-  if (percentage <= 40) return "#ff4d4d";
-  if (percentage <= 60) return "#ffd700";
-  if (percentage <= 80) return "#2eff7b";
-  return "#00cc66";
-}
-
-function initializePasswordFields() {
-  const passwordFields = ["newPassword", "confirmNewPassword", "password"];
-
-  passwordFields.forEach((fieldId) => {
-    const input = document.getElementById(fieldId);
-    if (!input) return;
-
-    const container = input.closest(".input-container");
-    const strengthBar = container.querySelector(".password-strength-bar");
-    const requirementsCard = container.querySelector(
-      ".password-requirements-card"
-    );
-
-    input.addEventListener("input", () => {
-      if (input.value.length === 0) {
-        // Reset bar when cleared or backspaced to empty
-        strengthBar.style.width = "0%";
-        strengthBar.style.background = "#e0e0e0"; // Reset to gray
-        if (requirementsCard && (fieldId === "newPassword" || fieldId === "password")) {
-          requirementsCard.style.display = "none";
-        }
-      } else {
-        const criteria = validatePassword(input.value);
-        const percentage = getPasswordStrength(criteria);
-        strengthBar.style.width = `${percentage}%`;
-        strengthBar.style.background = getStrengthColor(percentage);
-        if (requirementsCard && (fieldId === "newPassword" || fieldId === "password")) {
-          requirementsCard.style.display = "block";
+    // Update requirement list items
+    $.each(criteria, function (criterion, isValid) {
+      if (criterion !== "length") {
+        const $newElement = $(`#new-${criterion}`);
+        if ($newElement.length) {
+          $newElement.toggleClass("valid", isValid);
+          $newElement.css("color", isValid ? "#00cc66" : "#ff4d4d");
         }
       }
     });
 
-    // Show requirements card on focus (if not empty)
-    input.addEventListener("focus", () => {
-      if (
-        requirementsCard &&
+    return criteria;
+  }
+
+  function getPasswordStrength(criteria) {
+    const validCriteria = $.map(criteria, function (value) {
+      return value ? 1 : null;
+    }).length;
+
+    return (validCriteria / 5) * 100;
+  }
+
+  function getStrengthColor(percentage) {
+    const colorMap = {
+      0: "#e0e0e0",
+      40: "#ff4d4d",
+      60: "#ffd700",
+      80: "#2eff7b",
+      100: "#00cc66",
+    };
+
+    let color = colorMap[0];
+    $.each(colorMap, function (threshold, thresholdColor) {
+      if (percentage > 0 && percentage <= threshold) {
+        color = thresholdColor;
+        return false;
+      }
+    });
+
+    return color;
+  }
+
+  function initializePasswordFields() {
+    const passwordFields = ["newPassword", "confirmNewPassword", "password"];
+
+    $.each(passwordFields, function (index, fieldId) {
+      const $input = $(`#${fieldId}`);
+      if (!$input.length) return;
+
+      const $container = $input.closest(".input-container");
+      const $strengthBar = $container.find(".password-strength-bar");
+      const $requirementsCard = $container.find(".password-requirements-card");
+
+      $input.on("input", function () {
+        if ($(this).val().length === 0) {
+          $strengthBar.css({
+            width: "0%",
+            background: "#e0e0e0", // Reset to gray
+          });
+
+          if (
+            $requirementsCard.length &&
+            (fieldId === "newPassword" || fieldId === "password")
+          ) {
+            $requirementsCard.hide();
+          }
+        } else {
+          const criteria = validatePassword($(this).val());
+          const percentage = getPasswordStrength(criteria);
+          $strengthBar.css({
+            width: `${percentage}%`,
+            background: getStrengthColor(percentage),
+          });
+
+          if (
+            $requirementsCard.length &&
+            (fieldId === "newPassword" || fieldId === "password")
+          ) {
+            $requirementsCard.show();
+          }
+        }
+      });
+
+      // Show requirement card on focus (if not empty)
+      $input.on("focus", function () {
+        if (
+          $requirementsCard.length &&
           (fieldId === "newPassword" || fieldId === "password") &&
-        input.value.length > 0
-      ) {
-        requirementsCard.style.display = "block";
-      }
-    });
+          $(this).val().length > 0
+        ) {
+          $requirementsCard.show();
+        }
+      });
 
-    // Hide requirements card on blur
-    input.addEventListener("blur", () => {
-      if (requirementsCard && (fieldId === "newPassword" || fieldId === "password")) {
-        requirementsCard.style.display = "none";
+      // Hide requirements card on blur
+      $input.on("blur", function () {
+        if (
+          $requirementsCard.length &&
+          (fieldId === "newPassword" || fieldId === "password")
+        ) {
+          $requirementsCard.hide();
+        }
+      });
+    });
+  }
+
+  // Handle password update submission
+  $("#passwordUpdateForm").on("submit", function (event) {
+    event.preventDefault();
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      showAlert("danger", "You are not logged in. Please login to update your password.");
+      window.location.href = "../../../../frontend/index.html";
+      return;
+    }
+
+    const currentPassword = $("#currentPassword").val().trim();
+    const newPassword = $("#newPassword").val().trim();
+    const confirmNewPassword = $("#confirmNewPassword").val().trim();
+    const errorContainer = $(".error");
+    const errorSpan = $("#passwordError");
+
+    // Reset error display
+    errorContainer.hide();
+    errorSpan.text("");
+
+    // Client-side validation
+    if (!currentPassword || !newPassword || !confirmNewPassword) {
+      errorSpan.text("All fields are required.");
+      errorContainer.show();
+      return;
+    }
+    if (newPassword !== confirmNewPassword) {
+      errorSpan.text("New password and confirmation do not match.");
+      errorContainer.show();
+      return;
+    }
+
+    // Connect to backend using jQuery AJAX
+    $.ajax({
+      url: "http://localhost:8080/api/v1/user/update-password",
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + token,
+        "Content-Type": "application/json"
+      },
+      data: JSON.stringify({
+        currentPassword: currentPassword,
+        newPassword: newPassword
+      }),
+      success: function(response) {
+        if (response.status === 200) {
+          showAlert("success", "Password updated successfully!");
+          $("#passwordModal").modal("hide");
+          $("#passwordUpdateForm")[0].reset();
+          $(".password-strength-bar").css({width: "0%", background: "#e0e0e0"});
+        } else {
+          errorSpan.text(response.message || "Error updating password.");
+          errorContainer.show();
+        }
+      },
+      error: function(xhr) {
+        const errorMsg = xhr.responseJSON ? xhr.responseJSON.message : "Failed to update password.";
+        errorSpan.text(errorMsg);
+        errorContainer.show();
+        if (xhr.status === 401) {
+          showAlert("danger", "You are not authorized to update your password. Please login.");
+          window.location.href = "../../../../frontend/index.html";
+        }
       }
     });
   });
-}
 
-// Handle password update submission
-function handlePasswordUpdate(event) {
-  event.preventDefault();
-
-  const currentPassword = document.getElementById("currentPassword").value;
-  const newPassword = document.getElementById("newPassword").value;
-  const confirmNewPassword =
-    document.getElementById("confirmNewPassword").value;
-  const errorDiv = document.querySelector("#passwordModal .error");
-
-  // Validate current password (in a real app, this would be checked against the server)
-  if (!currentPassword) {
-    errorDiv.textContent = "Please enter your current password";
-    return;
-  }
-
-  // Validate new password
-  const criteria = validatePassword(newPassword);
-  if (Object.values(criteria).some((criterion) => !criterion)) {
-    errorDiv.textContent = "New password does not meet all requirements";
-    return;
-  }
-
-  // Confirm passwords match
-  if (newPassword !== confirmNewPassword) {
-    errorDiv.textContent = "New passwords do not match";
-    return;
-  }
-
-  // If all validations pass
-  errorDiv.textContent = "";
-  alert("Password updated successfully!");
-
-  // Close the modal
-  const modal = bootstrap.Modal.getInstance(
-    document.getElementById("passwordModal")
-  );
-  modal.hide();
-
-  // Reset form
-  event.target.reset();
-}
-
-// Initialize password fields when the DOM is loaded
-document.addEventListener("DOMContentLoaded", () => {
   initializePasswordFields();
-
-  // Add form submit handler
-  const passwordForm = document.querySelector("#passwordModal form");
-  if (passwordForm) {
-    passwordForm.addEventListener("submit", handlePasswordUpdate);
-  }
 });

@@ -4,6 +4,7 @@ import lk.ijse.dto.ResponseDTO;
 import lk.ijse.dto.UserDTO;
 import lk.ijse.entity.User;
 import lk.ijse.service.UserService;
+import lk.ijse.util.VarList;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Base64;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/user")
@@ -139,6 +141,39 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDTO(500, "Error removing image: " + e.getMessage(), null));
+        }
+    }
+
+    @PostMapping("/profile/password")
+    public ResponseEntity<ResponseDTO> updatePassword(
+            @RequestBody Map<String, String> request,
+            Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO(401, "Unauthorized", null));
+        }
+
+        try {
+            String email = authentication.getName();
+            String currentPassword = request.get("currentPassword");
+            String newPassword = request.get("newPassword");
+
+            if (currentPassword == null || newPassword == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ResponseDTO(400, "Current and new passwords are required", null));
+            }
+
+            int result = userService.updatePassword(email, currentPassword, newPassword);
+
+            if (result == VarList.Created) {
+                return ResponseEntity.ok(new ResponseDTO(200, "Password updated successfully", null));
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+                        .body(new ResponseDTO(502, "Error updating password", null));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ResponseDTO(400, e.getMessage(), null));
         }
     }
 

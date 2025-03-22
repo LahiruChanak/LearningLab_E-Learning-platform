@@ -19,4 +19,6 @@ public interface UserService {
 
     void updateProfile(User user);
 
+    int updatePassword(String email, String currentPassword, String newPassword) throws Exception;
+
 }

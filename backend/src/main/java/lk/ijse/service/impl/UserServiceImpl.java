@@ -20,9 +20,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Transactional
@@ -85,6 +83,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void updateProfile(User user) {
         userRepo.save(user);
+    }
+
+    @Override
+    public int updatePassword(String email, String currentPassword, String newPassword) throws Exception {
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+        if (!passwordEncoder.matches(currentPassword, user.getPasswordHash())) {
+            throw new Exception("Current password is incorrect");
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        userRepo.save(user);
+        return VarList.Created;
     }
 
 }

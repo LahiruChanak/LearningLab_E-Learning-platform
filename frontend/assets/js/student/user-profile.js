@@ -95,7 +95,9 @@ $(document).ready(function () {
         $(window).scrollTop(0);
     });
 
-    // retrieve user profile details
+/* -------------------------------------------------- User Profile -------------------------------------------------- */
+
+    // ------------ retrieve user profile details ------------
     function retrieveUserProfile() {
         const token = localStorage.getItem("token");
 
@@ -129,7 +131,6 @@ $(document).ready(function () {
                         $("#profilePreview").attr("src", userData.profilePicture);
                     }
 
-                    // Populate all sections
                     $(".section").each(function () {
                         const section = $(this);
                         const [firstName, ...lastName] = (userData.fullName || "").trim().split(" ");
@@ -154,7 +155,7 @@ $(document).ready(function () {
         });
     }
 
-    // Update user profile details
+    // ------------ Update user profile details ------------
     $(".edit-btn").on("click", function () {
         const button = this;
         const section = $(this).closest(".section");
@@ -251,7 +252,8 @@ $(document).ready(function () {
 
     retrieveUserProfile();
 
-    // Word counter for bio textarea
+    // ------------ Word counter for bio textarea ------------
+
     const MAX_WORDS = 50;
 
     function countWords(text) {
@@ -276,7 +278,7 @@ $(document).ready(function () {
             $counter.removeClass("warning danger");
         }
 
-        // Truncate if limit exceeded
+        // prevent typing if word limit exceeded
         if (remainingWords < 0) {
             $textarea.val($textarea.val().split(/\s+/).slice(0, MAX_WORDS).join(" "));
             $counter.text("0");
@@ -311,7 +313,7 @@ $(document).ready(function () {
         }
     });
 
-    // Profile picture upload using file chooser
+    // ------------ Profile picture upload using file chooser ------------
     window.saveChanges = function () {
         if (currentFile) {
             const formData = new FormData();
@@ -351,7 +353,7 @@ $(document).ready(function () {
         }
     };
 
-    // Camera capture functionality for profile picture
+    // ------------ Camera capture functionality for profile picture ------------
     window.takePhoto = function () {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             navigator.mediaDevices
@@ -400,7 +402,7 @@ $(document).ready(function () {
     updateRemoveImageVisibility();
     $("#profilePreview").on("load", updateRemoveImageVisibility);
 
-    // Remove profile image
+    // ------------ Remove profile image ------------
     $(".remove-image").on("click", function () {
         const token = localStorage.getItem("token");
 
@@ -445,11 +447,12 @@ $(document).ready(function () {
         });
     });
 
-    /* -------------------------------------- Skill Tag System -------------------------------------- */
+/* ------------------------------------------------ Skill Tag System ------------------------------------------------ */
 
     const editSkillsBtn = $(".skills-section .edit-skill-btn");
     const skillTagsContainer = $(".skill-tags");
 
+    // ------------ Get user skills ------------
     function loadUserSkills() {
         const token = localStorage.getItem("token");
 
@@ -486,6 +489,7 @@ $(document).ready(function () {
 
     loadUserSkills();
 
+    // ------------ Edit user skills ------------
     editSkillsBtn.on("click", function () {
         const token = localStorage.getItem("token");
         const isEditMode = editSkillsBtn.attr("data-state") === "edit";
@@ -635,9 +639,9 @@ $(document).ready(function () {
             });
         } else {
             editSkillsBtn.html(`
-            <i class="hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i>
-            Edit
-        `);
+                <i class="hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i>
+                Edit
+            `);
             editSkillsBtn.attr("data-state", "edit");
 
             const skillTags = skillTagsContainer.find(".skill-tag");
@@ -656,7 +660,8 @@ $(document).ready(function () {
         }
     });
 
-    // Two-Factor Authentication
+/* ------------------------------------------- Two-Factor Authentication -------------------------------------------- */
+
     function moveToNext(currentInput) {
         const inputs = $(".code-input");
         const currentIndex = inputs.index(currentInput);
@@ -669,7 +674,7 @@ $(document).ready(function () {
         }
     }
 
-    // Enable 2FA functionality
+    // ------------ Enable 2FA functionality ------------
     function enable2FA() {
         const inputs = $(".code-input");
         let code = "";
@@ -691,7 +696,7 @@ $(document).ready(function () {
         }
     }
 
-    // Function to copy the code to clipboard
+    // ------------ Function to copy the code to clipboard ------------
     function copyCode() {
         const codeInput = $("#codeInput");
         const code = codeInput.val();
@@ -707,7 +712,7 @@ $(document).ready(function () {
             });
     }
 
-    /* -------------------------- Achievements -------------------------- */
+/* -------------------------------------------------- Achievements -------------------------------------------------- */
 
     const viewAllBtn = $("#viewAllBtn");
     const hiddenAchievements = $(".hidden");
@@ -722,7 +727,7 @@ $(document).ready(function () {
         viewAllBtn.text(showingAllAchieve ? "Show Less" : "View All");
     });
 
-    /* -------------------------- Courses -------------------------- */
+/* ---------------------------------------------------- Courses ----------------------------------------------------- */
 
     const viewAll = $("#viewAll");
     const hiddenCourse = $(".hidden");
@@ -748,7 +753,7 @@ $(document).ready(function () {
         });
     });
 
-    /* -------------------------- Billing -------------------------- */
+/* ---------------------------------------------------- Billing ----------------------------------------------------- */
 
     const viewHistoryBtn = $("#viewHistory");
     const billingInfo = $("#billingInfo");
@@ -757,7 +762,7 @@ $(document).ready(function () {
     const cvvCode = $("#cvv-code");
     let isHistoryVisible = false;
 
-    // Mask card number
+    // ------------ Mask card number ------------
     const cardOriginal = cardNumber.attr("data-original");
     const cardParts = cardOriginal.split(" ");
     const maskedParts = cardParts.map((part, index) =>
@@ -765,7 +770,7 @@ $(document).ready(function () {
     );
     cardNumber.text(maskedParts.join(" "));
 
-    // Mask CVV
+    // ------------ Mask CVV ------------
     const cvvOriginal = cvvCode.attr("data-original");
     cvvCode.text("*".repeat(cvvOriginal.length));
 
