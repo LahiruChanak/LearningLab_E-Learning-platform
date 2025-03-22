@@ -52,6 +52,8 @@ public class SkillServiceImpl implements SkillService {
             userSkill.setUser(user);
             userSkill.setSkill(skill);
             userSkillRepo.save(userSkill);
+        } else {
+            throw new IllegalArgumentException("Skill \"" + skillName + "\" is already exists.");
         }
     }
 

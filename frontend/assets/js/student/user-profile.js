@@ -445,27 +445,16 @@ $(document).ready(function () {
         });
     });
 
-//     // Function to get token from URL query parameter
-//     function getTokenFromUrl() {
-//         const urlParams = new URLSearchParams(window.location.search);
-//         return urlParams.get("token");
-//     }
-//
-// // Store token in localStorage after login
-//     const tokenFromUrl = getTokenFromUrl();
-//     if (tokenFromUrl) {
-//         localStorage.setItem("token", tokenFromUrl); // Changed to "token"
-//         console.log("Token stored:", tokenFromUrl);
-//     }
+    /* -------------------------------------- Skill Tag System -------------------------------------- */
 
-// Skill tag system
     const editSkillsBtn = $(".skills-section .edit-skill-btn");
     const skillTagsContainer = $(".skill-tags");
 
     function loadUserSkills() {
-        const token = localStorage.getItem("token"); // Changed to "token"
+        const token = localStorage.getItem("token");
+
         if (!token) {
-            console.error("No token found. Redirecting to login...");
+            showAlert("danger", "Please login to system to view your skills.");
             window.location.href = "/login";
             return;
         }
@@ -486,19 +475,19 @@ $(document).ready(function () {
                 }
             },
             error: function(xhr) {
-                console.error("Error loading skills:", xhr.responseText);
+                showAlert("danger", "Error loading user skills: " + (xhr.responseJSON ? xhr.responseJSON.message : xhr.statusText));
                 if (xhr.status === 401 || xhr.status === 403) {
-                    window.location.href = "/login";
+                    showAlert("danger", "You are not authorized to view this page. Please login.");
+                    window.location.href = "../../../../frontend/index.html";
                 }
             }
         });
     }
 
-// Load skills on page load
     loadUserSkills();
 
     editSkillsBtn.on("click", function () {
-        const token = localStorage.getItem("token"); // Changed to "token"
+        const token = localStorage.getItem("token");
         const isEditMode = editSkillsBtn.attr("data-state") === "edit";
 
         if (isEditMode) {
@@ -523,10 +512,11 @@ $(document).ready(function () {
                             success: function(response) {
                                 if (response.status === 200) {
                                     $(this).parent().remove();
+                                    showAlert("success", "Skill \"" + skillName + "\" removed successfully!");
                                 }
                             }.bind(this),
                             error: function(xhr) {
-                                console.error("Error removing skill:", xhr.responseText);
+                                showAlert("danger", "Error removing skill: " + (xhr.responseJSON ? xhr.responseJSON.message : xhr.statusText));
                             }
                         });
                     });
@@ -559,6 +549,7 @@ $(document).ready(function () {
                             if (response.status === 200) {
                                 const newSkillTag = $('<span class="skill-tag edit-mode"></span>');
                                 newSkillTag.text(skillName);
+                                showAlert("success", "Skill \"" + skillName + "\" added successfully!");
 
                                 const removeIcon = $('<span class="remove-skill">×</span>');
                                 removeIcon.on("click", function () {
@@ -573,10 +564,11 @@ $(document).ready(function () {
                                         success: function(response) {
                                             if (response.status === 200) {
                                                 newSkillTag.remove();
+                                                showAlert("success", "Skill \"" + skillName + "\" removed successfully!");
                                             }
                                         },
                                         error: function(xhr) {
-                                            console.error("Error removing skill:", xhr.responseText);
+                                            showAlert("danger", "Error removing skill: " + (xhr.responseJSON ? xhr.responseJSON.message : xhr.statusText));
                                         }
                                     });
                                 });
@@ -587,7 +579,12 @@ $(document).ready(function () {
                             }
                         },
                         error: function(xhr) {
-                            console.error("Error adding skill:", xhr.responseText);
+                            if (xhr.status === 409) {
+                                const response = JSON.parse(xhr.responseText);
+                                showAlert("warning", response.message);
+                            } else {
+                                showAlert("danger", "Error adding skill: " + (xhr.responseJSON ? xhr.responseJSON.message : xhr.statusText));
+                            }
                         }
                     });
                 }
@@ -662,7 +659,6 @@ $(document).ready(function () {
                 showAlert("info", "Code copied to clipboard.");
             })
             .catch((error) => {
-                console.error("Failed to copy code:", error);
                 showAlert("danger", "Failed to copy code. Please try again.");
             });
     }
@@ -880,7 +876,7 @@ $(document).ready(function () {
         if (cardContainer.length) {
             cardContainer.append(newCard);
         } else {
-            console.error("Card container not found!");
+            showAlert("danger", "Error adding card. Please try again.");
             $("#paymentMethod").append(newCard);
         }
     });

@@ -56,9 +56,12 @@ public class SkillController {
             String email = authentication.getName();
             skillService.addUserSkill(email, skillName.trim());
             return ResponseEntity.ok(new ResponseDTO(200, "Skill added", null));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new ResponseDTO(409, e.getMessage(), null));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDTO(500, "Error adding skill: " + e.getMessage(), null));
+                    .body(new ResponseDTO(500, e.getMessage(), null));
         }
     }
 
@@ -83,7 +86,7 @@ public class SkillController {
             return ResponseEntity.ok(new ResponseDTO(200, "Skill removed", null));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDTO(500, "Error removing skill: " + e.getMessage(), null));
+                    .body(new ResponseDTO(500, e.getMessage(), null));
         }
     }
 
