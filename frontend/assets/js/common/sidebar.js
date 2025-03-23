@@ -56,4 +56,13 @@ document.addEventListener("DOMContentLoaded", () => {
       sidebar.classList.remove("show");
     }
   });
+
+  // handle logout function
+  $(".logout").on("click", function () {
+    localStorage.removeItem("token");
+    showAlert("success", "Logged out successfully! Redirecting...");
+    setTimeout( () => {
+      window.location.href = "../../../../frontend/index.html";
+    }, 3000);
+  });
 });
