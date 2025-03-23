@@ -145,7 +145,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public String getGoogleAuthenticatorQrData(String email, String secret) throws Exception {
+    public String getQrData(String email, String secret) throws Exception {
         User user = userRepo.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
@@ -189,6 +189,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setTwoFactorEnabled(false);
         user.setTwoFactorSecret(null);
         userRepo.save(user);
+    }
+
+    @Override
+    public boolean is2FAEnabled(String email) {
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return user.isTwoFactorEnabled();
     }
 
 }

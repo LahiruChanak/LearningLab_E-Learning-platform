@@ -104,7 +104,13 @@ public class AuthController {
             );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            UserDetails userDetails = userService.loadUserByUsername(credentials.get("email"));
+            String email = credentials.get("email");
+            UserDetails userDetails = userService.loadUserByUsername(email);
+
+            if (userService.is2FAEnabled(email)) {
+                return ResponseEntity.ok(new ResponseDTO(206, "2FA required", Map.of("email", email)));
+            }
+
             String token = jwtUtil.generateToken(userDetails);
             AuthDTO authDTO = new AuthDTO(credentials.get("email"), token);
 
@@ -112,6 +118,22 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new ResponseDTO(401, "Invalid credentials", null));
+        }
+    }
+
+    @PostMapping("/2fa/verify")
+    public ResponseEntity<ResponseDTO> verify2FA(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String code = request.get("code");
+
+        if (userService.verify2FACode(email, code)) {
+            UserDetails userDetails = userService.loadUserByUsername(email);
+            String token = jwtUtil.generateToken(userDetails);
+            AuthDTO authDTO = new AuthDTO(email, token);
+            return ResponseEntity.ok(new ResponseDTO(200, "2FA verified, login successful", authDTO));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ResponseDTO(400, "Invalid 2FA code", null));
         }
     }
 
@@ -163,9 +185,9 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/google")
-    public void redirectToGoogle(HttpServletResponse response) throws IOException {
-        response.sendRedirect("/oauth2/authorization/google");
-    }
+//    @GetMapping("/google")
+//    public void redirectToGoogle(HttpServletResponse response) throws IOException {
+//        response.sendRedirect("/oauth2/authorization/google");
+//    }
 
 }

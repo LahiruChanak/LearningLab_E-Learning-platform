@@ -25,12 +25,14 @@ public interface UserService {
 
     String generate2FASecret(String email) throws Exception;
 
-    String getGoogleAuthenticatorQrData(String email, String secret) throws Exception;
+    String getQrData(String email, String secret) throws Exception;
 
     boolean verify2FACode(String email, String code);
 
     void enable2FA(String email) throws Exception;
 
     void disable2FA(String email) throws Exception;
+
+    boolean is2FAEnabled(String email);
 
 }

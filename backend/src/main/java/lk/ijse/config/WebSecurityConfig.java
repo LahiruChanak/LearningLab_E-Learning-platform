@@ -70,19 +70,19 @@ public class WebSecurityConfig {
         return config.getAuthenticationManager();
     }
 
-    @Bean
-    public OAuth2AuthorizationRequestResolver authorizationRequestResolver() {
-        DefaultOAuth2AuthorizationRequestResolver resolver =
-                new DefaultOAuth2AuthorizationRequestResolver(clientRegistrationRepository, "/oauth2/authorization");
-        resolver.setAuthorizationRequestCustomizer(
-                request -> {
-                    Map<String, Object> additionalParams = new HashMap<>();
-                    additionalParams.put("prompt", "consent");
-                    request.additionalParameters(additionalParams);
-                }
-        );
-        return resolver;
-    }
+//    @Bean
+//    public OAuth2AuthorizationRequestResolver authorizationRequestResolver() {
+//        DefaultOAuth2AuthorizationRequestResolver resolver =
+//                new DefaultOAuth2AuthorizationRequestResolver(clientRegistrationRepository, "/oauth2/authorization");
+//        resolver.setAuthorizationRequestCustomizer(
+//                request -> {
+//                    Map<String, Object> additionalParams = new HashMap<>();
+//                    additionalParams.put("prompt", "consent");
+//                    request.additionalParameters(additionalParams);
+//                }
+//        );
+//        return resolver;
+//    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -95,33 +95,34 @@ public class WebSecurityConfig {
                                 "/api/v1/auth/verify-otp",
                                 "/api/v1/auth/authenticate",
                                 "/api/v1/auth/reset-password",
-                                "/api/v1/auth/reset-pw-otp").permitAll()
+                                "/api/v1/auth/reset-pw-otp",
+                                "/api/v1/auth/2fa/verify").permitAll()
                         .requestMatchers("/api/v1/user/**").authenticated()
                         .requestMatchers("/oauth2/authorization/**").permitAll()
                         .requestMatchers("/api/v1/auth/google/callback").permitAll()
                         .anyRequest().authenticated()
                 )
-                .oauth2Login(oauth2 -> oauth2
-                        .authorizationEndpoint(authorization -> authorization
-                                .baseUri("/oauth2/authorization")
-                                .authorizationRequestResolver(authorizationRequestResolver())
-                        )
-                        .redirectionEndpoint(redirection -> redirection
-                                .baseUri("/api/v1/auth/google/callback")
-                        )
-                        .userInfoEndpoint(userInfo -> userInfo
-                                .userService(customOAuth2UserService)
-                        )
-                        .successHandler((request, response, authentication) -> {
-                            OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-                            String email = oAuth2User.getAttribute("email");
-                            String token = jwtUtil.generateToken(userService.loadUserByUsername(email));
-                            response.sendRedirect("http://localhost:5500/frontend/pages/student/student-dashboard.html?token=" + token);
-                        })
-                        .failureHandler((request, response, exception) -> {
-                            response.sendRedirect("http://localhost:5500/frontend/index.html?error=" + exception.getMessage());
-                        })
-                )
+//                .oauth2Login(oauth2 -> oauth2
+//                        .authorizationEndpoint(authorization -> authorization
+//                                .baseUri("/oauth2/authorization")
+//                                .authorizationRequestResolver(authorizationRequestResolver())
+//                        )
+//                        .redirectionEndpoint(redirection -> redirection
+//                                .baseUri("/api/v1/auth/google/callback")
+//                        )
+//                        .userInfoEndpoint(userInfo -> userInfo
+//                                .userService(customOAuth2UserService)
+//                        )
+//                        .successHandler((request, response, authentication) -> {
+//                            OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+//                            String email = oAuth2User.getAttribute("email");
+//                            String token = jwtUtil.generateToken(userService.loadUserByUsername(email));
+//                            response.sendRedirect("http://localhost:5500/frontend/pages/student/student-dashboard.html?token=" + token);
+//                        })
+//                        .failureHandler((request, response, exception) -> {
+//                            response.sendRedirect("http://localhost:5500/frontend/index.html?error=" + exception.getMessage());
+//                        })
+//                )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )

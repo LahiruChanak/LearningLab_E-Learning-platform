@@ -218,7 +218,7 @@ public class UserController {
         try {
             String email = authentication.getName();
             String secret = userService.generate2FASecret(email);
-            String qrData = userService.getGoogleAuthenticatorQrData(email, secret);
+            String qrData = userService.getQrData(email, secret);
             Map<String, String> data = Map.of("secret", secret, "qrData", qrData);
             return ResponseEntity.ok(new ResponseDTO(200, "2FA setup data", data));
         } catch (Exception e) {

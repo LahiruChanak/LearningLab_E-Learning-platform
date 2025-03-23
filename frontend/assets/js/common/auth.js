@@ -1,5 +1,32 @@
 $(document).ready(function () {
 
+    // ------------ Move to next input field (2FA modal) ------------
+    $(".code-input").on("input", function () {
+        const $this = $(this);
+        const index = $(".code-input").index(this);
+
+        if ($this.val() && index < $(".code-input").length - 1) {
+            $(".code-input")
+                .eq(index + 1)
+                .focus();
+        }
+    });
+
+    // ------------ Move to previous input field (2FA modal) ------------
+    $(".code-input").on("keydown", function (e) {
+        const $this = $(this);
+        const index = $(".code-input").index(this);
+
+        if (e.key === "Backspace" && !$this.val() && index > 0) {
+            $(".code-input").eq(index - 1).focus();
+        }
+    });
+
+    // ------------ Focus first input field (2FA modal) ------------
+    $("#twoFactorModal").on("shown.bs.modal", function () {
+        $(".code-input.first").focus();
+    });
+
     // OTP modal -> focus on next input when previous input is filled
     $(".otp-input").on("input", function () {
         const $this = $(this);
@@ -47,9 +74,8 @@ $(document).ready(function () {
     $("#login-btn").on("click", function (e) {
         e.preventDefault();
 
-        const email = $("#login-email").val();
-        const password = $("#login-password").val();
-
+        const email = $("#login-email").val().trim();
+        const password = $("#login-password").val().trim();
         const loginUrl = `http://localhost:8080/api/v1/auth/authenticate`;
 
         $.ajax({
@@ -58,16 +84,67 @@ $(document).ready(function () {
             contentType: "application/json",
             data: JSON.stringify({email, password}),
             success: function (response) {
-                localStorage.setItem("token", response.data.token);
-                showAlert("success", "Login successful!");
-
-                // Redirect to dashboard after 1.5 seconds
-                setTimeout(function () {
-                    window.location.href = "../../../../frontend/pages/student/student-dashboard.html";
-                }, 1500);
+                if (response.status === 200) {
+                    // Login successful, no 2FA required
+                    localStorage.setItem("token", response.data.token);
+                    showAlert("success", "Login successful! Redirecting...");
+                    setTimeout(function () {
+                        window.location.href = "../../../../frontend/pages/student/student-dashboard.html";
+                    }, 1500);
+                } else if (response.status === 206) {
+                    // 2FA required
+                    $("#twoFactorModal").modal("show");
+                    $("#twoFactorModal").data("email", email);
+                } else {
+                    showAlert("danger", "Login failed: " + response.message);
+                }
             },
             error: function (xhr) {
                 showAlert("danger", "Login failed: " + (xhr.responseJSON?.message || xhr.statusText));
+            }
+        });
+    });
+
+    // ------------ Verify 2FA for Login ------------
+    $("#verify2FA").on("click", function (e) {
+        const email = $("#twoFactorModal").data("email");
+        const inputs = $(".code-input");
+        let code = "";
+        inputs.each(function () {
+            code += $(this).val();
+        });
+        const errorContainer = $(".error")
+        const errorMessage = $("#error-message");
+
+        if (code.length !== 6) {
+            errorMessage.text("Please enter a 6-digit code.");
+            errorContainer.show();
+            return;
+        }
+
+        $.ajax({
+            url: "http://localhost:8080/api/v1/auth/2fa/verify",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ email: email, code: code }),
+            success: function (response) {
+                if (response.status === 200) {
+                    errorMessage.text("");
+                    localStorage.setItem("token", response.data.token);
+                    showAlert("success", "2FA verified, login successful!");
+                    $("#twoFactorModal").modal("hide");
+                    $(".code-input").val("");
+                    setTimeout(function () {
+                        window.location.href = "../../../../frontend/pages/student/student-dashboard.html";
+                    }, 1500);
+                } else {
+                    errorMessage.text(response.message || "Invalid 2FA code. Please try again.");
+                    errorContainer.show();
+                }
+            },
+            error: function (xhr) {
+                errorMessage.text(xhr.responseJSON ? xhr.responseJSON.message : "Failed to verify 2FA.");
+                errorContainer.show();
             }
         });
     });
@@ -156,7 +233,6 @@ $(document).ready(function () {
                 $("#signupForm")[0].reset();
                 $(".password-strength-bar").css({width: "0%", background: "#e0e0e0"});
 
-                // Redirect to dashboard after 1.5 seconds
                 setTimeout(function () {
                     window.location.href = "../../../../frontend/index.html";
                 }, 1500);

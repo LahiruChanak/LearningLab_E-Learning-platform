@@ -52,7 +52,7 @@ body {
   background: linear-gradient(
     135deg,
     var(--primary-color) 40%,
-    var(--secondary-color) 
+    var(--secondary-color)
   );
   -webkit-background-clip: text;
   background-clip: text;
@@ -536,4 +536,45 @@ h1 span::after {
 
 .resendBtn:hover {
   text-decoration: underline;
+}
+
+/* 2FA modal */
+.code-input-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  margin: 12px 0;
+}
+
+.code-input {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 18px;
+  color: #1a1a1a;
+  background: white;
+}
+
+.code-input:focus {
+  border-color: #00a3ff;
+  outline: none;
+}
+
+.help-text {
+  color: #00a3ff;
+  font-size: 14px;
+  margin: 16px auto;
+  width: fit-content;
+  text-align: center;
+  cursor: pointer;
+}
+
+.error {
+  display: none;
+  color: var(--error-color);
+  font-size: 14px;
 }
