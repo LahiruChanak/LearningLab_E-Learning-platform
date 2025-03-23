@@ -47,13 +47,14 @@ public class AuthController {
 
     // Send OTP for User Registration
     @PostMapping("/send-otp")
-    public ResponseDTO sendOtp(@RequestParam String email) {
+    public ResponseEntity<ResponseDTO> sendOtp(@RequestParam String email) {
         try {
             String otp = otpUtil.generateOtp(email);
             emailUtil.sendOtpEmail(email, otp, "registration");
-            return new ResponseDTO(200, "OTP sent successfully", null);
+            return ResponseEntity.ok(new ResponseDTO(200, "OTP sent successfully", null));
         } catch (Exception e) {
-            return new ResponseDTO(500, "Failed to send OTP: " + e.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(500, "Failed to send OTP: " + e.getMessage(), null));
         }
     }
 
@@ -116,15 +117,17 @@ public class AuthController {
 
     // Send OTP for Password Reset
     @PostMapping("/reset-pw-otp")
-    public ResponseDTO sendResetPasswordOtp(@RequestParam String email) {
+    public ResponseEntity<ResponseDTO> sendResetPasswordOtp(@RequestParam String email) {
         try {
             String otp = otpUtil.generateOtp(email);
             emailUtil.sendOtpEmail(email, otp, "password reset");
-            return new ResponseDTO(200, "Reset OTP sent successfully", null);
+            return ResponseEntity.ok(new ResponseDTO(200, "Reset OTP sent successfully", null));
         } catch (UsernameNotFoundException e) {
-            return new ResponseDTO(404, "User not found", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(404, "User not found", null));
         } catch (Exception e) {
-            return new ResponseDTO(500, "Failed to send reset OTP: " + e.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(500, "Failed to send reset OTP: " + e.getMessage(), null));
         }
     }
 

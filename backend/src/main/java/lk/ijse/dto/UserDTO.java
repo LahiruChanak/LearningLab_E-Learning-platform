@@ -23,4 +23,5 @@ public class UserDTO {
     private String websiteLink;
     private String passwordUpdatedAt;
     private String emailUpdatedAt;
+    private boolean twoFactorEnabled;
 }

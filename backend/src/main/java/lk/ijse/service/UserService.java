@@ -23,4 +23,14 @@ public interface UserService {
 
     int updateEmail(String currentEmail, String password, String newEmail) throws Exception;
 
+    String generate2FASecret(String email) throws Exception;
+
+    String getGoogleAuthenticatorQrData(String email, String secret) throws Exception;
+
+    boolean verify2FACode(String email, String code);
+
+    void enable2FA(String email) throws Exception;
+
+    void disable2FA(String email) throws Exception;
+
 }

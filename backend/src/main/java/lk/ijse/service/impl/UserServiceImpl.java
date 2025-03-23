@@ -1,5 +1,10 @@
 package lk.ijse.service.impl;
 
+import dev.samstevens.totp.code.*;
+import dev.samstevens.totp.qr.QrData;
+import dev.samstevens.totp.secret.DefaultSecretGenerator;
+import dev.samstevens.totp.time.SystemTimeProvider;
+import dev.samstevens.totp.time.TimeProvider;
 import lk.ijse.dto.UserDTO;
 import lk.ijse.entity.User;
 import lk.ijse.repository.UserRepo;
@@ -35,6 +40,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    private final Map<String, String> otpStore = new HashMap<>();
+    private final DefaultSecretGenerator secretGenerator = new DefaultSecretGenerator();
+    private final CodeGenerator codeGenerator = new DefaultCodeGenerator();
+    private final TimeProvider timeProvider = new SystemTimeProvider();
+    private final CodeVerifier codeVerifier;
+
+    public UserServiceImpl() {
+        this.codeVerifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
+        ((DefaultCodeVerifier) codeVerifier).setAllowedTimePeriodDiscrepancy(1);
+    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -116,6 +132,63 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setEmailUpdatedAt(LocalDateTime.now());
         userRepo.save(user);
         return VarList.Created;
+    }
+
+    @Override
+    public String generate2FASecret(String email) throws Exception {
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+        String secret = secretGenerator.generate();
+        user.setTwoFactorSecret(secret);
+        userRepo.save(user);
+        return secret;
+    }
+
+    @Override
+    public String getGoogleAuthenticatorQrData(String email, String secret) throws Exception {
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+        QrData data = new QrData.Builder()
+                .label(email)
+                .secret(secret)
+                .issuer("LearningLab - LMS")
+                .algorithm(HashingAlgorithm.SHA1)
+                .digits(6)
+                .period(30)
+                .build();
+        return data.getUri();
+    }
+
+    @Override
+    public boolean verify2FACode(String email, String code) {
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+        String secret = user.getTwoFactorSecret();
+
+        if (secret == null) {
+            return false;
+        }
+        return codeVerifier.isValidCode(secret, code);
+    }
+
+    @Override
+    public void enable2FA(String email) throws Exception {
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+        user.setTwoFactorEnabled(true);
+        userRepo.save(user);
+    }
+
+    @Override
+    public void disable2FA(String email) throws Exception {
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+        user.setTwoFactorEnabled(false);
+        user.setTwoFactorSecret(null);
+        userRepo.save(user);
     }
 
 }

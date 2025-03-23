@@ -234,6 +234,16 @@ $(document).ready(function () {
                         $("#currentEmail").val(userData.email || "");
                     });
 
+                    // 2FA status
+                    const is2FAEnabled = userData.twoFactorEnabled;
+                    if (is2FAEnabled === true) {
+                        $("#setup2FAButton").hide();
+                        $("#disable2FAButton").show();
+                    } else {
+                        $("#setup2FAButton").show();
+                        $("#disable2FAButton").hide();
+                    }
+
                 } else {
                     showAlert("danger", "Failed to load profile: " + response.message);
                     $("#lastPasswordChange, #lastEmailChange").text("Failed to load");
@@ -752,44 +762,141 @@ $(document).ready(function () {
 
 /* ------------------------------------------- Two-Factor Authentication -------------------------------------------- */
 
-    function moveToNext(currentInput) {
-        const inputs = $(".code-input");
-        const currentIndex = inputs.index(currentInput);
+    // ------------ Move to next input field (2FA modal) ------------
+    $(".code-input").on("input", function () {
+        const $this = $(this);
+        const index = $(".code-input").index(this);
 
-        if (
-            $(currentInput).val().length === 1 &&
-            currentIndex < inputs.length - 1
-        ) {
-            inputs.eq(currentIndex + 1).focus();
+        if ($this.val() && index < $(".code-input").length - 1) {
+            $(".code-input")
+                .eq(index + 1)
+                .focus();
         }
-    }
+    });
+
+    // ------------ Move to previous input field (2FA modal) ------------
+    $(".code-input").on("keydown", function (e) {
+        const $this = $(this);
+        const index = $(".code-input").index(this);
+
+        if (e.key === "Backspace" && !$this.val() && index > 0) {
+            $(".code-input").eq(index - 1).focus();
+        }
+    });
+
+    // ------------ Focus first input field (2FA modal) ------------
+    $("#twoFactorModal").on("shown.bs.modal", function () {
+        $(".code-input.first").focus();
+    });
+
+    // ------------ Setup and show 2FA modal ------------
+    $("#setup2FAButton").on("click", function() {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            showAlert("danger", "Please log in to enable 2FA.");
+            window.location.href = "/login";
+            return;
+        }
+
+        $.ajax({
+            url: "http://localhost:8080/api/v1/user/2fa/setup",
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            success: function(response) {
+                if (response.status === 200) {
+                    const secret = response.data.secret;
+                    const qrData = response.data.qrData; // otpauth://totp URI
+                    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrData)}`;
+                    $("#qrcode img").attr("src", qrCodeUrl); // Update QR code image
+                    $("#codeInput").val(secret); // Display secret for manual entry
+                    $("#twoFactorModal").modal("show"); // Show the modal
+                } else {
+                    showAlert("danger", "Failed to setup 2FA: " + response.message);
+                }
+            },
+            error: function(xhr) {
+                showAlert("danger", "Error setting up 2FA: " + (xhr.responseJSON ? xhr.responseJSON.message : xhr.statusText));
+            }
+        });
+    });
 
     // ------------ Enable 2FA functionality ------------
-    function enable2FA() {
+    $("#enable2FA").on("click", function() {
+        const token = localStorage.getItem("token");
         const inputs = $(".code-input");
         let code = "";
         inputs.each(function () {
             code += $(this).val();
         });
 
+        const errorContainer = $(".error")
         const errorMessage = $("#error-message");
 
-        // Simulated valid code (e.g., "123456")
-        if (code === "123456") {
-            errorMessage.text("");
-            showAlert("success", "2FA has been successfully enabled!");
-            // Close the modal
-            const modal = bootstrap.Modal.getInstance($("#twoFactorModal")[0]);
-            modal.hide();
-        } else {
-            errorMessage.text("Invalid verification code. Please try again.");
+        if (code.length !== 6) {
+            errorMessage.text("Please enter a 6-digit code.");
+            errorContainer.show();
+            return;
         }
-    }
+
+        $.ajax({
+            url: "http://localhost:8080/api/v1/user/2fa/enable",
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            data: JSON.stringify({ code: code }),
+            success: function(response) {
+                if (response.status === 200) {
+                    errorMessage.text("");
+                    showAlert("success", "2FA has been successfully enabled!");
+                    $("#twoFactorModal").modal("hide");
+                    $(".code-input").val("");
+                } else {
+                    errorMessage.text(response.message || "Invalid verification code. Please try again.");
+                    errorContainer.show();
+                }
+            },
+            error: function(xhr) {
+                errorMessage.text(xhr.responseJSON ? xhr.responseJSON.message : "Failed to enable 2FA.");
+                errorContainer.show();
+            }
+        });
+    });
+
+    // ------------ Disable 2FA Confirmation ------------
+    $("#disable2FA").on("click", function () {
+        const token = localStorage.getItem("token");
+
+        $.ajax({
+            url: "http://localhost:8080/api/v1/user/2fa/disable",
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            success: function(response) {
+                if (response.status === 200) {
+                    showAlert("success", "2FA has been successfully disabled!");
+                    $("#disable2FAModal").modal("hide");
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    showAlert("success", "Failed to disable 2FA: " + response.message);
+                }
+            },
+            error: function(xhr) {
+                showAlert("danger", "Error disabling 2FA: " + (xhr.responseJSON ? xhr.responseJSON.message : xhr.statusText));
+            }
+        });
+    });
 
     // ------------ Function to copy the code to clipboard ------------
-    function copyCode() {
-        const codeInput = $("#codeInput");
-        const code = codeInput.val();
+    $(".copy-btn").on("click", function () {
+        // Get the code value
+        const code = $("#codeInput").val();
 
         // Use the Clipboard API to copy the text
         navigator.clipboard
@@ -800,7 +907,7 @@ $(document).ready(function () {
             .catch((error) => {
                 showAlert("danger", "Failed to copy code. Please try again.");
             });
-    }
+    });
 
 /* -------------------------------------------------- Achievements -------------------------------------------------- */
 
@@ -1102,3 +1209,4 @@ $(document).ready(function () {
         $(e.target).val(value.substring(0, 5));
     });
 });
+

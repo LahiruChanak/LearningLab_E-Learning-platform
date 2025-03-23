@@ -376,10 +376,19 @@
                 </div>
                 <button
                   class="enable-2fa"
+                  id="setup2FAButton"
                   data-bs-toggle="modal"
                   data-bs-target="#twoFactorModal"
                 >
                   Enable 2FA
+                </button>
+                <button
+                  class="disable-2fa"
+                  id="disable2FAButton"
+                  data-bs-toggle="modal"
+                  data-bs-target="#disable2FAModal"
+                >
+                  Disable 2FA
                 </button>
               </div>
             </div>
@@ -999,7 +1008,7 @@
                 Are you sure you want to delete your account?
               </p>
               <button
-                class="btn delete-btn"
+                class="btn delete-acc-btn"
                 data-bs-target="#deleteModal"
                 data-bs-toggle="modal"
               >
@@ -1043,8 +1052,9 @@
             </div>
             <div>
               <label for="password" class="form-label small"
-                >Enter Password</label
-              >
+                >
+                Enter Password
+              </label>
               <input
                 type="password"
                 id="password"
@@ -1064,7 +1074,7 @@
             </button>
             <button
               type="button"
-              class="btn delete-btn"
+              class="btn delete-acc-btn"
               data-bs-dismiss="modal"
             >
               Delete Account
@@ -1350,9 +1360,11 @@
                   <button
                     type="button"
                     class="btn border-0 fw-bold copy-btn"
-                    onclick="copyCode()"
                   >
-                    <i class="hgi-stroke hgi-copy-01"></i>
+                    <i class="hgi-stroke hgi-copy-01"
+                       data-bs-toggle="tooltip"
+                       data-bs-title="Copy"
+                       data-bs-placement="bottom"></i>
                   </button>
                 </div>
               </div>
@@ -1361,56 +1373,53 @@
             <div class="text-center">
               <label class="fw-medium">Verification Code</label>
               <form
-                class="code-input-container d-flex justify-content-center gap-2"
+                class="code-input-container d-flex justify-content-center gap-2 mb-2"
               >
                 <input
                   type="text"
                   maxlength="1"
-                  class="code-input"
-                  onkeyup="moveToNext(this)"
+                  class="code-input first"
                 />
                 <input
                   type="text"
                   maxlength="1"
                   class="code-input"
-                  onkeyup="moveToNext(this)"
                 />
                 <input
                   type="text"
                   maxlength="1"
                   class="code-input"
-                  onkeyup="moveToNext(this)"
                 />
                 <input
                   type="text"
                   maxlength="1"
                   class="code-input"
-                  onkeyup="moveToNext(this)"
                 />
                 <input
                   type="text"
                   maxlength="1"
                   class="code-input"
-                  onkeyup="moveToNext(this)"
                 />
                 <input
                   type="text"
                   maxlength="1"
                   class="code-input"
-                  onkeyup="moveToNext(this)"
                 />
               </form>
+              <div class="error">
+                <i class="hgi hgi-stroke hgi-alert-circle fs-5 align-middle me-2"></i>
+                <span id="error-message"></span>
+              </div>
             </div>
-            <!-- Help Text & Error Message -->
+            <!-- Helper Text -->
             <div
-              class="help-text mt-3"
+              class="help-text mt-2"
               data-bs-toggle="tooltip"
               data-bs-title="Scan the QR code with your Google Authenticator app and enter the verification code above fields."
               data-bs-placement="bottom"
             >
               Do you need help?
             </div>
-            <div class="error text-danger mt-2" id="error-message"></div>
           </div>
           <div class="modal-footer gap-2 m-2 mt-0">
             <button
@@ -1423,9 +1432,59 @@
             <button
               type="button"
               class="btn btn-primary rounded-3"
-              onclick="enable2FA()"
+              id="enable2FA"
             >
               Enable 2FA
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Disable 2FA Confirmation Modal -->
+    <div
+            class="modal fade"
+            id="disable2FAModal"
+            tabindex="-1"
+            aria-labelledby="disable2FAModalLabel"
+            aria-hidden="true"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="disable2FAModalLabel">
+              Disable Two-factor Authentication
+            </h1>
+            <button
+                    type="button"
+                    class="btn-close shadow-none"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body px-4">
+            <p class="text-muted mb-0">
+              Are you sure you want to disable Two-Factor Authentication? This will
+              reduce the security of your account.
+            </p>
+            <div class="error text-danger mt-2" id="disable2FAError"></div>
+          </div>
+          <div class="modal-footer gap-2">
+            <button
+                    type="button"
+                    class="border-0 bg-transparent"
+                    data-bs-dismiss="modal"
+            >
+              No, Cancel
+            </button>
+            <button
+                    type="button"
+                    class="border-0 disable-2fa rounded-3"
+                    id="disable2FA"
+            >
+              Yes, Disable
             </button>
           </div>
         </div>

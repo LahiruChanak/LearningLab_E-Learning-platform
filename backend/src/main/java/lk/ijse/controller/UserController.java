@@ -209,4 +209,66 @@ public class UserController {
         }
     }
 
+    @GetMapping("/2fa/setup")
+    public ResponseEntity<ResponseDTO> setup2FA(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO(401, "Unauthorized", null));
+        }
+        try {
+            String email = authentication.getName();
+            String secret = userService.generate2FASecret(email);
+            String qrData = userService.getGoogleAuthenticatorQrData(email, secret);
+            Map<String, String> data = Map.of("secret", secret, "qrData", qrData);
+            return ResponseEntity.ok(new ResponseDTO(200, "2FA setup data", data));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ResponseDTO(400, e.getMessage(), null));
+        }
+    }
+
+    @PostMapping("/2fa/enable")
+    public ResponseEntity<ResponseDTO> enable2FA(
+            @RequestBody Map<String, String> request,
+            Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO(401, "Unauthorized", null));
+        }
+        try {
+            String email = authentication.getName();
+            String code = request.get("code");
+            if (code == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ResponseDTO(400, "Verification code is required", null));
+            }
+            if (userService.verify2FACode(email, code)) {
+                userService.enable2FA(email);
+                return ResponseEntity.ok(new ResponseDTO(200, "2FA enabled successfully", null));
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ResponseDTO(400, "Invalid verification code", null));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ResponseDTO(400, e.getMessage(), null));
+        }
+    }
+
+    @PostMapping("/2fa/disable")
+    public ResponseEntity<ResponseDTO> disable2FA(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO(401, "Unauthorized", null));
+        }
+        try {
+            String email = authentication.getName();
+            userService.disable2FA(email);
+            return ResponseEntity.ok(new ResponseDTO(200, "2FA disabled successfully", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ResponseDTO(400, e.getMessage(), null));
+        }
+    }
+
 }

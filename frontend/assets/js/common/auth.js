@@ -154,6 +154,7 @@ $(document).ready(function () {
                 showAlert("success", "Registration successful! You can now login.");
                 localStorage.removeItem("signupData");
                 $("#signupForm")[0].reset();
+                $(".password-strength-bar").css({width: "0%", background: "#e0e0e0"});
 
                 // Redirect to dashboard after 1.5 seconds
                 setTimeout(function () {
@@ -227,6 +228,7 @@ $(document).ready(function () {
                     $("#otpModal").modal("hide");
                     localStorage.removeItem("resetEmail");
                     $("#forgotPWForm")[0].reset();
+                    $(".password-strength-bar").css({width: "0%", background: "#e0e0e0"});
 
                     // Redirect to login page after 1.5 seconds
                     setTimeout(function () {
