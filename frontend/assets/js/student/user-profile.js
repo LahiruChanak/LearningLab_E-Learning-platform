@@ -154,7 +154,7 @@ $(document).ready(function () {
                 errorContainer.show();
                 if (xhr.status === 401) {
                     showAlert("danger", "You are not authorized to update your email. Please login.");
-                    window.location.href = "/login";
+                    window.location.href = "../../../../frontend/index.html";
                 }
             }
         });
@@ -239,9 +239,13 @@ $(document).ready(function () {
                     if (is2FAEnabled === true) {
                         $("#setup2FAButton").hide();
                         $("#disable2FAButton").show();
+                        $("#twoFactorStatus").text("On").css({"color": "#22c55e", "background-color": "#c0ffd0"});
+
                     } else {
                         $("#setup2FAButton").show();
                         $("#disable2FAButton").hide();
+                        $("#twoFactorStatus").text("Off").css({"color": "#ef4444", "background-color": "#ffdede"});
+
                     }
 
                 } else {

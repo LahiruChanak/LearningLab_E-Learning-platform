@@ -1,5 +1,6 @@
 package lk.ijse.service;
 
+import lk.ijse.dto.InstructorRequestDTO;
 import lk.ijse.dto.UserDTO;
 import lk.ijse.entity.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,5 +35,11 @@ public interface UserService {
     void disable2FA(String email) throws Exception;
 
     boolean is2FAEnabled(String email);
+
+    UserDTO submitInstructorRequest(UserDetails userDetails, InstructorRequestDTO requestDTO);
+
+    User loadUserByUsernameEntity(String email);
+
+    User getCurrentUser(String email);
 
 }

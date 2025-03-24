@@ -1,14 +1,19 @@
 $(document).ready(function () {
 
-    // ------------ Move to next input field (2FA modal) ------------
+    // ------------ Move to next input field and auto submit form (2FA modal) ------------
     $(".code-input").on("input", function () {
         const $this = $(this);
         const index = $(".code-input").index(this);
+        let allFilled = $(".code-input").toArray().every(input => $(input).val().trim());
 
         if ($this.val() && index < $(".code-input").length - 1) {
             $(".code-input")
                 .eq(index + 1)
                 .focus();
+        }
+
+        if (allFilled) {
+            $("#verify2FA").click();
         }
     });
 
@@ -88,7 +93,7 @@ $(document).ready(function () {
                     // Login successful, no 2FA required
                     localStorage.setItem("token", response.data.token);
                     showAlert("success", "Login successful! Redirecting...");
-                    setTimeout(function () {
+                    setTimeout( () => {
                         window.location.href = "../../../../frontend/pages/student/student-dashboard.html";
                     }, 1500);
                 } else if (response.status === 206) {
@@ -134,7 +139,7 @@ $(document).ready(function () {
                     showAlert("success", "2FA verified, login successful!");
                     $("#twoFactorModal").modal("hide");
                     $(".code-input").val("");
-                    setTimeout(function () {
+                    setTimeout(() => {
                         window.location.href = "../../../../frontend/pages/student/student-dashboard.html";
                     }, 1500);
                 } else {
@@ -164,7 +169,7 @@ $(document).ready(function () {
         if (token) {
             localStorage.setItem("token", token);
             showAlert("success", "Google login successful!");
-            setTimeout(function () {
+            setTimeout(() => {
                 window.location.href = "../../../../frontend/pages/student/student-dashboard.html";
             }, 1500);
         } else if (error) {
@@ -233,7 +238,7 @@ $(document).ready(function () {
                 $("#signupForm")[0].reset();
                 $(".password-strength-bar").css({width: "0%", background: "#e0e0e0"});
 
-                setTimeout(function () {
+                setTimeout(() => {
                     window.location.href = "../../../../frontend/index.html";
                 }, 1500);
             },
@@ -307,7 +312,7 @@ $(document).ready(function () {
                     $(".password-strength-bar").css({width: "0%", background: "#e0e0e0"});
 
                     // Redirect to login page after 1.5 seconds
-                    setTimeout(function () {
+                    setTimeout(() => {
                         window.location.href = "../../index.html";
                     }, 1500);
                 } else {

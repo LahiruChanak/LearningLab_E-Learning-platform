@@ -358,6 +358,11 @@ body {
   margin: 0;
   color: #333;
   font-size: 1.1rem;
+  width: fit-content;
+}
+
+.security-info div {
+  width: fit-content;
 }
 
 .security-info p {
@@ -377,6 +382,16 @@ body {
 .link-button:hover,
 .copy-btn:hover {
   color: #5f32ff;
+}
+
+#twoFactorStatus {
+  font-size: 0.875rem;
+  font-weight: bold;
+  padding: 0 6px;
+  border-radius: 10px;
+  position: absolute;
+  right: -35px;
+  top: -10px;
 }
 
 .enable-2fa,

@@ -185,9 +185,9 @@ public class AuthController {
         }
     }
 
-//    @GetMapping("/google")
-//    public void redirectToGoogle(HttpServletResponse response) throws IOException {
-//        response.sendRedirect("/oauth2/authorization/google");
-//    }
+    @GetMapping("/google")
+    public void redirectToGoogle(HttpServletResponse response) throws IOException {
+        response.sendRedirect("/oauth2/authorization/google");
+    }
 
 }

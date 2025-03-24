@@ -1,5 +1,6 @@
 package lk.ijse.controller;
 
+import lk.ijse.dto.InstructorRequestDTO;
 import lk.ijse.dto.ResponseDTO;
 import lk.ijse.dto.UserDTO;
 import lk.ijse.entity.User;
@@ -11,12 +12,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/v1/user")
@@ -28,6 +37,8 @@ public class UserController {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    private static final String UPLOAD_DIR = "backend/src/main/resources/static/uploads/certificates/";
 
     @PostMapping(value = "/profile/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDTO> uploadProfileImage(
@@ -269,6 +280,82 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ResponseDTO(400, e.getMessage(), null));
         }
+    }
+
+    @PostMapping(value = "/instructor/request", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDTO> submitInstructorRequest(
+            @RequestParam("message") String message,
+            @RequestParam("qualifications") String qualifications,
+            @RequestParam(value = "certificates", required = false) List<MultipartFile> certificates,
+            @RequestParam("experience") String experience,
+            @RequestParam(value = "additionalDetails", required = false) String additionalDetails,
+            Authentication authentication) {
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO(401, "Unauthorized", null));
+        }
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        // Create upload directory if it doesn't exist
+        File uploadDir = new File(UPLOAD_DIR);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
+
+        List<String> certificatePaths = null;
+        if (certificates != null && !certificates.isEmpty()) {
+            User user = userService.loadUserByUsernameEntity(userDetails.getUsername());
+            Long userId = user.getUserId();
+            certificatePaths = certificates.stream().map(file -> {
+                try {
+                    String originalFilename = file.getOriginalFilename();
+                    String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                    String uniqueFilename = UUID.randomUUID().toString() + "_" + userId + extension;
+                    String filePath = UPLOAD_DIR + uniqueFilename;
+
+                    Path path = Paths.get(filePath);
+                    file.transferTo(path);
+
+                    return filePath;
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to save certificate file: " + file.getOriginalFilename(), e);
+                }
+            }).collect(Collectors.toList());
+        }
+
+        InstructorRequestDTO requestDTO = new InstructorRequestDTO(
+                message,
+                qualifications,
+                certificatePaths,
+                experience,
+                additionalDetails
+        );
+
+        try {
+            UserDTO userDTO = userService.submitInstructorRequest(userDetails, requestDTO);
+            return ResponseEntity.ok(new ResponseDTO(200, "Instructor request submitted successfully", userDTO));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(500, e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/current")
+    public ResponseEntity<ResponseDTO> getCurrentUser(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO(401, "Unauthorized", null));
+        }
+
+        String username = authentication.getName();
+        User user = userService.getCurrentUser(username);
+        Map<String, Object> userData = Map.of(
+                "fullName", user.getFullName(),
+                "email", user.getEmail()
+        );
+        return ResponseEntity.ok(new ResponseDTO(200, "User data retrieved", userData));
     }
 
 }

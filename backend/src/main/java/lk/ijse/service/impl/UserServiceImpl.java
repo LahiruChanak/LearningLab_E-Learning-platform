@@ -5,23 +5,21 @@ import dev.samstevens.totp.qr.QrData;
 import dev.samstevens.totp.secret.DefaultSecretGenerator;
 import dev.samstevens.totp.time.SystemTimeProvider;
 import dev.samstevens.totp.time.TimeProvider;
+import lk.ijse.dto.InstructorRequestDTO;
 import lk.ijse.dto.UserDTO;
+import lk.ijse.entity.InstructorRequest;
 import lk.ijse.entity.User;
+import lk.ijse.repository.InstructorRequestRepo;
 import lk.ijse.repository.UserRepo;
 import lk.ijse.service.UserService;
 import lk.ijse.util.VarList;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +38,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private InstructorRequestRepo instructorRequestRepo;
 
     private final Map<String, String> otpStore = new HashMap<>();
     private final DefaultSecretGenerator secretGenerator = new DefaultSecretGenerator();
@@ -196,6 +197,43 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = userRepo.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return user.isTwoFactorEnabled();
+    }
+
+    @Override
+    public UserDTO submitInstructorRequest(UserDetails userDetails, InstructorRequestDTO requestDTO) {
+        User user = userRepo.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + userDetails.getUsername()));
+
+        InstructorRequest request = new InstructorRequest();
+        request.setUser(user);
+        request.setMessage(requestDTO.getMessage());
+        request.setQualifications(requestDTO.getQualifications());
+        request.setCertificates(requestDTO.getCertificates());
+        request.setExperience(requestDTO.getExperience());
+        request.setAdditionalDetails(requestDTO.getAdditionalDetails());
+        request.setRequestStatus(InstructorRequest.RequestStatus.PENDING);
+        request.setRequestCreatedAt(LocalDateTime.now());
+
+        instructorRequestRepo.save(request);
+
+        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+        if (user.getProfilePicture() != null) {
+            String base64Image = Base64.getEncoder().encodeToString(user.getProfilePicture());
+            userDTO.setProfilePicture("data:image/jpeg;base64," + base64Image);
+        }
+
+        return userDTO;
+    }
+
+    @Override
+    public User loadUserByUsernameEntity(String email) {
+        return userRepo.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+    }
+
+    @Override
+    public User getCurrentUser(String email) {
+        return loadUserByUsernameEntity(email);
     }
 
 }
