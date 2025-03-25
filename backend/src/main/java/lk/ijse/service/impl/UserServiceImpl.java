@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = modelMapper.map(userDTO, User.class);
         user.setPasswordHash(passwordEncoder.encode(userDTO.getPassword()));
 
-        if ("fitlifeifms@gmail.com".equalsIgnoreCase(userDTO.getEmail())) {
+        if (ADMIN_EMAIL.equalsIgnoreCase(userDTO.getEmail())) {
             user.setRole(User.Role.ADMIN);
         } else {
             user.setRole(User.Role.STUDENT);

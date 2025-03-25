@@ -1122,10 +1122,13 @@
                     alt="Profile Preview"
                     class="rounded-circle"
                   />
-                </div>
-                <div class="spinner-overlay" id="imageSpinner">
-                  <div class="spinner-border text-light spinner" role="status">
-                    <span class="visually-hidden">Loading...</span>
+                  <div class="spinner-overlay" id="imageSpinner">
+                    <svg class="loader" viewBox="0 0 384 384" xmlns="http://www.w3.org/2000/svg">
+                      <circle class="active" pathLength="360" fill="transparent" stroke-width="32" cx="192" cy="192" r="176">
+                      </circle>
+                      <circle class="track" pathLength="360" fill="transparent" stroke-width="32" cx="192" cy="192" r="176">
+                      </circle>
+                    </svg>
                   </div>
                 </div>
                 <div class="remove-image">

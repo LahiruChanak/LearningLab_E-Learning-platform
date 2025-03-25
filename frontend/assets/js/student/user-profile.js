@@ -428,7 +428,7 @@ $(document).ready(function () {
         formData.append("image", currentFile);
         const token = localStorage.getItem("token");
 
-        $("#imageSpinner").show(); // Show spinner
+        $("#imageSpinner").show().css("display", "flex");
 
         $.ajax({
             url: "http://localhost:8080/api/v1/user/profile/image",
@@ -560,7 +560,7 @@ $(document).ready(function () {
 
         if (!token) {
             showAlert("danger", "Please login to system to view your skills.");
-            window.location.href = "/login";
+            window.location.href = "../../../../frontend/index.html";
             return;
         }
 
@@ -796,7 +796,7 @@ $(document).ready(function () {
         const token = localStorage.getItem("token");
         if (!token) {
             showAlert("danger", "Please log in to enable 2FA.");
-            window.location.href = "/login";
+            window.location.href = "../../../../frontend/index.html";
             return;
         }
 
