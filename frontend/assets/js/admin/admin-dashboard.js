@@ -7,6 +7,16 @@ $(document).ready(function () {
     (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
   );
 
+  // Check the user role and redirect if not admin
+  const role = localStorage.getItem("role");
+  if (role !== "ADMIN") {
+    showAlert("danger", "Unauthorized access! Redirecting to login page...");
+
+    setTimeout(() => {
+      window.location.href = "../../../../frontend/index.html";
+    }, 2000);
+  }
+
   // Attendance Chart
   const attendanceChartOptions = {
     series: [

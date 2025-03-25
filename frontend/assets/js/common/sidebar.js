@@ -60,6 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // handle logout function
   $(".logout").on("click", function () {
     localStorage.removeItem("token");
+    localStorage.setItem("role", "STUDENT");
     showAlert("success", "Logged out successfully! Redirecting...");
     setTimeout( () => {
       window.location.href = "../../../../frontend/index.html";

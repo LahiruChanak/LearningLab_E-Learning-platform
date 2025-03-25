@@ -7,6 +7,8 @@ import lk.ijse.dto.UserDTO;
 import lk.ijse.entity.User;
 import lk.ijse.service.UserService;
 import lk.ijse.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -75,7 +78,9 @@ public class AuthController {
                 case VarList.Created:
                     UserDetails userDetails = userService.loadUserByUsername(userDTO.getEmail());
                     String token = jwtUtil.generateToken(userDetails);
-                    AuthDTO authDTO = new AuthDTO(userDTO.getEmail(), token);
+                    User user = userService.findByEmail(userDTO.getEmail())
+                            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                    AuthDTO authDTO = new AuthDTO(userDTO.getEmail(), token, user.getRole().name());
                     otpUtil.removeOtp(email);
                     return ResponseEntity.status(HttpStatus.CREATED)
                             .body(new ResponseDTO(VarList.Created, "Registration successful. Login to continue", authDTO));
@@ -112,7 +117,10 @@ public class AuthController {
             }
 
             String token = jwtUtil.generateToken(userDetails);
-            AuthDTO authDTO = new AuthDTO(credentials.get("email"), token);
+            // Fetch the user to get the role
+            User user = userService.findByEmail(email)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+            AuthDTO authDTO = new AuthDTO(email, token, user.getRole().name());
 
             return ResponseEntity.ok(new ResponseDTO(200, "Login successful", authDTO));
         } catch (Exception e) {
@@ -185,9 +193,9 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/google")
-    public void redirectToGoogle(HttpServletResponse response) throws IOException {
-        response.sendRedirect("/oauth2/authorization/google");
-    }
+//    @GetMapping("/google")
+//    public void redirectToGoogle(HttpServletResponse response) throws IOException {
+//        response.sendRedirect("/oauth2/authorization/google");
+//    }
 
 }

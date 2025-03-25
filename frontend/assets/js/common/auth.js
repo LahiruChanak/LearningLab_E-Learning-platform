@@ -1,5 +1,7 @@
 $(document).ready(function () {
 
+/* ----------------------------------------------- Utility Functions ------------------------------------------------ */
+
     // ------------ Move to next input field and auto submit form (2FA modal) ------------
     $(".code-input").on("input", function () {
         const $this = $(this);
@@ -32,7 +34,7 @@ $(document).ready(function () {
         $(".code-input.first").focus();
     });
 
-    // OTP modal -> focus on next input when previous input is filled
+    // -------- focus on next input when previous input is filled --------
     $(".otp-input").on("input", function () {
         const $this = $(this);
         const index = $(".otp-input").index(this);
@@ -44,7 +46,7 @@ $(document).ready(function () {
         }
     });
 
-    // OTP modal -> focus to previous input on backspace when current input is empty
+    // -------- focus to previous input on backspace when current input is empty --------
     $(".otp-input").on("keydown", function (e) {
         const $this = $(this);
         const index = $(".otp-input").index(this);
@@ -54,12 +56,12 @@ $(document).ready(function () {
         }
     });
 
-    // OTP modal -> focus on first input when modal is shown
+    // -------- focus on first input when modal is shown --------
     $("#otpModal").on("shown.bs.modal", function () {
         $("#otp-input1").focus();
     });
 
-    // Optional function -> password toggle visibility
+    // -------- password toggle visibility --------
     $(".password-toggle").on("click", function () {
         const $input = $(this).closest(".input-container").find("input");
         const $icon = $(this).find("i");
@@ -75,7 +77,9 @@ $(document).ready(function () {
         }
     });
 
-    // Main function -> handle login form submission
+/* ----------------------------------------------------- Login ------------------------------------------------------ */
+
+    // -------- Login with email and password --------
     $("#login-btn").on("click", function (e) {
         e.preventDefault();
 
@@ -87,14 +91,20 @@ $(document).ready(function () {
             url: loginUrl,
             type: "POST",
             contentType: "application/json",
-            data: JSON.stringify({email, password}),
+            data: JSON.stringify({ email, password }),
             success: function (response) {
                 if (response.status === 200) {
                     // Login successful, no 2FA required
                     localStorage.setItem("token", response.data.token);
+                    localStorage.setItem("role", response.data.role); // Store role
                     showAlert("success", "Login successful! Redirecting...");
-                    setTimeout( () => {
-                        window.location.href = "../../../../frontend/pages/student/student-dashboard.html";
+
+                    setTimeout(() => {
+                        if (response.data.role === "ADMIN") {
+                            window.location.href = "../../../../frontend/pages/admin/admin-dashboard.html";
+                        } else {
+                            window.location.href = "../../../../frontend/pages/student/student-dashboard.html";
+                        }
                     }, 1500);
                 } else if (response.status === 206) {
                     // 2FA required
@@ -110,7 +120,7 @@ $(document).ready(function () {
         });
     });
 
-    // ------------ Verify 2FA for Login ------------
+    // ------------ verify 2fa login ------------
     $("#verify2FA").on("click", function (e) {
         const email = $("#twoFactorModal").data("email");
         const inputs = $(".code-input");
@@ -154,32 +164,75 @@ $(document).ready(function () {
         });
     });
 
-    /* ---------------------------------- Google through login ---------------------------------- */
+/* ---------------------------------------------- Google through login ---------------------------------------------- */
 
-    $("#google-login-btn").on("click", function (e) {
-        e.preventDefault();
-        window.location.href = "http://localhost:8080/api/v1/auth/google";
-    });
+    // // Add an AJAX interceptor to include the token in all requests
+    // $.ajaxSetup({
+    //     beforeSend: function (xhr) {
+    //         const token = localStorage.getItem("token");
+    //         if (token) {
+    //             xhr.setRequestHeader("Authorization", "Bearer " + token);
+    //         }
+    //     },
+    //     error: function (xhr, status, error) {
+    //         if (xhr.status === 401) {
+    //             // Handle unauthorized access (e.g., redirect to login)
+    //             showAlert("danger", "Session expired. Please login again to continue.");
+    //             setTimeout(() => {
+    //                 window.location.href = "../../../../frontend/index.html";
+    //             }, 1500);
+    //         }
+    //     }
+    // });
+    //
+    // $("#google-login-btn").on("click", function (e) {
+    //     e.preventDefault();
+    //     window.location.href = "http://localhost:8080/api/v1/auth/google";
+    // });
+    //
+    // // Handle Google OAuth2 callback
+    // function handleGoogleCallback() {
+    //     const urlParams = new URLSearchParams(window.location.search);
+    //     const token = urlParams.get("token");
+    //     const error = urlParams.get("error");
+    //
+    //     if (token) {
+    //         localStorage.setItem("token", token);
+    //         showAlert("success", "Google login successful!");
+    //         setTimeout(() => {
+    //             window.location.href = "../../../../frontend/pages/student/student-dashboard.html";
+    //         }, 1500);
+    //     } else if (error) {
+    //         showAlert("danger", "Google login failed: " + error);
+    //     } else {
+    //         // Fetch token from callback endpoint if not in URL
+    //         $.ajax({
+    //             url: "http://localhost:8080/api/v1/auth/google/callback",
+    //             method: "GET",
+    //             success: function (response) {
+    //                 if (response.token) {
+    //                     localStorage.setItem("token", response.token);
+    //                     showAlert("success", "Google login successful!");
+    //                     setTimeout(() => {
+    //                         window.location.href = "../../../../frontend/pages/student/student-dashboard.html";
+    //                     }, 1500);
+    //                 }
+    //             },
+    //             error: function (xhr) {
+    //                 showAlert("danger", "Google login failed: " + xhr.responseJSON.error);
+    //             }
+    //         });
+    //     }
+    // }
+    //
+    // // Call this on page load if on the callback page
+    // if (window.location.pathname.includes("callback")) {
+    //     handleGoogleCallback();
+    // }
 
-    function handleGoogleCallback() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get("token");
-        const error = urlParams.get("error");
+/* ----------------------------------------------------- Signup ----------------------------------------------------- */
 
-        if (token) {
-            localStorage.setItem("token", token);
-            showAlert("success", "Google login successful!");
-            setTimeout(() => {
-                window.location.href = "../../../../frontend/pages/student/student-dashboard.html";
-            }, 1500);
-        } else if (error) {
-            showAlert("danger", "Google login failed: " + error);
-        }
-    }
-
-    handleGoogleCallback();
-
-    // Main function -> handle signup form submission
+    // -------- send otp for signup --------
     $("#signup-btn").on("click", function (e) {
         e.preventDefault();
 
@@ -210,7 +263,7 @@ $(document).ready(function () {
         });
     });
 
-    // Main function -> handle OTP verification and registration
+    // -------- signup --------
     $("#signupOtpForm").on("submit", function (e) {
         e.preventDefault();
 
@@ -233,10 +286,12 @@ $(document).ready(function () {
             success: function (response) {
                 $("#otpModal").modal("hide");
                 localStorage.setItem("token", response.data.token);
-                showAlert("success", "Registration successful! You can now login.");
+                localStorage.setItem("role", response.data.role); // Store role
+                showAlert("success", "Registration successful! Redirecting...");
+
                 localStorage.removeItem("signupData");
                 $("#signupForm")[0].reset();
-                $(".password-strength-bar").css({width: "0%", background: "#e0e0e0"});
+                $(".password-strength-bar").css({ width: "0%", background: "#e0e0e0" });
 
                 setTimeout(() => {
                     window.location.href = "../../../../frontend/index.html";
@@ -250,7 +305,9 @@ $(document).ready(function () {
         });
     });
 
-    // Main function -> handle forgot password form submission
+/* ------------------------------------------------ Forgot Password ------------------------------------------------- */
+
+    // --------- send reset password OTP ---------
     $("#forgotPWForm").on("submit", function (e) {
         e.preventDefault();
         const email = $("#email").val();
@@ -281,7 +338,7 @@ $(document).ready(function () {
         });
     });
 
-    // Main function -> handle reset password OTP verify and password reset
+    // --------- reset password ---------
     $("#resetPWOtpForm").on("submit", function (e) {
         e.preventDefault();
 
@@ -311,7 +368,6 @@ $(document).ready(function () {
                     $("#forgotPWForm")[0].reset();
                     $(".password-strength-bar").css({width: "0%", background: "#e0e0e0"});
 
-                    // Redirect to login page after 1.5 seconds
                     setTimeout(() => {
                         window.location.href = "../../index.html";
                     }, 1500);
@@ -328,7 +384,8 @@ $(document).ready(function () {
         });
     });
 
-    // Main function -> handle resend OTP
+/* --------------------------------------------------- Resend OTP --------------------------------------------------- */
+
     $(".resendBtn").on("click", function (e) {
         e.preventDefault();
         const email = $("#email").val();
@@ -347,4 +404,5 @@ $(document).ready(function () {
             }
         });
     });
+
 });

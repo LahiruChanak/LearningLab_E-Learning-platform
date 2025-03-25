@@ -42,6 +42,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     private InstructorRequestRepo instructorRequestRepo;
 
+    private final String ADMIN_EMAIL = "fitlifeifms@gmail.com";
+
     private final Map<String, String> otpStore = new HashMap<>();
     private final DefaultSecretGenerator secretGenerator = new DefaultSecretGenerator();
     private final CodeGenerator codeGenerator = new DefaultCodeGenerator();
@@ -72,7 +74,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         User user = modelMapper.map(userDTO, User.class);
         user.setPasswordHash(passwordEncoder.encode(userDTO.getPassword()));
-        user.setRole(User.Role.STUDENT);
+
+        if ("fitlifeifms@gmail.com".equalsIgnoreCase(userDTO.getEmail())) {
+            user.setRole(User.Role.ADMIN);
+        } else {
+            user.setRole(User.Role.STUDENT);
+        }
+
         userRepo.save(user);
         return VarList.Created;
     }
@@ -218,8 +226,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         UserDTO userDTO = modelMapper.map(user, UserDTO.class);
         if (user.getProfilePicture() != null) {
-            String base64Image = Base64.getEncoder().encodeToString(user.getProfilePicture());
-            userDTO.setProfilePicture("data:image/jpeg;base64," + base64Image);
+//            String base64Image = Base64.getEncoder().encodeToString(user.getProfilePicture());
+//            userDTO.setProfilePicture("data:image/jpeg;base64," + base64Image);
         }
 
         return userDTO;
