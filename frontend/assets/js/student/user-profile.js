@@ -419,42 +419,44 @@ $(document).ready(function () {
 
     // ------------ Profile picture upload using file chooser ------------
     window.saveChanges = function () {
-        if (currentFile) {
-            const formData = new FormData();
-            formData.append("image", currentFile);
-            const token = localStorage.getItem("token");
-
-            $.ajax({
-                url: "http://localhost:8080/api/v1/user/profile/image",
-                type: "POST",
-                headers: {
-                    Authorization: "Bearer " + token,
-                },
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    if (response.status === 200) {
-                        $("#profilePreview").attr("src", response.data);
-                        showAlert("success", "Profile image updated successfully!");
-                        profileModal.hide();
-
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1500);
-                    } else {
-                        showAlert("danger", "Failed to upload image: " + response.message);
-                    }
-                },
-                error: function (xhr) {
-                    showAlert(
-                        "danger",
-                        "Error uploading image: " +
-                        (xhr.responseJSON ? xhr.responseJSON.message : xhr.statusText)
-                    );
-                },
-            });
+        if (!currentFile) {
+            showAlert("danger", "Please select an image to upload");
+            return;
         }
+
+        const formData = new FormData();
+        formData.append("image", currentFile);
+        const token = localStorage.getItem("token");
+
+        $("#imageSpinner").show(); // Show spinner
+
+        $.ajax({
+            url: "http://localhost:8080/api/v1/user/profile/image",
+            type: "POST",
+            headers: {
+                Authorization: "Bearer " + token,
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.status === 200) {
+                    $("#profilePreview").attr("src", response.data);
+                    showAlert("success", "Profile image updated successfully!");
+                    profileModal.hide();
+                } else {
+                    showAlert("danger", "Failed to upload image: " + response.message);
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", "Error uploading image: " + (xhr.responseJSON ? xhr.responseJSON.message : xhr.statusText));
+            },
+            complete: function () {
+                $("#imageSpinner").hide();
+                currentFile = null;
+            }
+        });
     };
 
     // ------------ Camera capture functionality for profile picture ------------
@@ -529,10 +531,6 @@ $(document).ready(function () {
                     if (response.status === 200) {
                         showAlert("success", "Profile image removed successfully!");
                         $("#deleteConfirmModal").modal("hide");
-
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1500);
                     } else {
                         showAlert("danger", "Failed to remove image: " + response.message);
                         $("#deleteConfirmModal").modal("hide");
@@ -884,9 +882,6 @@ $(document).ready(function () {
                 if (response.status === 200) {
                     showAlert("success", "2FA has been successfully disabled!");
                     $("#disable2FAModal").modal("hide");
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1000);
                 } else {
                     showAlert("success", "Failed to disable 2FA: " + response.message);
                 }

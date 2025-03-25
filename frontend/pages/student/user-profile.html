@@ -339,7 +339,7 @@
                 <i class="hgi-stroke hgi-lock-password security-icon"></i>
                 <div class="security-info">
                   <h3>Password</h3>
-                <p>Last changed: <span id="lastPasswordChange"></span></p>
+                  <p>Last changed: <span id="lastPasswordChange"></span></p>
                 </div>
                 <button
                   class="link-button"
@@ -356,7 +356,10 @@
                   <h3>Email verification</h3>
                   <div class="d-flex align-items-center">
                     <p id="userEmail"></p>
-                    <p><span class="mx-3 text-black">|</span> Last changed: <span id="lastEmailChange"></span></p>
+                    <p>
+                      <span class="mx-3 text-black">|</span> Last changed:
+                      <span id="lastEmailChange"></span>
+                    </p>
                   </div>
                 </div>
                 <button
@@ -1054,8 +1057,7 @@
               </p>
             </div>
             <div>
-              <label for="password" class="form-label small"
-                >
+              <label for="password" class="form-label small">
                 Enter Password
               </label>
               <input
@@ -1120,6 +1122,11 @@
                     alt="Profile Preview"
                     class="rounded-circle"
                   />
+                </div>
+                <div class="spinner-overlay" id="imageSpinner">
+                  <div class="spinner-border text-light spinner" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
                 </div>
                 <div class="remove-image">
                   <i class="hgi-stroke hgi-multiplication-sign"></i>
@@ -1195,9 +1202,7 @@
             ></button>
           </div>
           <div class="modal-body px-4">
-            <form
-              id="passwordUpdateForm"
-            >
+            <form id="passwordUpdateForm">
               <div class="form-field">
                 <label for="currentPassword">Current Password</label>
                 <input type="password" id="currentPassword" required />
@@ -1246,7 +1251,9 @@
                 </div>
               </div>
               <div class="error">
-                <i class="hgi hgi-stroke hgi-alert-circle fs-5 align-middle me-2"></i>
+                <i
+                  class="hgi hgi-stroke hgi-alert-circle fs-5 align-middle me-2"
+                ></i>
                 <span id="passwordError"></span>
               </div>
               <button type="submit" class="btn btn-save w-100 mt-3">
@@ -1283,11 +1290,7 @@
             <form id="emailUpdateForm">
               <div class="form-field">
                 <label for="currentEmail">Current Email</label>
-                <input
-                  type="email"
-                  id="currentEmail"
-                  disabled
-                />
+                <input type="email" id="currentEmail" disabled />
               </div>
               <div class="form-field">
                 <label for="newEmail">New Email</label>
@@ -1298,7 +1301,9 @@
                 <input type="password" id="emailPassword" required />
               </div>
               <div class="error">
-                <i class="hgi hgi-stroke hgi-alert-circle fs-5 align-middle me-2"></i>
+                <i
+                  class="hgi hgi-stroke hgi-alert-circle fs-5 align-middle me-2"
+                ></i>
                 <span id="emailError"></span>
               </div>
               <button type="submit" class="btn btn-save w-100 mt-3">
@@ -1360,14 +1365,13 @@
                     value="123456"
                     disabled
                   />
-                  <button
-                    type="button"
-                    class="btn border-0 fw-bold copy-btn"
-                  >
-                    <i class="hgi-stroke hgi-copy-01"
-                       data-bs-toggle="tooltip"
-                       data-bs-title="Copy"
-                       data-bs-placement="bottom"></i>
+                  <button type="button" class="btn border-0 fw-bold copy-btn">
+                    <i
+                      class="hgi-stroke hgi-copy-01"
+                      data-bs-toggle="tooltip"
+                      data-bs-title="Copy"
+                      data-bs-placement="bottom"
+                    ></i>
                   </button>
                 </div>
               </div>
@@ -1378,39 +1382,17 @@
               <form
                 class="code-input-container d-flex justify-content-center gap-2 mb-2"
               >
-                <input
-                  type="text"
-                  maxlength="1"
-                  class="code-input first"
-                />
-                <input
-                  type="text"
-                  maxlength="1"
-                  class="code-input"
-                />
-                <input
-                  type="text"
-                  maxlength="1"
-                  class="code-input"
-                />
-                <input
-                  type="text"
-                  maxlength="1"
-                  class="code-input"
-                />
-                <input
-                  type="text"
-                  maxlength="1"
-                  class="code-input"
-                />
-                <input
-                  type="text"
-                  maxlength="1"
-                  class="code-input"
-                />
+                <input type="text" maxlength="1" class="code-input first" />
+                <input type="text" maxlength="1" class="code-input" />
+                <input type="text" maxlength="1" class="code-input" />
+                <input type="text" maxlength="1" class="code-input" />
+                <input type="text" maxlength="1" class="code-input" />
+                <input type="text" maxlength="1" class="code-input" />
               </form>
               <div class="error">
-                <i class="hgi hgi-stroke hgi-alert-circle fs-5 align-middle me-2"></i>
+                <i
+                  class="hgi hgi-stroke hgi-alert-circle fs-5 align-middle me-2"
+                ></i>
                 <span id="error-message"></span>
               </div>
             </div>
@@ -1446,13 +1428,13 @@
 
     <!-- Disable 2FA Confirmation Modal -->
     <div
-            class="modal fade"
-            id="disable2FAModal"
-            tabindex="-1"
-            aria-labelledby="disable2FAModalLabel"
-            aria-hidden="true"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
+      class="modal fade"
+      id="disable2FAModal"
+      tabindex="-1"
+      aria-labelledby="disable2FAModalLabel"
+      aria-hidden="true"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
     >
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 rounded-4">
@@ -1461,31 +1443,31 @@
               Disable Two-factor Authentication
             </h1>
             <button
-                    type="button"
-                    class="btn-close shadow-none small"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
+              type="button"
+              class="btn-close shadow-none small"
+              data-bs-dismiss="modal"
+              aria-label="Close"
             ></button>
           </div>
           <div class="modal-body px-4">
             <p class="text-muted mb-0">
-              Are you sure you want to disable Two-Factor Authentication? This will
-              reduce the security of your account.
+              Are you sure you want to disable Two-Factor Authentication? This
+              will reduce the security of your account.
             </p>
             <div class="error text-danger mt-2" id="disable2FAError"></div>
           </div>
           <div class="modal-footer gap-2">
             <button
-                    type="button"
-                    class="border-0 bg-transparent"
-                    data-bs-dismiss="modal"
+              type="button"
+              class="border-0 bg-transparent"
+              data-bs-dismiss="modal"
             >
               No, Cancel
             </button>
             <button
-                    type="button"
-                    class="border-0 disable-2fa rounded-3"
-                    id="disable2FA"
+              type="button"
+              class="border-0 disable-2fa rounded-3"
+              id="disable2FA"
             >
               Yes, Disable
             </button>

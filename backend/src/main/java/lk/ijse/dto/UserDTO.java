@@ -13,7 +13,7 @@ public class UserDTO {
     private String email;
     private String password;
     private User.Role role;
-    private String profilePicture;  // Base64 encoded String.
+    private String profilePicture;
     private String bio;
     private String contact;
     private String address;

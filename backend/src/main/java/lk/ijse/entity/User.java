@@ -47,9 +47,8 @@ public class User {
     @Column(name = "role", nullable = false)
     private Role role;
 
-    @Lob
-    @Column(name = "profile_picture" , columnDefinition = "LONGBLOB")
-    private byte[] profilePicture;
+    @Column(name = "profile_picture", length = 255)
+    private String profilePicture;
 
     @Column(name = "bio", columnDefinition = "TEXT")
     private String bio;
@@ -66,7 +65,7 @@ public class User {
     @Column(name = "linkedin_link")
     private String linkedinLink;
 
-    @Column(name = "stackOverflow_link")
+    @Column(name = "stack_overflow_link")
     private String stackOverflowLink;
 
     @Column(name = "website_link")

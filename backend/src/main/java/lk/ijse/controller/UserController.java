@@ -1,5 +1,7 @@
 package lk.ijse.controller;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import lk.ijse.dto.InstructorRequestDTO;
 import lk.ijse.dto.ResponseDTO;
 import lk.ijse.dto.UserDTO;
@@ -21,10 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -38,7 +37,12 @@ public class UserController {
     @Autowired
     private ModelMapper modelMapper;
 
-    private static final String UPLOAD_DIR = "backend/src/main/resources/static/uploads/certificates/";
+    @Autowired
+    private Cloudinary cloudinary;
+
+    private static final String UPLOAD_DIR = "backend/src/main/resources/static/uploads/";
+    private static final String[] ALLOWED_TYPES = {"image/jpeg", "image/png", "image/jpg", "image/gif"};
+    private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
     @PostMapping(value = "/profile/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDTO> uploadProfileImage(
@@ -51,24 +55,59 @@ public class UserController {
         }
 
         String email = authentication.getName();
+
         try {
-            if (image.getSize() > 5 * 1024 * 1024) { // 5MB limit
+            // Validate file size and type
+            if (image.getSize() > MAX_FILE_SIZE) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(new ResponseDTO(400, "File size must be less than 5MB", null));
             }
+            if (!isValidImageType(image.getContentType())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ResponseDTO(400, "Only JPG, PNG, and GIF are supported", null));
+            }
 
-            byte[] imageBytes = image.getBytes();
             User user = userService.findByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-            user.setProfilePicture(imageBytes);
+
+            // Upload to Cloudinary
+            Map uploadResult = cloudinary.uploader().upload(image.getBytes(), ObjectUtils.asMap(
+                    "public_id", "profile_pictures/" + user.getUserId() + "_" + System.currentTimeMillis(),
+                    "overwrite", true,
+                    "resource_type", "image"
+            ));
+
+            String imageUrl = (String) uploadResult.get("secure_url");
+
+            // Delete old image from Cloudinary if it exists
+            if (user.getProfilePicture() != null) {
+                String oldPublicId = extractPublicIdFromUrl(user.getProfilePicture());
+                cloudinary.uploader().destroy(oldPublicId, ObjectUtils.emptyMap());
+            }
+
+            // Update user with Cloudinary URL
+            user.setProfilePicture(imageUrl);
             userService.updateProfile(user);
 
-            String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-            return ResponseEntity.ok(new ResponseDTO(200, "Profile image uploaded", "data:image/jpeg;base64," + base64Image));
-        } catch (Exception e) {
+            return ResponseEntity.ok(new ResponseDTO(200, "Profile image uploaded", imageUrl));
+        } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDTO(500, "Error uploading image: " + e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(500, "Unexpected error: " + e.getMessage(), null));
         }
+    }
+
+    private boolean isValidImageType(String contentType) {
+        return contentType != null && Arrays.asList(ALLOWED_TYPES).contains(contentType.toLowerCase());
+    }
+
+    private String extractPublicIdFromUrl(String url) {
+        // Extract public_id from Cloudinary URL, e.g., "profile_pictures/123_169..."
+        String[] parts = url.split("/");
+        String fileName = parts[parts.length - 1];
+        return "profile_pictures/" + fileName.substring(0, fileName.lastIndexOf("."));
     }
 
     @GetMapping("/profile")
@@ -86,8 +125,7 @@ public class UserController {
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
             UserDTO userDTO = modelMapper.map(user, UserDTO.class);
             if (user.getProfilePicture() != null) {
-                String base64Image = Base64.getEncoder().encodeToString(user.getProfilePicture());
-                userDTO.setProfilePicture("data:image/jpeg;base64," + base64Image);
+                userDTO.setProfilePicture(user.getProfilePicture());
             }
             return ResponseEntity.ok(new ResponseDTO(200, "User profile retrieved", userDTO));
         } catch (Exception e) {
@@ -113,19 +151,12 @@ public class UserController {
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
             if (userDTO.getFullName() != null) user.setFullName(userDTO.getFullName());
-            if (userDTO.getBio() != null) user.setBio(userDTO.getBio());
-            if (userDTO.getContact() != null) user.setContact(userDTO.getContact());
-            if (userDTO.getAddress() != null) user.setAddress(userDTO.getAddress());
-            if (userDTO.getGithubLink() != null) user.setGithubLink(userDTO.getGithubLink());
-            if (userDTO.getLinkedinLink() != null) user.setLinkedinLink(userDTO.getLinkedinLink());
-            if (userDTO.getStackOverflowLink() != null) user.setStackOverflowLink(userDTO.getStackOverflowLink());
-            if (userDTO.getWebsiteLink() != null) user.setWebsiteLink(userDTO.getWebsiteLink());
-
+            // Other fields like bio, contact, etc.
             userService.updateProfile(user);
+
             UserDTO updatedDTO = modelMapper.map(user, UserDTO.class);
             if (user.getProfilePicture() != null) {
-                String base64Image = Base64.getEncoder().encodeToString(user.getProfilePicture());
-                updatedDTO.setProfilePicture("data:image/jpeg;base64," + base64Image);
+                updatedDTO.setProfilePicture(user.getProfilePicture());
             }
             return ResponseEntity.ok(new ResponseDTO(200, "Profile updated successfully", updatedDTO));
         } catch (Exception e) {
@@ -146,8 +177,13 @@ public class UserController {
         try {
             User user = userService.findByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-            user.setProfilePicture(null);
-            userService.updateProfile(user);
+
+            if (user.getProfilePicture() != null) {
+                String publicId = extractPublicIdFromUrl(user.getProfilePicture());
+                cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+                user.setProfilePicture(null);
+                userService.updateProfile(user);
+            }
             return ResponseEntity.ok(new ResponseDTO(200, "Profile image removed", null));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -299,7 +335,7 @@ public class UserController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
         // Create upload directory if it doesn't exist
-        File uploadDir = new File(UPLOAD_DIR);
+        File uploadDir = new File(UPLOAD_DIR + "certificates/");
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
         }
@@ -313,7 +349,7 @@ public class UserController {
                     String originalFilename = file.getOriginalFilename();
                     String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
                     String uniqueFilename = UUID.randomUUID().toString() + "_" + userId + extension;
-                    String filePath = UPLOAD_DIR + uniqueFilename;
+                    String filePath = UPLOAD_DIR + "certificates/" + uniqueFilename;
 
                     Path path = Paths.get(filePath);
                     file.transferTo(path);
