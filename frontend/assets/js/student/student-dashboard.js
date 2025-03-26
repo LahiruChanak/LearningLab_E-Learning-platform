@@ -29,19 +29,25 @@ $(document).ready(function () {
   const increment = targetProgress / steps;
   const stepDuration = duration / steps;
 
-  const interval = setInterval(function () {
-    progress += increment;
-    if (progress >= targetProgress) {
-      progress = targetProgress;
-      clearInterval(interval);
-    }
-    setProgress(progress);
-  }, stepDuration);
+  // const interval = setInterval(function () {
+  //   progress += increment;
+  //   if (progress >= targetProgress) {
+  //     progress = targetProgress;
+  //     clearInterval(interval);
+  //   }
+  //   setProgress(progress);
+  // }, stepDuration);
 
   //////////////////////////////////////////////////////////////////////
 
   // Fetch User Data
   function fetchUserData() {
+    // Prevent multiple executions if already loaded
+    if (window.userDataLoaded) {
+      console.log("User data already loaded, skipping fetchUserData");
+      return;
+    }
+
     const token = localStorage.getItem("token");
     if (!token) {
       showAlert("danger", "Please login to the system to submit your request.");
@@ -55,14 +61,24 @@ $(document).ready(function () {
       headers: { "Authorization": "Bearer " + token },
       success: function (response) {
         if (response.status === 200) {
-          $("#fullName").val(response.data.fullName);
-          $("#email").val(response.data.email);
+          const userData = response.data;
+
+          // Mark as loaded to prevent re-fetching
+          window.userDataLoaded = true;
+
+          // Update UI with user data
+          $("#fullName").val(userData.fullName);
+          $("#email").val(userData.email);
         } else {
           showAlert("danger", "Failed to load user data: " + response.message);
         }
       },
       error: function (xhr) {
         showAlert("danger", "Error fetching user data: " + (xhr.responseJSON?.message || xhr.statusText));
+        if (xhr.status === 401) {
+          localStorage.removeItem("token");
+          window.location.href = "../../../../frontend/index.html";
+        }
       }
     });
   }

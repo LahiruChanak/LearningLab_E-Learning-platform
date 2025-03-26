@@ -140,9 +140,9 @@ $(document).ready(function () {
                     $("#emailModal").modal("hide");
                     $("#emailUpdateForm")[0].reset();
                     localStorage.removeItem("token"); // Clear token since email changed
-                    setTimeout(() => {
-                        window.location.href = "../../../../frontend/index.html";
-                    }, 2000);
+
+                    window.location.href = "../../../../frontend/index.html";
+
                 } else {
                     errorSpan.text(response.message || "Error updating email.");
                     errorContainer.show();
@@ -161,101 +161,164 @@ $(document).ready(function () {
     });
 
     // ------------ retrieve user profile details ------------
-    function retrieveUserProfile() {
-        const token = localStorage.getItem("token");
+    if (window.hasLoadedProfileAndSkillsScript) {
+        console.log("Script already initialized, skipping duplicate loadUserProfileAndSkills call");
+        return;
+    }
+    window.hasLoadedProfileAndSkillsScript = true;
 
-        if (!token) {
-            showAlert(
-                "danger",
-                "You are not logged in. Please login to view your profile."
-            );
+    // Define the combined function
+    function retrieveUserProfile() {
+        // Prevent repeated calls if already loaded
+        if (window.profileAndSkillsLoaded) {
+            console.log("Profile and skills already loaded, skipping loadUserProfileAndSkills");
             return;
         }
 
+        console.log("Loading user profile and skills at", new Date().toISOString());
+        const token = localStorage.getItem("token");
+
+        // Token validation
+        if (!token) {
+            showAlert("danger", "You are not logged in. Please login to view your profile and skills.");
+            window.location.href = "../../../../frontend/index.html"; // Adjust path as needed
+            return;
+        }
+
+        // Fetch user profile
         $.ajax({
             url: "http://localhost:8080/api/v1/user/profile",
             type: "GET",
-            headers: {
-                Authorization: "Bearer " + token,
-            },
-            success: function (response) {
-                if (response.status === 200) {
-                    const userData = response.data;
+            headers: { "Authorization": "Bearer " + token },
+            success: function (profileResponse) {
+                if (profileResponse.status === 200) {
+                    const userData = profileResponse.data;
+                    const isAdmin = userData.isAdmin === true;
+                    localStorage.setItem("isAdmin", isAdmin.toString());
+                    console.log("User isAdmin:", isAdmin, "Current Path:", window.location.pathname);
 
-                    $(".profile-info #fullName").text(userData.fullName);
-                    $(".profile-info #role").text(
-                        userData.role
-                            ? userData.role.charAt(0).toUpperCase() + userData.role.slice(1).toLowerCase()
-                            : "-"
-                    );
-                    $(".profile-info #bio").text(userData.bio || "No bio provided");
-
-                    if (userData.profilePicture) {
-                        $("#profilePreview").attr("src", userData.profilePicture);
+                    // Role-based navigation
+                    if (isAdmin && window.location.pathname.includes("student-dashboard.html")) {
+                        console.log("Redirecting admin to admin-dashboard");
+                        window.location.assign("../../../../frontend/pages/admin/admin-dashboard.html");
+                        return;
+                    } else if (!isAdmin && window.location.pathname.includes("admin-dashboard.html")) {
+                        console.log("Redirecting non-admin to student-dashboard");
+                        window.location.assign("../../../../frontend/pages/student/student-dashboard.html");
+                        return;
                     }
 
-                    $(".section").each(function () {
-                        const section = $(this);
-                        const [firstName, ...lastName] = (userData.fullName || "").trim().split(" ");
-                        section.find("[data-field='firstName']").val(firstName || "").data("originalValue", firstName || "");
-                        section.find("[data-field='lastName']").val(lastName.join(" ") || "").data("originalValue", lastName.join(" ") || "");
-                        section.find("[data-field='contact']").val(userData.contact || "").data("originalValue", userData.contact || "");
-                        section.find("[data-field='bio']").val(userData.bio || "").data("originalValue", userData.bio || "");
-                        section.find("[data-field='address']").val(userData.address || "").data("originalValue", userData.address || "");
-                        section.find("[data-field='githubLink']").val(userData.githubLink || "").data("originalValue", userData.githubLink || "");
-                        section.find("[data-field='linkedinLink']").val(userData.linkedinLink || "").data("originalValue", userData.linkedinLink || "");
-                        section.find("[data-field='stackOverflowLink']").val(userData.stackOverflowLink || "").data("originalValue", userData.stackOverflowLink || "");
-                        section.find("[data-field='websiteLink']").val(userData.websiteLink || "").data("originalValue", userData.websiteLink || "");
-                    });
+                    // Fetch user skills
+                    $.ajax({
+                        url: "http://localhost:8080/api/v1/user/skills",
+                        type: "GET",
+                        headers: { "Authorization": "Bearer " + token },
+                        success: function (skillsResponse) {
+                            if (skillsResponse.status === 200) {
+                                // Mark as loaded only if both requests succeed
+                                window.profileAndSkillsLoaded = true;
 
-                    // password last changed date
-                    if (userData.passwordUpdatedAt || userData.emailUpdatedAt) {
-                        ["passwordUpdatedAt", "emailUpdatedAt"].forEach((key) => {
-                            if (userData[key]) {
-                                const lastChanged = new Date(userData[key].replace(" ", "T") + "Z"); // Parse "yyyy-MM-dd HH:mm:ss"
-                                const now = new Date();
-                                const diffMs = now - lastChanged;
-                                const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-                                const diffMonths = Math.floor(diffDays / 30);
+                                // --- Profile UI Updates ---
+                                $(".profile-info #fullName").text(userData.fullName);
+                                $(".profile-info #role").text(
+                                    userData.role
+                                        ? userData.role.charAt(0).toUpperCase() + userData.role.slice(1).toLowerCase()
+                                        : "-"
+                                );
+                                $(".profile-info #bio").text(userData.bio || "No bio provided");
 
-                                let displayText = diffDays < 1 ? "Today" : diffDays < 30 ? diffDays + " day" + (diffDays > 1 ? "s" : "") + " ago" : diffMonths + " month" + (diffMonths > 1 ? "s" : "") + " ago";
+                                if (userData.profilePicture) {
+                                    $("#profilePreview").attr("src", userData.profilePicture);
+                                }
 
-                                $("#" + (key === "passwordUpdatedAt" ? "lastPasswordChange" : "lastEmailChange")).text(displayText);
+                                // Populate form fields
+                                $(".section").each(function () {
+                                    const section = $(this);
+                                    const [firstName, ...lastName] = (userData.fullName || "").trim().split(" ");
+                                    section.find("[data-field='firstName']").val(firstName || "").data("originalValue", firstName || "");
+                                    section.find("[data-field='lastName']").val(lastName.join(" ") || "").data("originalValue", lastName.join(" ") || "");
+                                    section.find("[data-field='contact']").val(userData.contact || "").data("originalValue", userData.contact || "");
+                                    section.find("[data-field='bio']").val(userData.bio || "").data("originalValue", userData.bio || "");
+                                    section.find("[data-field='address']").val(userData.address || "").data("originalValue", userData.address || "");
+                                    section.find("[data-field='githubLink']").val(userData.githubLink || "").data("originalValue", userData.githubLink || "");
+                                    section.find("[data-field='linkedinLink']").val(userData.linkedinLink || "").data("originalValue", userData.linkedinLink || "");
+                                    section.find("[data-field='stackOverflowLink']").val(userData.stackOverflowLink || "").data("originalValue", userData.stackOverflowLink || "");
+                                    section.find("[data-field='websiteLink']").val(userData.websiteLink || "").data("originalValue", userData.websiteLink || "");
+                                });
+
+                                // Password and email last changed dates
+                                if (userData.passwordUpdatedAt || userData.emailUpdatedAt) {
+                                    ["passwordUpdatedAt", "emailUpdatedAt"].forEach((key) => {
+                                        if (userData[key]) {
+                                            const lastChanged = new Date(userData[key].replace(" ", "T") + "Z");
+                                            const now = new Date();
+                                            const diffMs = now - lastChanged;
+                                            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                                            const diffMonths = Math.floor(diffDays / 30);
+
+                                            let displayText = diffDays < 1
+                                                ? "Today"
+                                                : diffDays < 30
+                                                    ? diffDays + " day" + (diffDays > 1 ? "s" : "") + " ago"
+                                                    : diffMonths + " month" + (diffMonths > 1 ? "s" : "") + " ago";
+
+                                            $("#" + (key === "passwordUpdatedAt" ? "lastPasswordChange" : "lastEmailChange")).text(displayText);
+                                        } else {
+                                            $("#" + (key === "passwordUpdatedAt" ? "lastPasswordChange" : "lastEmailChange")).text("Never");
+                                        }
+                                    });
+                                }
+
+                                $("#userEmail").text(userData.email || "No email provided");
+
+                                // Email modal setup
+                                $("#emailModal").on("show.bs.modal", function () {
+                                    $("#currentEmail").val(userData.email || "");
+                                });
+
+                                // 2FA status
+                                const is2FAEnabled = userData.twoFactorEnabled;
+                                if (is2FAEnabled === true) {
+                                    $("#setup2FAButton").hide();
+                                    $("#disable2FAButton").show();
+                                    $("#twoFactorStatus").text("On").css({"color": "#22c55e", "background-color": "#c0ffd0"});
+                                } else {
+                                    $("#setup2FAButton").show();
+                                    $("#disable2FAButton").hide();
+                                    $("#twoFactorStatus").text("Off").css({"color": "#ef4444", "background-color": "#ffdede"});
+                                }
+
+                                // --- Skills UI Updates ---
+                                const skillTagsContainer = $(".skill-tags");
+                                skillTagsContainer.empty();
+                                skillsResponse.data.forEach(skill => {
+                                    const skillTag = $('<span class="skill-tag"></span>').text(skill);
+                                    skillTagsContainer.append(skillTag);
+                                });
                             } else {
-                                $("#" + (key === "passwordUpdatedAt" ? "lastPasswordChange" : "lastEmailChange")).text("Never");
+                                showAlert("danger", "Failed to load skills: " + skillsResponse.message);
                             }
-                        });
-                    }
-
-                    $("#userEmail").text(userData.email || "No email provided");
-
-                    // Set the current email in modal when it opens
-                    $("#emailModal").on("show.bs.modal", function () {
-                        $("#currentEmail").val(userData.email || "");
+                        },
+                        error: function (xhr) {
+                            showAlert("danger", "Error fetching skills: " + (xhr.responseJSON?.message || xhr.statusText));
+                            if (xhr.status === 401) {
+                                localStorage.removeItem("token");
+                                window.location.href = "/login.html";
+                            }
+                        }
                     });
-
-                    // 2FA status
-                    const is2FAEnabled = userData.twoFactorEnabled;
-                    if (is2FAEnabled === true) {
-                        $("#setup2FAButton").hide();
-                        $("#disable2FAButton").show();
-                        $("#twoFactorStatus").text("On").css({"color": "#22c55e", "background-color": "#c0ffd0"});
-
-                    } else {
-                        $("#setup2FAButton").show();
-                        $("#disable2FAButton").hide();
-                        $("#twoFactorStatus").text("Off").css({"color": "#ef4444", "background-color": "#ffdede"});
-
-                    }
-
                 } else {
-                    showAlert("danger", "Failed to load profile: " + response.message);
+                    showAlert("danger", "Failed to load profile: " + profileResponse.message);
                     $("#lastPasswordChange, #lastEmailChange").text("Failed to load");
                 }
             },
             error: function (xhr) {
-                showAlert("danger", "Error fetching profile: " + (xhr.responseJSON ? xhr.responseJSON.message : xhr.statusText));
-            },
+                showAlert("danger", "Error fetching profile: " + (xhr.responseJSON?.message || xhr.statusText));
+                if (xhr.status === 401) {
+                    localStorage.removeItem("token");
+                    window.location.href = "/login.html";
+                }
+            }
         });
     }
 
@@ -418,7 +481,7 @@ $(document).ready(function () {
     });
 
     // ------------ Profile picture upload using file chooser ------------
-    window.saveChanges = function () {
+    $("#saveChanges").on("click", function (e) {
         if (!currentFile) {
             showAlert("danger", "Please select an image to upload");
             return;
@@ -457,10 +520,10 @@ $(document).ready(function () {
                 currentFile = null;
             }
         });
-    };
+    });
 
     // ------------ Camera capture functionality for profile picture ------------
-    window.takePhoto = function () {
+    $("#takePhoto").on("click", function (e) {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             navigator.mediaDevices
                 .getUserMedia({video: true})
@@ -469,23 +532,22 @@ $(document).ready(function () {
                     const $canvas = $("<canvas>").get(0);
                     $video.play();
 
-                    setTimeout(function () {
-                        $canvas.width = $video.videoWidth;
-                        $canvas.height = $video.videoHeight;
-                        $canvas.getContext("2d").drawImage($video, 0, 0);
+                    $canvas.width = $video.videoWidth;
+                    $canvas.height = $video.videoHeight;
+                    $canvas.getContext("2d").drawImage($video, 0, 0);
 
-                        $canvas.toBlob(function (blob) {
-                            const file = new File([blob], "camera-photo.jpg", {
-                                type: "image/jpeg",
-                            });
-                            currentFile = file;
-                            $("#imagePreview").attr("src", $canvas.toDataURL("image/jpeg"));
+                    $canvas.toBlob(function (blob) {
+                        const file = new File([blob], "camera-photo.jpg", {
+                            type: "image/jpeg",
+                        });
+                        currentFile = file;
+                        $("#imagePreview").attr("src", $canvas.toDataURL("image/jpeg"));
 
-                            stream.getTracks().forEach(function (track) {
-                                track.stop();
-                            });
-                        }, "image/jpeg");
-                    }, 1500);
+                        stream.getTracks().forEach(function (track) {
+                            track.stop();
+                        });
+                    }, "image/jpeg");
+
                 })
                 .catch(function (error) {
                     showAlert("danger", "Error accessing camera: " + error.message);
@@ -493,7 +555,7 @@ $(document).ready(function () {
         } else {
             showAlert("danger", "Camera not supported on this device/browser.");
         }
-    };
+    });
 
     // Function to update remove-image visibility based on image source (remove-btn show when the image isn't the default image)
     function updateRemoveImageVisibility() {
@@ -555,41 +617,41 @@ $(document).ready(function () {
     const skillTagsContainer = $(".skill-tags");
 
     // ------------ Get user skills ------------
-    function loadUserSkills() {
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-            showAlert("danger", "Please login to system to view your skills.");
-            window.location.href = "../../../../frontend/index.html";
-            return;
-        }
-
-        $.ajax({
-            url: "http://localhost:8080/api/v1/user/skills",
-            method: "GET",
-            headers: {
-                "Authorization": "Bearer " + token
-            },
-            success: function(response) {
-                if (response.status === 200) {
-                    skillTagsContainer.empty();
-                    response.data.forEach(skill => {
-                        const skillTag = $('<span class="skill-tag"></span>').text(skill);
-                        skillTagsContainer.append(skillTag);
-                    });
-                }
-            },
-            error: function(xhr) {
-                showAlert("danger", "Error loading user skills: " + (xhr.responseJSON ? xhr.responseJSON.message : xhr.statusText));
-                if (xhr.status === 401 || xhr.status === 403) {
-                    showAlert("danger", "You are not authorized to view this page. Please login.");
-                    window.location.href = "../../../../frontend/index.html";
-                }
-            }
-        });
-    }
-
-    loadUserSkills();
+    // function loadUserSkills() {
+    //     const token = localStorage.getItem("token");
+    //
+    //     if (!token) {
+    //         showAlert("danger", "Please login to system to view your skills.");
+    //         window.location.href = "../../../../frontend/index.html";
+    //         return;
+    //     }
+    //
+    //     $.ajax({
+    //         url: "http://localhost:8080/api/v1/user/skills",
+    //         method: "GET",
+    //         headers: {
+    //             "Authorization": "Bearer " + token
+    //         },
+    //         success: function(response) {
+    //             if (response.status === 200) {
+    //                 skillTagsContainer.empty();
+    //                 response.data.forEach(skill => {
+    //                     const skillTag = $('<span class="skill-tag"></span>').text(skill);
+    //                     skillTagsContainer.append(skillTag);
+    //                 });
+    //             }
+    //         },
+    //         error: function(xhr) {
+    //             showAlert("danger", "Error loading user skills: " + (xhr.responseJSON ? xhr.responseJSON.message : xhr.statusText));
+    //             if (xhr.status === 401 || xhr.status === 403) {
+    //                 showAlert("danger", "You are not authorized to view this page. Please login.");
+    //                 window.location.href = "../../../../frontend/index.html";
+    //             }
+    //         }
+    //     });
+    // }
+    //
+    // loadUserSkills();
 
     // ------------ Edit user skills ------------
     editSkillsBtn.on("click", function () {
@@ -660,7 +722,7 @@ $(document).ready(function () {
                             if (response.status === 200 && response.data.length > 0) {
                                 const suggestion = response.data[0]; // First suggestion
                                 if (suggestion.toLowerCase().startsWith(query.toLowerCase())) {
-                                    suggestionHint.text(suggestion); // Show full suggestion in grey
+                                    suggestionHint.text(suggestion); // Show full suggestion in gray
                                 }
                             }
                         },
@@ -811,9 +873,9 @@ $(document).ready(function () {
                     const secret = response.data.secret;
                     const qrData = response.data.qrData; // otpauth://totp URI
                     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrData)}`;
-                    $("#qrcode img").attr("src", qrCodeUrl); // Update QR code image
+                    $("#qrcode img").attr("src", qrCodeUrl);
                     $("#codeInput").val(secret); // Display secret for manual entry
-                    $("#twoFactorModal").modal("show"); // Show the modal
+                    $("#twoFactorModal").modal("show");
                 } else {
                     showAlert("danger", "Failed to setup 2FA: " + response.message);
                 }
@@ -906,6 +968,41 @@ $(document).ready(function () {
             .catch((error) => {
                 showAlert("danger", "Failed to copy code. Please try again.");
             });
+    });
+
+/* ------------------------------------------------ Account Deletion ------------------------------------------------ */
+
+    $("#request-deletion").on("click", function (e) {
+        e.preventDefault();
+
+        const password = $("#delete-password").val().trim();
+        const email = localStorage.getItem("email");
+
+        if (!password || !email || !localStorage.getItem("token")) {
+            showAlert("warning", "Please enter your password and ensure you are logged in!");
+            return;
+        }
+
+        $.ajax({
+            url: "http://localhost:8080/api/v1/user/delete/account",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ email, password }),
+            success: function (response) {
+                console.log("Success:", response);
+                $("#deleteModal").modal("hide");
+                showAlert("success", response.message);
+                localStorage.clear();
+                setTimeout(() => {
+                    window.location.href = "../../../../frontend/index.html";
+                }, 1500);
+            },
+            error: function (xhr) {
+                console.log("Error:", xhr);
+                showAlert("danger", "Error: " + (xhr.responseJSON?.message || xhr.statusText));
+                $("#delete-password").val("");
+            }
+        });
     });
 
 /* -------------------------------------------------- Achievements -------------------------------------------------- */
@@ -1126,7 +1223,7 @@ $(document).ready(function () {
         }
     });
 
-    // Add event listener to new remove button
+    // Add event listener to the new remove button
     const newRemoveBtn = newCard.find(".remove-card-btn");
     newRemoveBtn.on("click", function (e) {
         e.stopPropagation();

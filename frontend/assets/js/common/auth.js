@@ -369,7 +369,7 @@ $(document).ready(function () {
                     $(".password-strength-bar").css({width: "0%", background: "#e0e0e0"});
 
                     setTimeout(() => {
-                        window.location.href = "../../index.html";
+                        window.location.href = "../../../../frontend/index.html";
                     }, 1500);
                 } else {
                     showAlert("danger", response.message || "Failed to reset password");

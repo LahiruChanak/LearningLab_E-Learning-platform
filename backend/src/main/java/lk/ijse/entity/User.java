@@ -75,8 +75,12 @@ public class User {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @Column(name = "is_active")
+    @Column(name = "is_active" , nullable = false)
     private Boolean isActive = true;
+
+    @Column(name = "deactivated_at")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime deactivatedAt;
 
     // Relationships
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

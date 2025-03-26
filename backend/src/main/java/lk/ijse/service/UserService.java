@@ -42,4 +42,8 @@ public interface UserService {
 
     User getCurrentUser(String email);
 
+    void requestAccountDeletion(String email, String password) throws Exception;
+
+    void permanentlyDeleteInactiveAccounts();
+
 }

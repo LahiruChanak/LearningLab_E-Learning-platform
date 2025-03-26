@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
@@ -392,6 +393,23 @@ public class UserController {
                 "email", user.getEmail()
         );
         return ResponseEntity.ok(new ResponseDTO(200, "User data retrieved", userData));
+    }
+
+    @PostMapping("/delete/account")
+    public ResponseEntity<ResponseDTO> deleteAccount(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String password = request.get("password");
+
+        try {
+            userService.requestAccountDeletion(email, password);
+            return ResponseEntity.ok(new ResponseDTO(200, "Account marked for deletion. It will be permanently removed in 30 days.", null));
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO(401, e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(500, "Error processing deletion request: " + e.getMessage(), null));
+        }
     }
 
 }

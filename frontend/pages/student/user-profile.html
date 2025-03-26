@@ -1057,12 +1057,12 @@
               </p>
             </div>
             <div>
-              <label for="password" class="form-label small">
+              <label for="delete-password" class="form-label small">
                 Enter Password
               </label>
               <input
                 type="password"
-                id="password"
+                id="delete-password"
                 class="form-control shadow-none"
                 placeholder="Enter your password"
                 required
@@ -1080,7 +1080,7 @@
             <button
               type="button"
               class="btn delete-acc-btn"
-              data-bs-dismiss="modal"
+              id="request-deletion"
             >
               Delete Account
             </button>
@@ -1146,7 +1146,7 @@
                   <i class="hgi-stroke hgi-image-upload fs-5 me-2"></i> Upload
                   New Image
                 </button>
-                <button type="button" class="btn-upload" onclick="takePhoto()">
+                <button type="button" class="btn-upload" id="takePhoto">
                   <i class="hgi-stroke hgi-camera-01 fs-5 me-2"></i> Take Photo
                 </button>
               </div>
@@ -1172,7 +1172,7 @@
             <button
               type="button"
               class="btn btn-primary rounded-3"
-              onclick="saveChanges()"
+              id="saveChanges"
             >
               Save Changes
             </button>

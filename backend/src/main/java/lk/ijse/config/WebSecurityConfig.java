@@ -99,8 +99,9 @@ public class WebSecurityConfig {
                                 "/api/v1/auth/2fa/verify").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/user/instructor/request").authenticated()
                         .requestMatchers("/api/v1/user/current").authenticated()
-                        .requestMatchers("/api/v1/user/**").authenticated()
-                        .requestMatchers("/api/v1/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/v1/user/delete/account").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/api/v1/user/**").authenticated()
+                        .requestMatchers(HttpMethod.OPTIONS, "/api/v1/admin/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
 //                .oauth2Login(oauth2 -> oauth2

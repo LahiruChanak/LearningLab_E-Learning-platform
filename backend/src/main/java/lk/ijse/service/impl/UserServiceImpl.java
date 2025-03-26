@@ -15,6 +15,9 @@ import lk.ijse.service.UserService;
 import lk.ijse.util.VarList;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -42,6 +45,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     private InstructorRequestRepo instructorRequestRepo;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     private final String ADMIN_EMAIL = "fitlifeifms@gmail.com";
 
     private final Map<String, String> otpStore = new HashMap<>();
@@ -59,6 +65,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepo.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+        if (!user.getIsActive()) {
+            throw new DisabledException("Account is deactivated or pending account deletion. Please contact admin.");
+        }
+
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPasswordHash(),
@@ -242,6 +253,28 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User getCurrentUser(String email) {
         return loadUserByUsernameEntity(email);
+    }
+
+    @Override
+    public void requestAccountDeletion(String email, String password) throws Exception {
+        // Verify credentials
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(email, password)
+        );
+
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+        user.setIsActive(false);
+        user.setDeactivatedAt(LocalDateTime.now());
+        userRepo.save(user);
+    }
+
+    @Override
+    public void permanentlyDeleteInactiveAccounts() {
+        LocalDateTime thirtyDaysAgo = LocalDateTime.now().minusDays(30);
+        List<User> inactiveUsers = userRepo.findByIsActiveFalseAndDeactivatedAtBefore(thirtyDaysAgo);
+        userRepo.deleteAll(inactiveUsers);
     }
 
 }

@@ -125,7 +125,7 @@ public class AuthController {
             return ResponseEntity.ok(new ResponseDTO(200, "Login successful", authDTO));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new ResponseDTO(401, "Invalid credentials", null));
+                    .body(new ResponseDTO(401, e.getMessage(), null));
         }
     }
 
