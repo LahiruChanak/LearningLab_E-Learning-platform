@@ -1,5 +1,7 @@
 package lk.ijse.service.impl;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import dev.samstevens.totp.code.*;
 import dev.samstevens.totp.qr.QrData;
 import dev.samstevens.totp.secret.DefaultSecretGenerator;
@@ -26,6 +28,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -47,6 +51,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private Cloudinary cloudinary;
 
     private final String ADMIN_EMAIL = "fitlifeifms@gmail.com";
 
@@ -227,21 +234,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         request.setUser(user);
         request.setMessage(requestDTO.getMessage());
         request.setQualifications(requestDTO.getQualifications());
-        request.setCertificates(requestDTO.getCertificates());
         request.setExperience(requestDTO.getExperience());
         request.setAdditionalDetails(requestDTO.getAdditionalDetails());
         request.setRequestStatus(InstructorRequest.RequestStatus.PENDING);
         request.setRequestCreatedAt(LocalDateTime.now());
+        request.setCertificates(requestDTO.getCertificateUrls() != null ? requestDTO.getCertificateUrls() : Collections.emptyList());
 
         instructorRequestRepo.save(request);
 
-        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
-        if (user.getProfilePicture() != null) {
-//            String base64Image = Base64.getEncoder().encodeToString(user.getProfilePicture());
-//            userDTO.setProfilePicture("data:image/jpeg;base64," + base64Image);
-        }
-
-        return userDTO;
+        return modelMapper.map(user, UserDTO.class);
     }
 
     @Override

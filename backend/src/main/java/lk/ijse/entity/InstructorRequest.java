@@ -31,7 +31,7 @@ public class InstructorRequest {
 
     @ElementCollection
     @CollectionTable(name = "instructor_request_certificates", joinColumns = @JoinColumn(name = "request_id"))
-    @Column(name = "certificate_path", columnDefinition = "LONGBLOB")
+    @Column(name = "certificate_url")
     private List<String> certificates;
 
     @Column(name = "experience", columnDefinition = "TEXT")

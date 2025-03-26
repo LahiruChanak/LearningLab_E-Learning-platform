@@ -13,19 +13,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/v1/user")
@@ -41,9 +39,9 @@ public class UserController {
     @Autowired
     private Cloudinary cloudinary;
 
-    private static final String UPLOAD_DIR = "backend/src/main/resources/static/uploads/";
-    private static final String[] ALLOWED_TYPES = {"image/jpeg", "image/png", "image/jpg", "image/gif"};
-    private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+    private static final String[] ALLOWED_IMG_TYPES = {"image/jpeg", "image/png", "image/jpg", "image/gif"};
+    private static final String[] ALLOWED_FILE_TYPES = {"image/jpeg", "image/png", "image/gif", "application/pdf"};
+    private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
     @PostMapping(value = "/profile/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDTO> uploadProfileImage(
@@ -101,7 +99,7 @@ public class UserController {
     }
 
     private boolean isValidImageType(String contentType) {
-        return contentType != null && Arrays.asList(ALLOWED_TYPES).contains(contentType.toLowerCase());
+        return contentType != null && Arrays.asList(ALLOWED_IMG_TYPES).contains(contentType.toLowerCase());
     }
 
     private String extractPublicIdFromUrl(String url) {
@@ -320,63 +318,57 @@ public class UserController {
     }
 
     @PostMapping(value = "/instructor/request", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseDTO> submitInstructorRequest(
-            @RequestParam("message") String message,
-            @RequestParam("qualifications") String qualifications,
-            @RequestParam(value = "certificates", required = false) List<MultipartFile> certificates,
-            @RequestParam("experience") String experience,
-            @RequestParam(value = "additionalDetails", required = false) String additionalDetails,
-            Authentication authentication) {
+            @AuthenticationPrincipal UserDetails userDetails,
+            @ModelAttribute InstructorRequestDTO requestDTO) {
 
-        if (authentication == null || !authentication.isAuthenticated()) {
+        if (userDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new ResponseDTO(401, "Unauthorized", null));
         }
 
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
-        // Create upload directory if it doesn't exist
-        File uploadDir = new File(UPLOAD_DIR + "certificates/");
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
-        }
-
-        List<String> certificatePaths = null;
-        if (certificates != null && !certificates.isEmpty()) {
-            User user = userService.loadUserByUsernameEntity(userDetails.getUsername());
-            Long userId = user.getUserId();
-            certificatePaths = certificates.stream().map(file -> {
-                try {
-                    String originalFilename = file.getOriginalFilename();
-                    String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-                    String uniqueFilename = UUID.randomUUID().toString() + "_" + userId + extension;
-                    String filePath = UPLOAD_DIR + "certificates/" + uniqueFilename;
-
-                    Path path = Paths.get(filePath);
-                    file.transferTo(path);
-
-                    return filePath;
-                } catch (IOException e) {
-                    throw new RuntimeException("Failed to save certificate file: " + file.getOriginalFilename(), e);
-                }
-            }).collect(Collectors.toList());
-        }
-
-        InstructorRequestDTO requestDTO = new InstructorRequestDTO(
-                message,
-                qualifications,
-                certificatePaths,
-                experience,
-                additionalDetails
-        );
+        String email = userDetails.getUsername();
 
         try {
+            // Validate and upload certificates to Cloudinary
+            MultipartFile[] certificates = requestDTO.getCertificates();
+            List<String> certificateUrls = new ArrayList<>();
+            if (certificates != null && certificates.length > 0) {
+                for (MultipartFile certificate : certificates) {
+                    if (certificate.getSize() > MAX_FILE_SIZE) {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(new ResponseDTO(400, "Certificate file size must be less than 5MB", null));
+                    }
+                    if (!isValidFileType(certificate.getContentType())) {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(new ResponseDTO(400, "Only JPG, PNG, GIF, and PDF are supported", null));
+                    }
+
+                    Map uploadResult = cloudinary.uploader().upload(certificate.getBytes(), ObjectUtils.asMap(
+                            "public_id", "instructor_certificates/" + email + "_" + System.currentTimeMillis() + "_" + certificate.getOriginalFilename(),
+                            "overwrite", true,
+                            "resource_type", "auto"
+                    ));
+                    certificateUrls.add((String) uploadResult.get("secure_url"));
+                }
+            }
+
+            requestDTO.setCertificateUrls(certificateUrls);
+
             UserDTO userDTO = userService.submitInstructorRequest(userDetails, requestDTO);
-            return ResponseEntity.ok(new ResponseDTO(200, "Instructor request submitted successfully", userDTO));
+            return ResponseEntity.ok(new ResponseDTO(200, "Request submitted successfully", userDTO));
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(500, "Error uploading certificates: " + e.getMessage(), null));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDTO(500, e.getMessage(), null));
+                    .body(new ResponseDTO(500, "Failed to submit request: " + e.getMessage(), null));
         }
+    }
+
+    private boolean isValidFileType(String contentType) {
+        return contentType != null && Arrays.asList(ALLOWED_FILE_TYPES).contains(contentType.toLowerCase());
     }
 
     @GetMapping("/current")
