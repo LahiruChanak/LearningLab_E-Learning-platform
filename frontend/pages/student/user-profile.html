@@ -1141,7 +1141,8 @@
                 <button
                   type="button"
                   class="btn-upload"
-                  onclick="document.getElementById('imageUpload').click()"
+                  id="uploadImage"
+                  onclick="$('#imageUpload').click()"
                 >
                   <i class="hgi-stroke hgi-image-upload fs-5 me-2"></i> Upload
                   New Image
@@ -1149,6 +1150,14 @@
                 <button type="button" class="btn-upload" id="takePhoto">
                   <i class="hgi-stroke hgi-camera-01 fs-5 me-2"></i> Take Photo
                 </button>
+                <div id="cameraControls">
+                  <button type="button" class="btn-upload btn-outline-light" id="closeCameraBtn">
+                    <i class="hgi hgi-stroke hgi-camera-off-01 fs-5 me-2"></i> Close Camera
+                  </button>
+                  <button type="button" class="btn-upload bg-success text-white" id="captureBtn">
+                    <i class="hgi-stroke hgi-camera-01 fs-5 me-2"></i> Capture
+                  </button>
+                </div>
               </div>
               <input
                 type="file"
@@ -1165,6 +1174,7 @@
             <button
               type="button"
               class="border-0 bg-transparent"
+              id="cancelBtn"
               data-bs-dismiss="modal"
             >
               Cancel
@@ -1767,6 +1777,6 @@
     <script src="../../assets/js/student/user-profile.js"></script>
     <script src="../../assets/js/common/password-utils.js"></script>
     <script src="../../assets/js/common/alert.js"></script>
-    <script src="../../assets/js/common/header.js"></script>
+<!--    <script src="../../assets/js/common/header.js"></script>-->
   </body>
 </html>

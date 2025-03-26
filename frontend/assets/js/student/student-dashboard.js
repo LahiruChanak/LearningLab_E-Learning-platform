@@ -29,14 +29,14 @@ $(document).ready(function () {
   const increment = targetProgress / steps;
   const stepDuration = duration / steps;
 
-  // const interval = setInterval(function () {
-  //   progress += increment;
-  //   if (progress >= targetProgress) {
-  //     progress = targetProgress;
-  //     clearInterval(interval);
-  //   }
-  //   setProgress(progress);
-  // }, stepDuration);
+  const interval = setInterval(function () {
+    progress += increment;
+    if (progress >= targetProgress) {
+      progress = targetProgress;
+      clearInterval(interval);
+    }
+    setProgress(progress);
+  }, stepDuration);
 
   //////////////////////////////////////////////////////////////////////
 
@@ -116,11 +116,9 @@ $(document).ready(function () {
     const experience = $("#experience").val().trim();
     const additionalDetails = $("#additionalDetails").val().trim();
 
-    // Reset error messages
-    $("#messageError, #qualificationsError, #experienceError, #certificatesError, #additionalDetailsError").text("");
-
     if (!message || !qualifications || !experience) {
       showAlert("danger", "Please fill in all the required fields.");
+      $button.prop("disabled", false);
       return;
     }
 
@@ -133,6 +131,8 @@ $(document).ready(function () {
       formData.append("certificates", file);
     });
 
+    $(".loader").show();
+
     $.ajax({
       url: "http://localhost:8080/api/v1/user/instructor/request",
       type: "POST",
@@ -141,6 +141,7 @@ $(document).ready(function () {
       processData: false,
       contentType: false,
       success: function (response) {
+        $button.prop("disabled", false);
         if (response.status === 200) {
           showAlert("success", `Request submitted successfully by ${response.data.fullName} (${response.data.email})`);
           $("#instructorRequestModal").modal("hide");
@@ -151,7 +152,15 @@ $(document).ready(function () {
         }
       },
       error: function (xhr) {
+        $button.prop("disabled", false);
         showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error submitting request.");
+        if (xhr.status === 401) {
+          localStorage.removeItem("token");
+          window.location.href = "../../../../frontend/index.html";
+        }
+      },
+      complete: function () {
+        $(".loader").hide();
       }
     });
   });

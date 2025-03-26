@@ -13,6 +13,7 @@ $(document).ready(function () {
         bootstrap.Modal.getInstance($("#profileModal")[0]) ||
         new bootstrap.Modal($("#profileModal")[0]);
     let currentFile = null;
+    let videoStream = null;
 
     // Password visibility toggle
     $(".password-toggle").on("click", function () {
@@ -217,6 +218,16 @@ $(document).ready(function () {
                             if (skillsResponse.status === 200) {
                                 // Mark as loaded only if both requests succeed
                                 window.profileAndSkillsLoaded = true;
+
+                                // Header details
+                                $("#header-name").text(userData.fullName);
+                                $("#header-role").text(
+                                    userData.role ? userData.role.charAt(0).toUpperCase() + userData.role.slice(1).toLowerCase() : "-"
+                                );
+
+                                if (userData.profilePicture) {
+                                    $("#header-profile-image").attr("src", userData.profilePicture);
+                                }
 
                                 // --- Profile UI Updates ---
                                 $(".profile-info #fullName").text(userData.fullName);
@@ -507,6 +518,8 @@ $(document).ready(function () {
                 if (response.status === 200) {
                     $("#profilePreview").attr("src", response.data);
                     showAlert("success", "Profile image updated successfully!");
+                    closeCamera();
+                    $("#cameraVideo").remove();
                     profileModal.hide();
                 } else {
                     showAlert("danger", "Failed to upload image: " + response.message);
@@ -526,28 +539,20 @@ $(document).ready(function () {
     $("#takePhoto").on("click", function (e) {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             navigator.mediaDevices
-                .getUserMedia({video: true})
+                .getUserMedia({ video: true })
                 .then(function (stream) {
-                    const $video = $("<video>").attr("srcObject", stream).get(0);
-                    const $canvas = $("<canvas>").get(0);
-                    $video.play();
+                    videoStream = stream;
+                    const video = document.createElement("video");
+                    video.srcObject = stream;
+                    video.play().catch(err => showAlert("danger", "Error playing video: " + err.message));
 
-                    $canvas.width = $video.videoWidth;
-                    $canvas.height = $video.videoHeight;
-                    $canvas.getContext("2d").drawImage($video, 0, 0);
+                    $("#imagePreview").hide();
+                    $("#imagePreview").after(video);
+                    video.id = "cameraVideo";
 
-                    $canvas.toBlob(function (blob) {
-                        const file = new File([blob], "camera-photo.jpg", {
-                            type: "image/jpeg",
-                        });
-                        currentFile = file;
-                        $("#imagePreview").attr("src", $canvas.toDataURL("image/jpeg"));
-
-                        stream.getTracks().forEach(function (track) {
-                            track.stop();
-                        });
-                    }, "image/jpeg");
-
+                    $("#uploadImage").hide();
+                    $("#takePhoto").hide();
+                    $("#cameraControls").show().css("display", "flex");
                 })
                 .catch(function (error) {
                     showAlert("danger", "Error accessing camera: " + error.message);
@@ -555,6 +560,53 @@ $(document).ready(function () {
         } else {
             showAlert("danger", "Camera not supported on this device/browser.");
         }
+    });
+
+    // Capture image when "Capture" button is clicked
+    $("#captureBtn").on("click", function (e) {
+        const video = $("#cameraVideo")[0];
+        if (!video || !videoStream) {
+            showAlert("danger", "Camera is not active.");
+            return;
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext("2d").drawImage(video, 0, 0);
+
+        canvas.toBlob(function (blob) {
+            currentFile = new File([blob], "camera-photo.jpg", { type: "image/jpeg" });
+            $("#imagePreview").attr("src", canvas.toDataURL("image/jpeg")).show();
+            $("#cameraVideo").remove();
+            closeCamera();
+        }, "image/jpeg", 1);
+    });
+
+    $("#closeCameraBtn, #cancelBtn, .btn-close").on("click", function (e) {
+        closeCamera();
+        $("#cameraVideo").remove();
+        $("#imagePreview").hide();
+    });
+
+    // Improved camera close function
+    function closeCamera() {
+        if (videoStream) {
+            videoStream.getTracks().forEach(track => {
+                track.stop();
+                track.enabled = false;
+            });
+            videoStream = null;
+        }
+        $("#cameraControls").hide();
+        $("#uploadImage").show();
+        $("#takePhoto").show();
+    }
+
+    // Ensure the camera is stopped on page unloaded (extra safety)
+    window.addEventListener("beforeunload", function () {
+        closeCamera();
+        $("#cameraVideo").remove();
     });
 
     // Function to update remove-image visibility based on image source (remove-btn show when the image isn't the default image)
