@@ -4,13 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="871ac622-ec0f-4cda-944a-f4037773dc1b" name="Changes" comment=".idea changes">
+    <list default="true" id="871ac622-ec0f-4cda-944a-f4037773dc1b" name="Changes" comment="fix some issues for system better stable">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/config/WebSecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/config/WebSecurityConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/dto/InstructorRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/dto/InstructorRequestDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/InstructorRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/InstructorRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/service/impl/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/util/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/util/JwtUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/css/common/sidebar.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/css/common/sidebar.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/css/student/student-dashboard.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/css/student/student-dashboard.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/assets/css/student/user-profile.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/css/student/user-profile.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/js/student/student-dashboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/js/student/student-dashboard.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/assets/js/student/user-profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/js/student/user-profile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/student/student-dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/student/student-dashboard.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/pages/student/user-profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/student/user-profile.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -21,14 +28,20 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="spring-beans.schema" />
+        <option value="CSS File" />
         <option value="Interface" />
         <option value="Class" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="SYNC" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
@@ -40,53 +53,55 @@
     <option name="showLibraryContents" value="true" />
     <option name="showMembers" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Maven.backend [clean].executor": "Run",
-    "Maven.backend [compile].executor": "Run",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "708",
-    "RequestMappingsPanelWidth1": "707",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Spring Boot.BackendApplication.executor": "Run",
-    "com.codeium.enabled": "true",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Lenovo/IdeaProjects/LMS - LearningLab/backend/src/main/java/lk/ijse/entity",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.43333334",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Maven.backend [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.backend [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.backend [validate].executor&quot;: &quot;Run&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Spring Boot.BackendApplication.executor&quot;: &quot;Run&quot;,
+    &quot;com.codeium.enabled&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Lenovo/IdeaProjects/LMS - LearningLab/frontend/assets/images/icons&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.43333334&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.codeium.AppSettingsConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\images\icons" />
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\backend\src\main\java\lk\ijse\config" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\backend\src\main\java\lk\ijse\entity" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\backend\src\main\java\lk\ijse" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\pages\student" />
-      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend" />
-      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\js" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\backend\src\main\resources\static\uploads" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\css\common" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\pages\common" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\pages\student" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\js\common" />
-      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\pages" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="lk.ijse.service" />
@@ -130,79 +145,25 @@
       <workItem from="1742127725290" duration="18574000" />
       <workItem from="1742286492918" duration="21128000" />
       <workItem from="1742359892107" duration="13530000" />
-      <workItem from="1742397250143" duration="15641000" />
-    </task>
-    <task id="LOCAL-00001" summary="update project directories, modules">
-      <option name="closed" value="true" />
-      <created>1742017152261</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1742017152261</updated>
-    </task>
-    <task id="LOCAL-00002" summary="update project directories, modules">
-      <option name="closed" value="true" />
-      <created>1742017302266</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1742017302266</updated>
-    </task>
-    <task id="LOCAL-00003" summary="update project directories, modules">
-      <option name="closed" value="true" />
-      <created>1742017440537</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1742017440537</updated>
-    </task>
-    <task id="LOCAL-00004" summary="update project directories, modules">
-      <option name="closed" value="true" />
-      <created>1742017530516</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1742017530516</updated>
-    </task>
-    <task id="LOCAL-00005" summary="configure application.properties file">
-      <option name="closed" value="true" />
-      <created>1742142547416</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1742142547416</updated>
-    </task>
-    <task id="LOCAL-00006" summary="otp send via email to register and pw reset.">
-      <option name="closed" value="true" />
-      <created>1742142807297</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1742142807297</updated>
-    </task>
-    <task id="LOCAL-00007" summary="update the pom.xml file with required dependencies">
-      <option name="closed" value="true" />
-      <created>1742142873618</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1742142873618</updated>
-    </task>
-    <task id="LOCAL-00008" summary=".idea directory changes">
-      <option name="closed" value="true" />
-      <created>1742142966624</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1742142966624</updated>
-    </task>
-    <task id="LOCAL-00009" summary=".idea directory changes">
-      <option name="closed" value="true" />
-      <created>1742143395379</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1742143395381</updated>
+      <workItem from="1742397250143" duration="16366000" />
+      <workItem from="1742451750990" duration="20491000" />
+      <workItem from="1742480385466" duration="14444000" />
+      <workItem from="1742526203985" duration="1381000" />
+      <workItem from="1742528480366" duration="7412000" />
+      <workItem from="1742565027816" duration="18701000" />
+      <workItem from="1742615455884" duration="7631000" />
+      <workItem from="1742623615910" duration="12417000" />
+      <workItem from="1742648305667" duration="18843000" />
+      <workItem from="1742706276159" duration="679000" />
+      <workItem from="1742731870403" duration="11928000" />
+      <workItem from="1742747250683" duration="9843000" />
+      <workItem from="1742792378906" duration="306000" />
+      <workItem from="1742793634465" duration="39590000" />
+      <workItem from="1742872468641" duration="17394000" />
+      <workItem from="1742891349186" duration="1608000" />
+      <workItem from="1742911537947" duration="18101000" />
+      <workItem from="1742960192330" duration="16333000" />
+      <workItem from="1742995607481" duration="19435000" />
     </task>
     <task id="LOCAL-00010" summary="database for LearningLab">
       <option name="closed" value="true" />
@@ -380,7 +341,223 @@
       <option name="project" value="LOCAL" />
       <updated>1742413015905</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="connect with backend and add modify &amp; retrieve profile details feature">
+      <option name="closed" value="true" />
+      <created>1742416864563</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1742416864563</updated>
+    </task>
+    <task id="LOCAL-00033" summary=".idea changes">
+      <option name="closed" value="true" />
+      <created>1742416875240</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1742416875240</updated>
+    </task>
+    <task id="LOCAL-00034" summary="update password toggle logic from both auth &amp; profile pages">
+      <option name="closed" value="true" />
+      <created>1742479175040</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1742479175040</updated>
+    </task>
+    <task id="LOCAL-00035" summary=" simplify endpoints to improve readability and maintainability">
+      <option name="closed" value="true" />
+      <created>1742479326832</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1742479326832</updated>
+    </task>
+    <task id="LOCAL-00036" summary="update password toggle logic from both auth &amp; profile pages">
+      <option name="closed" value="true" />
+      <created>1742479521025</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1742479521025</updated>
+    </task>
+    <task id="LOCAL-00037" summary="update password toggle logic from both auth &amp; profile pages">
+      <option name="closed" value="true" />
+      <created>1742480105773</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1742480105773</updated>
+    </task>
+    <task id="LOCAL-00038" summary="fix profile picture issues and some other pages issues">
+      <option name="closed" value="true" />
+      <created>1742483886097</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1742483886097</updated>
+    </task>
+    <task id="LOCAL-00039" summary="fix profile picture issues and some other pages issues">
+      <option name="closed" value="true" />
+      <created>1742487859513</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1742487859513</updated>
+    </task>
+    <task id="LOCAL-00040" summary="google oAuth2 function implemented.">
+      <option name="closed" value="true" />
+      <created>1742497807723</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1742497807723</updated>
+    </task>
+    <task id="LOCAL-00041" summary="google oAuth2 function implemented.">
+      <option name="closed" value="true" />
+      <created>1742497832243</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1742497832243</updated>
+    </task>
+    <task id="LOCAL-00042" summary="google oAuth2 function implemented.">
+      <option name="closed" value="true" />
+      <created>1742576175930</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1742576175930</updated>
+    </task>
+    <task id="LOCAL-00043" summary="implement log function to manage every log in date wise.">
+      <option name="closed" value="true" />
+      <created>1742576292515</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1742576292515</updated>
+    </task>
+    <task id="LOCAL-00044" summary="remove unwanted codes">
+      <option name="closed" value="true" />
+      <created>1742622875072</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1742622875072</updated>
+    </task>
+    <task id="LOCAL-00045" summary="implement skill function to manage user skills for each user">
+      <option name="closed" value="true" />
+      <created>1742623048742</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1742623048742</updated>
+    </task>
+    <task id="LOCAL-00046" summary="remove unwanted codes">
+      <option name="closed" value="true" />
+      <created>1742623087634</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1742623087634</updated>
+    </task>
+    <task id="LOCAL-00047" summary="fix skill managing part to duplicate skills entry">
+      <option name="closed" value="true" />
+      <created>1742634411040</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1742634411041</updated>
+    </task>
+    <task id="LOCAL-00048" summary="implement skill hint suggestions to improve UX">
+      <option name="closed" value="true" />
+      <created>1742641070032</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1742641070032</updated>
+    </task>
+    <task id="LOCAL-00049" summary="implement password update option for login users">
+      <option name="closed" value="true" />
+      <created>1742666327534</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1742666327534</updated>
+    </task>
+    <task id="LOCAL-00050" summary="implement email update option for login users">
+      <option name="closed" value="true" />
+      <created>1742673286484</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1742673286487</updated>
+    </task>
+    <task id="LOCAL-00051" summary="implement 2FA to get enhanced security to the user profile">
+      <option name="closed" value="true" />
+      <created>1742747899738</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1742747899738</updated>
+    </task>
+    <task id="LOCAL-00052" summary="implement 2FA to get enhanced security to the user profile">
+      <option name="closed" value="true" />
+      <created>1742754159720</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1742754159720</updated>
+    </task>
+    <task id="LOCAL-00053" summary="implement logout function with token removing, to improve the system security">
+      <option name="closed" value="true" />
+      <created>1742756520221</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1742756520222</updated>
+    </task>
+    <task id="LOCAL-00054" summary="implement instructor request function to send request and other code fixes to better stability">
+      <option name="closed" value="true" />
+      <created>1742838915121</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1742838915122</updated>
+    </task>
+    <task id="LOCAL-00055" summary="implement admin auth functions to get different authorization access">
+      <option name="closed" value="true" />
+      <created>1742917516066</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1742917516068</updated>
+    </task>
+    <task id="LOCAL-00056" summary="Implement profile picture save into cloud hosting service. Also manage read and write data from it.">
+      <option name="closed" value="true" />
+      <created>1742917645069</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1742917645069</updated>
+    </task>
+    <task id="LOCAL-00057" summary="fix some issues for system better stable">
+      <option name="closed" value="true" />
+      <created>1742926207924</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1742926207924</updated>
+    </task>
+    <task id="LOCAL-00058" summary="fix some issues for system better stable">
+      <option name="closed" value="true" />
+      <created>1743001266671</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1743001266672</updated>
+    </task>
+    <option name="localTasksCounter" value="59" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -398,15 +575,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="update project directories, modules" />
-    <MESSAGE value="database for LearningLab" />
-    <MESSAGE value="update the pom.xml file with required dependencies" />
-    <MESSAGE value="configure application.properties file" />
-    <MESSAGE value="messages.html sidebar navigation path change" />
-    <MESSAGE value=".idea directory changes" />
-    <MESSAGE value="otp send via email to register and pw reset." />
-    <MESSAGE value="implemented JWT into the project" />
-    <MESSAGE value="fix an incorrect path" />
     <MESSAGE value="remove an unwanted file" />
     <MESSAGE value="implement password reset password with JWT function" />
     <MESSAGE value="implement authentication functions with JWT." />
@@ -415,6 +583,27 @@
     <MESSAGE value="convert normal JS into jQuery and some fixes in other files" />
     <MESSAGE value="connect with backend and add modify &amp; retrieve profile details feature" />
     <MESSAGE value=".idea changes" />
-    <option name="LAST_COMMIT_MESSAGE" value=".idea changes" />
+    <MESSAGE value=" simplify endpoints to improve readability and maintainability" />
+    <MESSAGE value="update password toggle logic from both auth &amp; profile pages" />
+    <MESSAGE value="fix profile picture issues and some other pages issues" />
+    <MESSAGE value="google oAuth2 function implemented." />
+    <MESSAGE value="implement log function to manage every log in date wise." />
+    <MESSAGE value="implement skill function to manage user skills for each user" />
+    <MESSAGE value="remove unwanted codes" />
+    <MESSAGE value="fix skill managing part to duplicate skills entry" />
+    <MESSAGE value="implement skill hint suggestions to improve UX" />
+    <MESSAGE value="implement password update option for login users" />
+    <MESSAGE value="implement email update option for login users" />
+    <MESSAGE value="implement 2FA to get enhanced security to the user profile" />
+    <MESSAGE value="implement logout function with token removing, to improve the system security" />
+    <MESSAGE value="implement instructor request function to send request and other code fixes to better stability" />
+    <MESSAGE value="implement admin auth functions to get different authorization access" />
+    <MESSAGE value="Implement profile picture save into cloud hosting service. Also manage read and write data from it." />
+    <MESSAGE value="fix some issues for system better stable" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix some issues for system better stable" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>
