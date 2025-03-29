@@ -2,8 +2,6 @@ package lk.ijse.config;
 
 import lk.ijse.service.UserService;
 //import lk.ijse.service.impl.CustomOAuth2UserService;
-import lk.ijse.service.impl.UserServiceImpl;
-import lk.ijse.util.JwtFilter;
 import lk.ijse.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,12 +16,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -31,8 +23,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -90,7 +81,7 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Add CORS configuration
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/api/v1/auth/**").permitAll()     // Permit all auth requests
+                        .requestMatchers("/api/v1/auth/**").permitAll()     // Permit all auth requests
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/send-otp",
                                 "/api/v1/auth/verify-otp",
                                 "/api/v1/auth/authenticate",
@@ -100,8 +91,8 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/user/instructor/request").authenticated()
                         .requestMatchers("/api/v1/user/current").authenticated()
                         .requestMatchers("/api/v1/user/delete/account").permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS, "/api/v1/user/**").authenticated()
-                        .requestMatchers(HttpMethod.OPTIONS, "/api/v1/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/v1/user/**").authenticated()
+                        .requestMatchers("/api/v1/admin/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
 //                .oauth2Login(oauth2 -> oauth2
@@ -135,7 +126,7 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://127.0.0.1:5500", "http://localhost:63342", "*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "*"));
         configuration.setAllowCredentials(false);
@@ -143,4 +134,20 @@ public class WebSecurityConfig {
         source.registerCorsConfiguration("/api/v1/**", configuration);
         return source;
     }
+
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.setAllowedOrigins(List.of("http://localhost:63342", "http://localhost:8080" , "http://localhost:5500" ,  "http://127.0.0.1:5500"
+//                // WebStorm/IntelliJ preview
+//        )); // Exact origin, no wildcard
+//        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+//        configuration.setAllowedHeaders(List.of("*")); // Allow all headers
+//        configuration.setAllowCredentials(true); // Allow credentials (cookies, authorization headers, etc.)
+//        configuration.setExposedHeaders(List.of("Authorization" , "Content-Type")); // Expose Authorization header if needed
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/", configuration); // Apply to all paths
+//        return source;
+//    }
 }

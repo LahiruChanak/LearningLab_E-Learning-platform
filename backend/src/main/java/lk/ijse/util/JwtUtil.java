@@ -25,9 +25,6 @@ public class JwtUtil implements Serializable {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    @Serial
-    private static final long serialVersionUID = 234234523523L;
-
     private static final long JWT_TOKEN_VALIDITY = 24 * 60 * 60; // 24 hours
     private static final String HMAC_SHA256 = "HmacSHA256";
 

@@ -321,7 +321,8 @@ public class UserController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseDTO> submitInstructorRequest(
             @AuthenticationPrincipal UserDetails userDetails,
-            @ModelAttribute InstructorRequestDTO requestDTO) {
+            @ModelAttribute InstructorRequestDTO requestDTO,
+            @RequestParam("certificates") MultipartFile[] certificates) {
 
         if (userDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -331,31 +332,31 @@ public class UserController {
         String email = userDetails.getUsername();
 
         try {
-            // Validate and upload certificates to Cloudinary
-            MultipartFile[] certificates = requestDTO.getCertificates();
+            // Handle certificate uploads
             List<String> certificateUrls = new ArrayList<>();
             if (certificates != null && certificates.length > 0) {
                 for (MultipartFile certificate : certificates) {
-                    if (certificate.getSize() > MAX_FILE_SIZE) {
-                        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .body(new ResponseDTO(400, "Certificate file size must be less than 5MB", null));
-                    }
-                    if (!isValidFileType(certificate.getContentType())) {
-                        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .body(new ResponseDTO(400, "Only JPG, PNG, GIF, and PDF are supported", null));
-                    }
+                    if (!certificate.isEmpty()) {
+                        if (certificate.getSize() > MAX_FILE_SIZE) {
+                            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                    .body(new ResponseDTO(400, "Certificate file size must be less than 5MB", null));
+                        }
+                        if (!isValidFileType(certificate.getContentType())) {
+                            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                    .body(new ResponseDTO(400, "Only JPG, PNG, GIF, and PDF are supported", null));
+                        }
 
-                    Map uploadResult = cloudinary.uploader().upload(certificate.getBytes(), ObjectUtils.asMap(
-                            "public_id", "instructor_certificates/" + email + "_" + System.currentTimeMillis() + "_" + certificate.getOriginalFilename(),
-                            "overwrite", true,
-                            "resource_type", "auto"
-                    ));
-                    certificateUrls.add((String) uploadResult.get("secure_url"));
+                        Map uploadResult = cloudinary.uploader().upload(certificate.getBytes(), ObjectUtils.asMap(
+                                "public_id", "instructor_certificates/" + email + "_" + System.currentTimeMillis() + "_" + certificate.getOriginalFilename(),
+                                "overwrite", true,
+                                "resource_type", "auto"
+                        ));
+                        certificateUrls.add((String) uploadResult.get("secure_url"));
+                    }
                 }
             }
 
             requestDTO.setCertificateUrls(certificateUrls);
-
             UserDTO userDTO = userService.submitInstructorRequest(userDetails, requestDTO);
             return ResponseEntity.ok(new ResponseDTO(200, "Request submitted successfully", userDTO));
         } catch (IOException e) {

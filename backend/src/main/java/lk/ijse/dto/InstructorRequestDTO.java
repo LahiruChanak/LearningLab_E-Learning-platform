@@ -11,10 +11,13 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class InstructorRequestDTO {
+    private Long id;
     private String message;
     private String qualifications;
-    private MultipartFile[] certificates; // For file uploads from frontend
+//    private MultipartFile[] certificates; // For file uploads from frontend
     private List<String> certificateUrls; // Set by controller after upload
     private String experience;
     private String additionalDetails;
+    private String requestStatus;
+    private String userEmail;
 }
