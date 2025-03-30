@@ -20,16 +20,16 @@ public class Category {
     @Column(name = "name", nullable = false, unique = true, length = 100)
     private String name;
 
-    @Column(name = "description", columnDefinition = "TEXT")
-    private String description;
+//    @Column(name = "description", columnDefinition = "TEXT")
+//    private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_category_id")
-    private Category parentCategory;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "parent_category_id")
+//    private Category parentCategory;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Course> courses;
 
-    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Category> subCategories;
+//    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private List<Category> subCategories;
 }
