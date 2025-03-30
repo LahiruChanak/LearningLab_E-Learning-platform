@@ -2,8 +2,6 @@ package lk.ijse.controller;
 
 import lk.ijse.dto.CategoryDTO;
 import lk.ijse.dto.ResponseDTO;
-import lk.ijse.entity.Category;
-import lk.ijse.repository.CategoryRepo;
 import lk.ijse.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
