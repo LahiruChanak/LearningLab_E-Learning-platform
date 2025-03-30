@@ -47,8 +47,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private InstructorRequestRepo instructorRequestRepo;
+
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -224,26 +223,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = userRepo.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return user.isTwoFactorEnabled();
-    }
-
-    @Override
-    public UserDTO submitInstructorRequest(UserDetails userDetails, InstructorRequestDTO requestDTO) {
-        User user = userRepo.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + userDetails.getUsername()));
-
-        InstructorRequest request = new InstructorRequest();
-        request.setUser(user);
-        request.setMessage(requestDTO.getMessage());
-        request.setQualifications(requestDTO.getQualifications());
-        request.setExperience(requestDTO.getExperience());
-        request.setAdditionalDetails(requestDTO.getAdditionalDetails());
-        request.setRequestStatus(InstructorRequest.RequestStatus.PENDING);
-        request.setRequestCreatedAt(LocalDateTime.now());
-        request.setCertificates(requestDTO.getCertificateUrls() != null ? requestDTO.getCertificateUrls() : Collections.emptyList());
-
-        instructorRequestRepo.save(request);
-
-        return modelMapper.map(user, UserDTO.class);
     }
 
     @Override

@@ -5,7 +5,9 @@ import com.cloudinary.utils.ObjectUtils;
 import lk.ijse.dto.InstructorRequestDTO;
 import lk.ijse.dto.ResponseDTO;
 import lk.ijse.dto.UserDTO;
+import lk.ijse.entity.InstructorRequest;
 import lk.ijse.entity.User;
+import lk.ijse.repository.InstructorRequestRepo;
 import lk.ijse.service.UserService;
 import lk.ijse.util.VarList;
 import org.modelmapper.ModelMapper;
@@ -40,8 +42,7 @@ public class UserController {
     private Cloudinary cloudinary;
 
     private static final String[] ALLOWED_IMG_TYPES = {"image/jpeg", "image/png", "image/jpg", "image/gif"};
-    private static final String[] ALLOWED_FILE_TYPES = {"image/jpeg", "image/png", "image/gif", "application/pdf"};
-    private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+    private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
     @PostMapping(value = "/profile/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDTO> uploadProfileImage(
@@ -315,61 +316,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ResponseDTO(400, e.getMessage(), null));
         }
-    }
-
-    @PostMapping(value = "/instructor/request", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ResponseDTO> submitInstructorRequest(
-            @AuthenticationPrincipal UserDetails userDetails,
-            @ModelAttribute InstructorRequestDTO requestDTO,
-            @RequestParam("certificates") MultipartFile[] certificates) {
-
-        if (userDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new ResponseDTO(401, "Unauthorized", null));
-        }
-
-        String email = userDetails.getUsername();
-
-        try {
-            // Handle certificate uploads
-            List<String> certificateUrls = new ArrayList<>();
-            if (certificates != null && certificates.length > 0) {
-                for (MultipartFile certificate : certificates) {
-                    if (!certificate.isEmpty()) {
-                        if (certificate.getSize() > MAX_FILE_SIZE) {
-                            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                    .body(new ResponseDTO(400, "Certificate file size must be less than 5MB", null));
-                        }
-                        if (!isValidFileType(certificate.getContentType())) {
-                            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                    .body(new ResponseDTO(400, "Only JPG, PNG, GIF, and PDF are supported", null));
-                        }
-
-                        Map uploadResult = cloudinary.uploader().upload(certificate.getBytes(), ObjectUtils.asMap(
-                                "public_id", "instructor_certificates/" + email + "_" + System.currentTimeMillis() + "_" + certificate.getOriginalFilename(),
-                                "overwrite", true,
-                                "resource_type", "auto"
-                        ));
-                        certificateUrls.add((String) uploadResult.get("secure_url"));
-                    }
-                }
-            }
-
-            requestDTO.setCertificateUrls(certificateUrls);
-            UserDTO userDTO = userService.submitInstructorRequest(userDetails, requestDTO);
-            return ResponseEntity.ok(new ResponseDTO(200, "Request submitted successfully", userDTO));
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDTO(500, "Error uploading certificates: " + e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDTO(500, "Failed to submit request: " + e.getMessage(), null));
-        }
-    }
-
-    private boolean isValidFileType(String contentType) {
-        return contentType != null && Arrays.asList(ALLOWED_FILE_TYPES).contains(contentType.toLowerCase());
     }
 
     @GetMapping("/current")

@@ -101,6 +101,8 @@ $(document).ready(function () {
                     setTimeout(() => {
                         if (response.data.role === "ADMIN") {
                             window.location.href = "./pages/admin-dashboard.html";
+                        } else if (response.data.role === "INSTRUCTOR") {
+                            window.location.href = "./pages/instructor-dashboard.html";
                         } else {
                             window.location.href = "./pages/student-dashboard.html";
                         }

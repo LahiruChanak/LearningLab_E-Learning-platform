@@ -37,8 +37,6 @@ public interface UserService {
 
     boolean is2FAEnabled(String email);
 
-    UserDTO submitInstructorRequest(UserDetails userDetails, InstructorRequestDTO requestDTO);
-
     User loadUserByUsernameEntity(String email);
 
     User getCurrentUser(String email);

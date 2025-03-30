@@ -13,7 +13,7 @@ $(document).ready(function () {
     showAlert("danger", "Unauthorized access! Redirecting to login page...");
 
     setTimeout(() => {
-      window.location.href = "../../index.html";
+      window.location.href = "../index.html";
     }, 2000);
   }
 

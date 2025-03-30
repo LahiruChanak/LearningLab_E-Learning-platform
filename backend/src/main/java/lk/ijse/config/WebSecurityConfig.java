@@ -88,7 +88,7 @@ public class WebSecurityConfig {
                                 "/api/v1/auth/reset-password",
                                 "/api/v1/auth/reset-pw-otp",
                                 "/api/v1/auth/2fa/verify").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/user/instructor/request").authenticated()
+                        .requestMatchers("/api/v1/user/instructor/request").authenticated()
                         .requestMatchers("/api/v1/user/current").authenticated()
                         .requestMatchers("/api/v1/user/delete/account").permitAll()
                         .requestMatchers("/api/v1/user/**").authenticated()
@@ -126,7 +126,7 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://127.0.0.1:5500", "http://localhost:63342", "*"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://127.0.0.1:5500", "http://localhost:63342"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "*"));
         configuration.setAllowCredentials(false);
@@ -135,19 +135,4 @@ public class WebSecurityConfig {
         return source;
     }
 
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(List.of("http://localhost:63342", "http://localhost:8080" , "http://localhost:5500" ,  "http://127.0.0.1:5500"
-//                // WebStorm/IntelliJ preview
-//        )); // Exact origin, no wildcard
-//        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-//        configuration.setAllowedHeaders(List.of("*")); // Allow all headers
-//        configuration.setAllowCredentials(true); // Allow credentials (cookies, authorization headers, etc.)
-//        configuration.setExposedHeaders(List.of("Authorization" , "Content-Type")); // Expose Authorization header if needed
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/", configuration); // Apply to all paths
-//        return source;
-//    }
 }

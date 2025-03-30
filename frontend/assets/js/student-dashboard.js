@@ -58,8 +58,8 @@ $(document).ready(function () {
           const userData = response.data;
 
           // Update UI with user data
-          $("#fullName").val(userData.fullName);
-          $("#email").val(userData.email);
+          $("#fullName").val(userData.fullName || "");
+          $("#email").val(userData.email || "");
         } else {
           showAlert("danger", "Failed to load user data: " + response.message);
         }
@@ -82,6 +82,23 @@ $(document).ready(function () {
     }
   });
 
+  // Handle Edit Icon Click
+  $("#editRequestBtn").on("click", function () {
+    $("#instructorRequestForm input:not(#fullName, #email), #instructorRequestForm textarea").prop("disabled", false);
+    $("#submitRequestBtn").prop("disabled", false).show();
+    $(this).hide();
+    $("#cancelRequestBtn").show();
+  });
+
+  // Handle Cancel Icon Click
+  $("#cancelRequestBtn").on("click", function () {
+    $("#instructorRequestForm input:not(#fullName, #email), #instructorRequestForm textarea").prop("disabled", true);
+    $("#submitRequestBtn").prop("disabled", true).hide();
+    $(this).hide();
+    $("#editRequestBtn").show();
+    fetchUserRequest();
+  });
+
   // Handle Instructor Request Submission
   $("#submitRequestBtn").on("click", function (e) {
     e.preventDefault();
@@ -95,7 +112,10 @@ $(document).ready(function () {
 
     const $button = $(this);
     $button.prop("disabled", true);
+    $(".loader").show();
 
+    const fullName = $("#fullName").val().trim();
+    const email = $("#email").val().trim();
     const message = $("#message").val().trim();
     const qualifications = $("#qualifications").val().trim();
     const certificates = $("#certificates")[0].files;
@@ -105,6 +125,7 @@ $(document).ready(function () {
     if (!message || !qualifications || !experience) {
       showAlert("danger", "Please fill in all the required fields.");
       $button.prop("disabled", false);
+      $(".loader").hide();
       return;
     }
 
@@ -113,11 +134,21 @@ $(document).ready(function () {
     formData.append("qualifications", qualifications);
     formData.append("experience", experience);
     formData.append("additionalDetails", additionalDetails || "");
+
+    // Append existing certificates (if any) to preserve them
+    const existingCertificates = [];
+    $(".certificate-item").each(function () {
+      existingCertificates.push($(this).data("url"));
+    });
+
+    if (existingCertificates.length > 0) {
+      formData.append("existingCertificates", JSON.stringify(existingCertificates));
+    }
+
+    // Append new certificates
     Array.from(certificates).forEach(file => {
       formData.append("certificates", file);
     });
-
-    $(".loader").show();
 
     $.ajax({
       url: "http://localhost:8080/api/v1/user/instructor/request",
@@ -129,17 +160,26 @@ $(document).ready(function () {
       success: function (response) {
         $button.prop("disabled", false);
         if (response.status === 200) {
-          showAlert("success", `Request submitted successfully by ${response.data.fullName} (${response.data.email})`);
+          const action = response.message.includes("updated") ? "updated" : "submitted";
+          showAlert("success", `Request ${action} successfully by ${fullName} (${email})`);
           $("#instructorRequestModal").modal("hide");
           $("#instructorRequestForm")[0].reset();
           $("#certificatesPreview").empty();
+          fetchUserRequest();
+        } else if (response.status === 400) {
+          showAlert("warning", response.message);
+          fetchUserRequest();
         } else {
-          showAlert("danger", response.message || "Failed to submit request.");
+          showAlert("danger", response.message || "Failed to process request.");
         }
+
+        setTimeout(() => {
+          window.location.reload();
+        },1500);
       },
       error: function (xhr) {
         $button.prop("disabled", false);
-        showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error submitting request.");
+        showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error processing request.");
       },
       complete: function () {
         $(".loader").hide();
@@ -147,5 +187,79 @@ $(document).ready(function () {
     });
   });
 
+  // Fetch and display user's request
+  function fetchUserRequest() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      showAlert("danger", "Please login to view your request.");
+      return;
+    }
+
+    $.ajax({
+      url: "http://localhost:8080/api/v1/user/instructor/request",
+      type: "GET",
+      headers: { "Authorization": "Bearer " + token },
+      success: function (response) {
+        if (response.status === 200) {
+          populateRequestForm(response.data);
+        } else if (response.status === 404) {
+          $("#requestDetails").html("<p>No request submitted yet.</p>");
+        } else {
+          showAlert("danger", "Failed to load your request: " + response.message);
+        }
+      },
+      error: function (xhr) {
+        showAlert("danger", "Error fetching your request: " + (xhr.responseJSON?.message || xhr.statusText));
+      }
+    });
+  }
+
+  // Populate the form with existing request data
+  function populateRequestForm(request) {
+    $("#message").val(request.message || "");
+    $("#qualifications").val(request.qualifications || "");
+    $("#experience").val(request.experience || "");
+    $("#additionalDetails").val(request.additionalDetails || "");
+
+    // Display certificates in preview
+    $("#certificatesPreview").empty();
+    if (request.certificates && Array.isArray(request.certificates)) {
+      request.certificates.forEach((url, index) => {
+        $("#certificatesPreview").append(
+            `<a href="#" class="certificate-link" data-bs-toggle="modal" data-bs-target="#certificateModal" data-url="${url}">Certificate ${index + 1}</a> `
+        );
+      });
+    }
+
+    // Disable form fields and submit button if request exists
+    $("#instructorRequestForm input, #instructorRequestForm textarea").prop("disabled", true);
+    $("#submitRequestBtn").prop("disabled", true).show();
+
+    // Add status and timestamps below the form
+    $("#formStatus").remove();
+    $("#formTimestamps").remove();
+    $("#instructorRequestForm").after(`
+      <div id="formStatus">
+        <strong>Status:</strong> ${request.requestStatus}
+      </div>
+      <div id="formTimestamps">
+        <strong>Created At:</strong> ${request.requestCreatedAt ? new Date(request.requestCreatedAt).toLocaleString('en-CA', { hour12: false }).replace(',', '') : 'N/A'} <br>
+        <strong>Last Updated At:</strong> ${request.requestUpdatedAt ? new Date(request.requestUpdatedAt).toLocaleString('en-CA', { hour12: false }).replace(',', '') : 'N/A'}
+      </div>
+    `);
+
+    // Handle certificate preview
+    $(".certificate-link").on("click", function (e) {
+      e.preventDefault();
+      const certificateUrl = $(this).data("url");
+      $("#certificatePreview").attr("src", certificateUrl);
+    });
+  }
+
+  $("#certificateModal .btn-close").on("click", function () {
+    $("#instructorRequestModal").modal("show");
+  })
+
+  fetchUserRequest();
   fetchUserData();
 });
