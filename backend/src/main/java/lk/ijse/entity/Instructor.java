@@ -23,7 +23,7 @@ public class Instructor {
     private User user;
 
     @Column(name = "availability", length = 255)
-    private String availability;
+    private String availability;    // 2025 January 15 - 12:00 AM
 
     @Column(name = "years_of_experience")
     private Integer yearsOfExperience;

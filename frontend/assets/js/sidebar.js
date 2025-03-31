@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
     // handle logout function
-    $(".logout").on("click", function (e) {
+    $(".logout").on("click", function () {
         console.log("Logout button clicked");
         localStorage.clear();
         localStorage.setItem("role", "STUDENT");

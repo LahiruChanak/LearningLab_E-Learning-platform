@@ -190,15 +190,15 @@ $(document).ready(function () {
       '<span class="spinner-border spinner-border-sm me-2"></span>Enrolling...'
     );
 
-    // setTimeout(function () {
-    //   $btn.html(
-    //     'Enrolled <i class="hgi-stroke hgi-tick-01 text-white fs-5 align-middle"></i>'
-    //   );
-    //   $btn.removeClass("btn-primary").addClass("btn-success");
-    //   initializeLessons();
-    //   updateSectionProgress();
-    //   unlockThirdChapter();
-    // }, 1500);
+    setTimeout(function () {
+      $btn.html(
+        'Enrolled <i class="hgi-stroke hgi-tick-01 text-white fs-5 align-middle"></i>'
+      );
+      $btn.removeClass("btn-primary").addClass("btn-success");
+      initializeLessons();
+      updateSectionProgress();
+      unlockThirdChapter();
+    }, 1500);
   });
 
   // Handle share button

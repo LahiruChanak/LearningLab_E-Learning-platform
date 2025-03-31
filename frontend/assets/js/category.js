@@ -4,12 +4,11 @@ $(document).ready(function () {
 
     // Open modal for adding a new category
     $("#addCategoryBtn").on("click", function () {
-        $("#categoryModalLabel").text("Add Category");
-        $("#categoryForm")[0].reset();
-        $("#categoryId").val(""); // Clear ID for new category
+        $("#categoryAddForm")[0].reset(); // Reset the add form
+        $("#addCategoryModal").modal("show");
     });
 
-    // Handle save category
+    // Handle save category (Add)
     $("#saveCategoryBtn").on("click", function () {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -20,8 +19,7 @@ $(document).ready(function () {
         const $button = $(this);
         $button.prop("disabled", true);
 
-        const categoryId = $("#categoryId").val();
-        const name = $("#categoryName").val().trim();
+        const name = $("#categoryNameInput").val().trim();
 
         if (!name) {
             showAlert("danger", "Category name is required.");
@@ -29,20 +27,17 @@ $(document).ready(function () {
             return;
         }
 
-        const url = categoryId ? `http://localhost:8080/api/v1/admin/category/${categoryId}` : "http://localhost:8080/api/v1/admin/category";
-        const method = categoryId ? "PUT" : "POST";
-
         $.ajax({
-            url: url,
-            type: method,
+            url: "http://localhost:8080/api/v1/admin/category",
+            type: "POST",
             headers: { "Authorization": "Bearer " + token },
             contentType: "application/json",
             data: JSON.stringify({ name: name }),
             success: function (response) {
                 $button.prop("disabled", false);
                 if (response.status === 200) {
-                    showAlert("success", `Category ${categoryId ? "updated" : "added"} successfully!`);
-                    $("#categoryModal").modal("hide");
+                    showAlert("success", "Category added successfully!");
+                    $("#addCategoryModal").modal("hide");
                     fetchCategories();
                 } else {
                     showAlert("danger", response.message || "Failed to save category.");
@@ -51,6 +46,49 @@ $(document).ready(function () {
             error: function (xhr) {
                 $button.prop("disabled", false);
                 showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error saving category.");
+            }
+        });
+    });
+
+    // Handle update category
+    $("#updateCategoryBtn").on("click", function () {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            showAlert("danger", "Please login as an admin to manage categories.");
+            return;
+        }
+
+        const $button = $(this);
+        $button.prop("disabled", true);
+
+        const categoryId = $("#updateCategoryIdInput").val();
+        const name = $("#updateCategoryNameInput").val().trim();
+
+        if (!name) {
+            showAlert("danger", "Category name is required.");
+            $button.prop("disabled", false);
+            return;
+        }
+
+        $.ajax({
+            url: `http://localhost:8080/api/v1/admin/category/${categoryId}`,
+            type: "PUT",
+            headers: { "Authorization": "Bearer " + token },
+            contentType: "application/json",
+            data: JSON.stringify({ name: name }),
+            success: function (response) {
+                $button.prop("disabled", false);
+                if (response.status === 200) {
+                    showAlert("success", "Category updated successfully!");
+                    $("#updateCategoryModal").modal("hide");
+                    fetchCategories();
+                } else {
+                    showAlert("danger", response.message || "Failed to update category.");
+                }
+            },
+            error: function (xhr) {
+                $button.prop("disabled", false);
+                showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error updating category.");
             }
         });
     });
@@ -64,7 +102,7 @@ $(document).ready(function () {
             headers: { "Authorization": "Bearer " + token },
             success: function (response) {
                 if (response.status === 200) {
-                    const $tbody = $("#categoryTableBody");
+                    const $tbody = $("#categoryList");
                     $tbody.empty();
                     response.data.forEach(category => {
                         $tbody.append(`
@@ -90,38 +128,45 @@ $(document).ready(function () {
         });
     }
 
-    // Edit category
+    // Edit category - Open update modal
     $(document).on("click", ".edit-category", function () {
         const id = $(this).data("id");
         const name = $(this).data("name");
-        $("#categoryModalLabel").text("Edit Category");
-        $("#categoryId").val(id);
-        $("#categoryName").val(name);
-        $("#categoryModal").modal("show");
+        $("#updateCategoryIdInput").val(id);
+        $("#updateCategoryNameInput").val(name);
+        $("#updateCategoryModal").modal("show");
     });
 
-    // Delete category
+    // Delete category - Open delete modal
     $(document).on("click", ".delete-category", function () {
+        const id = $(this).data("id");
+        const name = $(this).closest("tr").find("td:eq(1)").text(); // Get name from table
+        $("#deleteCategoryName").text(name);
+        $("#confirmDeleteCategoryBtn").data("id", id);
+        $("#deleteCategoryModal").modal("show");
+    });
+
+    // Confirm delete category
+    $("#confirmDeleteCategoryBtn").on("click", function () {
         const token = localStorage.getItem("token");
         const id = $(this).data("id");
 
-        if (confirm("Are you sure you want to delete this category?")) {
-            $.ajax({
-                url: `http://localhost:8080/api/v1/admin/category/${id}`,
-                type: "DELETE",
-                headers: { "Authorization": "Bearer " + token },
-                success: function (response) {
-                    if (response.status === 200) {
-                        showAlert("success", "Category deleted successfully!");
-                        fetchCategories();
-                    } else {
-                        showAlert("danger", response.message || "Failed to delete category.");
-                    }
-                },
-                error: function (xhr) {
-                    showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error deleting category.");
+        $.ajax({
+            url: `http://localhost:8080/api/v1/admin/category/${id}`,
+            type: "DELETE",
+            headers: { "Authorization": "Bearer " + token },
+            success: function (response) {
+                if (response.status === 200) {
+                    showAlert("success", "Category deleted successfully!");
+                    $("#deleteCategoryModal").modal("hide");
+                    fetchCategories();
+                } else {
+                    showAlert("danger", response.message || "Failed to delete category.");
                 }
-            });
-        }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error deleting category.");
+            }
+        });
     });
 });
