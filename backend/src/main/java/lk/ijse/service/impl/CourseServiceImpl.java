@@ -131,4 +131,12 @@ public class CourseServiceImpl implements CourseService {
 
         courseRepo.delete(course);
     }
+
+    @Override
+    public List<CourseDTO> getFilteredCourses(String instructorEmail, Long categoryId, String level, Boolean isPublished, String title) {
+        List<Course> courses = courseRepo.findCoursesByFilters(instructorEmail, categoryId, level, isPublished, title);
+        return courses.stream()
+                .map(course -> modelMapper.map(course, CourseDTO.class))
+                .collect(Collectors.toList());
+    }
 }

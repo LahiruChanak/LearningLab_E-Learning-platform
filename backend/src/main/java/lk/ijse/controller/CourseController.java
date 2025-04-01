@@ -105,4 +105,23 @@ public class CourseController {
                     .body(new ResponseDTO(500, "Error deleting course: " + e.getMessage(), null));
         }
     }
+
+    @GetMapping("/instructor/course/filter")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    public ResponseEntity<ResponseDTO> getFilteredCourses(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam(value = "categoryId", required = false) Long categoryId,
+            @RequestParam(value = "level", required = false) String level,
+            @RequestParam(value = "isPublished", required = false) Boolean isPublished,
+            @RequestParam(value = "title", required = false) String title) {
+        try {
+            if (userDetails == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO(401, "Unauthorized", null));
+            List<CourseDTO> courses = courseService.getFilteredCourses(userDetails.getUsername(), categoryId, level, isPublished, title);
+            return ResponseEntity.ok(new ResponseDTO(200, "Filtered courses fetched successfully", courses));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(404, e.getMessage(), null));
+        }
+    }
 }

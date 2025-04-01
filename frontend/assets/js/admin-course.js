@@ -1,28 +1,8 @@
-function getStatusBadgeClass(status) {
-  switch (status.toLowerCase()) {
-    case "active":
-      return "success";
-    case "inactive":
-      return "danger";
-    case "draft":
-      return "warning";
-    case "archived":
-      return "secondary";
-    default:
-      return "primary";
-  }
-}
-
 $(document).ready(function () {
-  // Initialize tooltips
-  const tooltipTriggerList = document.querySelectorAll(
-      '[data-bs-toggle="tooltip"]'
-  );
-  const tooltipList = [...tooltipTriggerList].map(
-      (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
-  );
 
   const token = localStorage.getItem("token");
+  let allCourses = [];
+  fetchCategories();
   fetchCourses();
 
   // Preview thumbnail in save modal
@@ -81,34 +61,52 @@ $(document).ready(function () {
       headers: { "Authorization": "Bearer " + token },
       success: function (response) {
         if (response.status === 200) {
-          const $tbody = $("#courseTableBody");
-          $tbody.empty();
-          response.data.forEach(course => {
-            $tbody.append(`
-                <tr>
-                    <td class="text-start"><img src="${course.thumbnail}" class="img-fluid course-thumbnail me-3" alt="${course.title}">${course.title}</td>
-                    <td>LMS-100${course.courseId}</td>
-                    <td>${course.categoryId}</td>
-                    <td>${course.price}</td>
-                    <td>${course.level}</td>
-                    <td>${course.isPublished ? "Yes" : "No"}</td>
-                    <td>
-                        <button class="btn btn-action btn-edit me-2" data-course='${JSON.stringify(course)}' data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit">
-                            <i class="hgi hgi-stroke hgi-pencil-edit-02 align-middle fs-5"></i>
-                        </button>
-                        <button class="btn btn-action btn-delete" data-id="${course.courseId}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete">
-                            <i class="hgi hgi-stroke hgi-delete-02 align-middle fs-5"></i>
-                        </button>
-                    </td>
-                </tr>
-            `);
-          });
+          allCourses = response.data;
+          applyFilters();
         }
       },
       error: function (xhr) {
         showAlert("danger", "Error fetching courses: " + (xhr.responseJSON?.message || xhr.statusText));
       }
     });
+  }
+
+  function renderCourses(courses) {
+    const $tbody = $("#courseTableBody");
+    $tbody.empty();
+    if (courses.length === 0) {
+      $tbody.append('<tr><td colspan="7" class="text-center align-middle" style="height: 100px;">No courses found</td></tr>');
+    } else {
+      courses.forEach(course => {
+        $tbody.append(`
+            <tr>
+                <td class="text-start"><img src="${course.thumbnail}" class="img-fluid course-thumbnail me-3" alt="${course.title}">${course.title}</td>
+                <td>LMS-100${course.courseId}</td>
+                <td>${course.description}</td>
+                <td>${course.price}</td>
+                <td>
+                    <span class="badge rounded-pill px-2 ${course.level === 'BEGINNER' ? 'bg-warning' :
+            course.level === 'INTERMEDIATE' ? 'bg-success' : 'bg-danger'}">
+                          ${course.level.charAt(0).toUpperCase() + course.level.slice(1).toLowerCase()}
+                    </span>
+                </td>
+                <td>
+                    <span class="badge rounded-pill px-2 ${course.isPublished ? 'bg-success' : 'bg-danger'}">
+                        ${course.isPublished ? "Active" : "Inactive"}
+                    </span>
+                </td>
+                <td>
+                    <button class="btn btn-action btn-edit" data-course='${JSON.stringify(course)}' data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit">
+                        <i class="hgi hgi-stroke hgi-pencil-edit-02 align-middle fs-5"></i>
+                    </button>
+                    <button class="btn btn-action btn-delete" data-id="${course.courseId}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete">
+                        <i class="hgi hgi-stroke hgi-delete-02 align-middle fs-5"></i>
+                    </button>
+                </td>
+            </tr>
+        `);
+      });
+    }
   }
 
   // Handle form submission
@@ -121,9 +119,6 @@ $(document).ready(function () {
       return;
     }
 
-    const $button = $(this);
-    $button.prop("disabled", true);
-
     const formData = new FormData();
     const courseDTO = {
       title: $("input[name='title']").val(),
@@ -134,12 +129,19 @@ $(document).ready(function () {
       isPublished: $("input[name='isPublished']").is(":checked")
     };
 
+    if (!courseDTO.title || !courseDTO.description || !courseDTO.categoryId || !courseDTO.price || !courseDTO.level) {
+      showAlert("danger", "Please fill in all the required fields.");
+      return;
+    }
+
     formData.append("courseDTO", new Blob([JSON.stringify(courseDTO)], { type: "application/json" }));
     const thumbnail = $("#add-course-img")[0].files[0];
 
     if (thumbnail) {
       formData.append("thumbnail", thumbnail);
     }
+
+    $("#saveCourseBtn span").removeClass("d-none");
 
     $.ajax({
       url: "http://localhost:8080/api/v1/instructor/course",
@@ -149,18 +151,17 @@ $(document).ready(function () {
       processData: false,
       contentType: false,
       success: function (response) {
-        $button.prop("disabled", false);
         if (response.status === 200) {
           showAlert("success", "Course added successfully!");
           $("#addCourseModal").modal("hide");
           $("#addCourseForm")[0].reset();
+          $("#saveCourseBtn span").addClass("d-none");
           $("#coursePreview").attr("src", "../assets/images/icons/placeholder.svg");
         } else {
           showAlert("danger", response.message || "Failed to add course.");
         }
       },
       error: function (xhr) {
-        $button.prop("disabled", false);
         showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error adding course.");
       }
     });
@@ -176,6 +177,7 @@ $(document).ready(function () {
   // ---------------- Edit button click ----------------
   $(document).on("click", ".btn-action.btn-edit", function () {
     const course = $(this).data("course");
+    $("#editCourseForm input[name='thumbnail']").val("");
     $("#editCourseForm input[name='courseId']").val(course.courseId);
     $("#editCourseForm input[name='title']").val(course.title);
     $("#editCourseForm textarea[name='description']").val(course.description);
@@ -282,4 +284,60 @@ $(document).ready(function () {
       }
     });
   });
+
+/* ----------------------------------------------- Filters and Search ----------------------------------------------- */
+
+  $("#searchInput").on("input", debounce(function () {
+    applyFilters();
+  }, 300));
+
+  $("#filterCategory, #filterLevel, #filterPublished").on("change", function () {
+    applyFilters();
+  });
+
+  function applyFilters() {
+    const searchTerm = $("#searchInput").val().trim().toLowerCase();
+    const filterCategory = $("#filterCategory").val();
+    const filterLevel = $("#filterLevel").val();
+    const filterPublished = $("#filterPublished").val();
+
+    const filteredCourses = allCourses.filter(course => {
+      const displayCourseId = `lms-100${course.courseId}`;
+      const numericSearch = parseCourseId(searchTerm);
+
+      // Match title or courseId
+      const matchesSearch = !searchTerm ||
+          course.title.toLowerCase().includes(searchTerm) ||
+          displayCourseId.includes(searchTerm) ||
+          (numericSearch !== null && course.courseId === numericSearch);
+
+      const matchesCategory = !filterCategory || course.categoryId.toString() === filterCategory;
+      const matchesLevel = !filterLevel || course.level === filterLevel;
+      const matchesPublished = filterPublished === "" || course.isPublished.toString() === filterPublished;
+
+      return matchesSearch && matchesCategory && matchesLevel && matchesPublished;
+    });
+
+    renderCourses(filteredCourses);
+  }
+
+  function debounce(func, wait) {
+    let timeout;
+    return function () {
+      const context = this;
+      const args = arguments;
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(context, args), wait);
+    };
+  }
+
+  function parseCourseId(searchTerm) {
+    const match = searchTerm.match(/lms-100(\d*)/i) || searchTerm.match(/^\d+$/);
+    if (match) {
+      const numericId = match[1] !== undefined ? parseInt(match[1], 10) : parseInt(match[0], 10);
+      return isNaN(numericId) ? null : numericId;
+    }
+    return null;
+  }
+
 });

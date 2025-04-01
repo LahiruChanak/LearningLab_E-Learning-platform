@@ -15,4 +15,6 @@ public interface CourseService {
 
     List<CourseDTO> getInstructorCourses(String instructorEmail);
 
+    List<CourseDTO> getFilteredCourses(String instructorEmail, Long categoryId, String level, Boolean isPublished, String title);
+
 }

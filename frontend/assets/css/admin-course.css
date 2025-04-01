@@ -67,7 +67,7 @@ body {
   box-shadow: var(--shadow);
   background-color: #fff;
   margin-bottom: 2rem;
-  text-align: center !important;
+  text-align: center;
 }
 
 .table th {
@@ -75,16 +75,32 @@ body {
   padding: 0.75rem 1rem;
   color: var(--text-color);
   border-bottom: 1px solid #333;
+  vertical-align: middle;
 }
 
 .table td {
-  padding: 1rem;
+  padding: 0.5rem;
   vertical-align: middle;
   border-color: var(--border-color);
 }
 
 .table tbody tr:hover {
   background-color: var(--hover-color);
+}
+
+.table td .bg-success {
+  background-color: #279f52 !important;
+  color: #fff;
+}
+
+.table td .bg-warning {
+  background-color: #ffd93d !important;
+  color: #000;
+}
+
+.table td .bg-danger {
+  background-color: #ef4444 !important;
+  color: #fff;
 }
 
 .btn-action {

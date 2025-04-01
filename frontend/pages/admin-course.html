@@ -130,32 +130,39 @@
 
         <!-- Course Management Section -->
         <div class="container-fluid p-0">
-          <!-- Filters and Search -->
-          <div class="row card mb-4">
-            <div class="col-md-7 flex-grow-1 p-0">
-              <div class="search-box">
-                <i class="hgi hgi-stroke hgi-search-01 fs-5 align-middle"></i>
-                <input
-                  type="text"
-                  class="form-control rounded"
-                  id="courseSearch"
-                  placeholder="Search courses..."
-                />
-              </div>
+          <!-- Filter and Search Controls -->
+          <div class="row mb-3 card">
+            <div class="col-md-3 px-0">
+              <label for="searchInput" class="form-label">Search Input</label>
+              <input type="text" id="searchInput" class="form-control" placeholder="Enter title...">
             </div>
-            <div class="col-md-4 p-0">
-              <select class="form-select" id="categoryFilter">
+            <div class="col">
+              <label for="filterCategory" class="form-label">Category</label>
+              <select id="filterCategory" class="form-select" name="categoryId">
                 <option value="">All Categories</option>
-                <option value="development">Development</option>
-                <option value="design">Design</option>
-                <option value="business">Business</option>
-                <option value="marketing">Marketing</option>
+              </select>
+            </div>
+            <div class="col">
+              <label for="filterLevel" class="form-label">Level</label>
+              <select id="filterLevel" class="form-select">
+                <option value="">All Levels</option>
+                <option value="BEGINNER">Beginner</option>
+                <option value="INTERMEDIATE">Intermediate</option>
+                <option value="ADVANCED">Advanced</option>
+              </select>
+            </div>
+            <div class="col">
+              <label for="filterPublished" class="form-label">Status</label>
+              <select id="filterPublished" class="form-select">
+                <option value="">All Status</option>
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
               </select>
             </div>
           </div>
 
           <!-- Course List -->
-          <div class="card align-items-start">
+          <div class="card pt-2 align-items-start">
             <div class="card-body p-0">
               <div class="table-responsive">
                 <table
@@ -165,7 +172,7 @@
                     <tr>
                       <th>Course</th>
                       <th>Course ID</th>
-                      <th>Category</th>
+                      <th>Description</th>
                       <th>Price ($)</th>
                       <th>Level</th>
                       <th>Status</th>
@@ -226,7 +233,7 @@
               </div>
               <div class="row mb-3">
                 <div class="col-md-6">
-                  <label class="form-label">Price <span class="text-danger">*</span></label>
+                  <label class="form-label">Price ($) <span class="text-danger">*</span></label>
                   <input type="number" min="0" class="form-control rounded" name="price" required />
                 </div>
                 <div class="col-md-6">
@@ -254,7 +261,9 @@
           </div>
           <div class="modal-footer pt-0 border-0">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary" id="saveCourseBtn">Save Course</button>
+            <button type="button" class="btn btn-primary" id="saveCourseBtn">Save Course
+              <span class="spinner-border spinner-border-sm ms-1 d-none" role="status" aria-hidden="true"></span>
+            </button>
           </div>
         </div>
       </div>
@@ -308,7 +317,7 @@
               </div>
               <div class="row mb-3">
                 <div class="col-md-6">
-                  <label class="form-label">Price <span class="text-danger">*</span></label>
+                  <label class="form-label">Price ($) <span class="text-danger">*</span></label>
                   <input type="number" min="0" class="form-control rounded" name="price" required />
                 </div>
                 <div class="col-md-6">
