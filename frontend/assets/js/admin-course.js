@@ -80,7 +80,7 @@ $(document).ready(function () {
       courses.forEach(course => {
         $tbody.append(`
             <tr>
-                <td class="text-start"><img src="${course.thumbnail}" class="img-fluid course-thumbnail me-3" alt="${course.title}">${course.title}</td>
+                <td class="text-start"><img src="${course.thumbnail}" class="img-fluid course-thumbnail me-3" alt="thumbnail">${course.title}</td>
                 <td>LMS-100${course.courseId}</td>
                 <td>${course.description}</td>
                 <td>${course.price}</td>
@@ -96,16 +96,18 @@ $(document).ready(function () {
                     </span>
                 </td>
                 <td>
-                    <button class="btn btn-action btn-edit" data-course='${JSON.stringify(course)}' data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit">
+                    <button class="btn btn-action btn-edit" data-course='${JSON.stringify(course)}' data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Edit">
                         <i class="hgi hgi-stroke hgi-pencil-edit-02 align-middle fs-5"></i>
                     </button>
-                    <button class="btn btn-action btn-delete" data-id="${course.courseId}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete">
+                    <button class="btn btn-action btn-delete" data-id="${course.courseId}" data-title="${course.title}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Delete">
                         <i class="hgi hgi-stroke hgi-delete-02 align-middle fs-5"></i>
                     </button>
                 </td>
             </tr>
         `);
       });
+
+      $('[data-bs-toggle="tooltip"]').tooltip(); // Initialize tooltips
     }
   }
 
@@ -121,12 +123,12 @@ $(document).ready(function () {
 
     const formData = new FormData();
     const courseDTO = {
-      title: $("input[name='title']").val(),
-      description: $("textarea[name='description']").val(),
-      categoryId: $("select[name='categoryId']").val(),
-      price: $("input[name='price']").val(),
-      level: $("select[name='level']").val(),
-      isPublished: $("input[name='isPublished']").is(":checked")
+      title: $("#addCourseForm input[name='title']").val(),
+      description: $("#addCourseForm textarea[name='description']").val(),
+      categoryId: $("#addCourseForm select[name='categoryId']").val(),
+      price: $("#addCourseForm input[name='price']").val(),
+      level: $("#addCourseForm select[name='level']").val(),
+      isPublished: $("#addCourseForm input[name='isPublished']").is(":checked")
     };
 
     if (!courseDTO.title || !courseDTO.description || !courseDTO.categoryId || !courseDTO.price || !courseDTO.level) {
@@ -169,7 +171,7 @@ $(document).ready(function () {
 
   // Load categories when modal is shown
   $("#addCourseModal").on("shown.bs.modal", function () {
-    fetchCategories();
+    fetchCategories("addCourseForm");
   });
 
 /* -------------------------------------------------- Edit Course --------------------------------------------------- */
@@ -217,6 +219,8 @@ $(document).ready(function () {
       formData.append("thumbnail", thumbnail);
     }
 
+    $("#updateCourseBtn span").removeClass("d-none");
+
     $.ajax({
       url: `http://localhost:8080/api/v1/instructor/course/${courseId}`,
       type: "PUT",
@@ -227,6 +231,8 @@ $(document).ready(function () {
       success: function (response) {
         if (response.status === 200) {
           showAlert("success", "Course updated successfully!");
+          $("#updateCourseBtn span").addClass("d-none");
+          $("#updateCourseModal").modal("hide");
           fetchCourses();
         } else {
           showAlert("danger", response.message || "Failed to update course.");
@@ -255,7 +261,7 @@ $(document).ready(function () {
 
     // Update modal content
     $("#deleteModalTitle").text("Delete Course");
-    $("#deleteModalName").text(`"${courseTitle}"`);
+    $("#deleteModalName").text(`${courseTitle || 'Unnamed Course'}`);
     $("#confirmDelete").data("id", courseId);
     $("#deleteConfirmModal").modal("show");
   });

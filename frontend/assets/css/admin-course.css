@@ -411,3 +411,8 @@ body {
 #course-img {
   pointer-events: all !important;
 }
+
+#deleteModalName {
+  font-weight: 600;
+  color: #ff6b6b;
+}
