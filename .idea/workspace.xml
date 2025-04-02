@@ -4,21 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="871ac622-ec0f-4cda-944a-f4037773dc1b" name="Changes" comment="fix some issues for system better stable">
+    <list default="true" id="871ac622-ec0f-4cda-944a-f4037773dc1b" name="Changes" comment="implement course CRUD operations with frontend and few changes from other class files">
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/config/WebSecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/config/WebSecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/dto/InstructorRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/dto/InstructorRequestDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/controller/InstructorRequestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/controller/InstructorRequestController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/InstructorRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/InstructorRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/service/impl/UserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/util/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/util/JwtUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/assets/css/common/sidebar.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/css/common/sidebar.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/assets/css/student/student-dashboard.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/css/student/student-dashboard.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/assets/css/student/user-profile.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/css/student/user-profile.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/assets/js/student/student-dashboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/js/student/student-dashboard.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/assets/js/student/user-profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/js/student/user-profile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/pages/student/student-dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/student/student-dashboard.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/pages/student/user-profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/student/user-profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/service/impl/InstructorRequestServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/service/impl/InstructorRequestServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/css/admin-course.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/css/admin-course.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/js/admin-course.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/js/admin-course.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/js/admin-instructor-requests.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/js/admin-instructor-requests.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/js/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/js/auth.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/js/student-dashboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/js/student-dashboard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/admin-course.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/admin-course.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/admin-instructor-request.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/admin-instructor-request.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/student-dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/student-dashboard.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,9 +29,10 @@
       <list>
         <option value="spring-beans.schema" />
         <option value="CSS File" />
+        <option value="JavaScript File" />
+        <option value="HTML File" />
         <option value="Interface" />
         <option value="Class" />
-        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -55,6 +55,10 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;JavaScript Debug.index.html.executor&quot;: &quot;Run&quot;,
+    &quot;JavaScript Debug.student-dashboard.html.executor&quot;: &quot;Run&quot;,
+    &quot;JavaScript Debug.user-profile.html.executor&quot;: &quot;Run&quot;,
     &quot;Maven.backend [clean].executor&quot;: &quot;Run&quot;,
     &quot;Maven.backend [compile].executor&quot;: &quot;Run&quot;,
     &quot;Maven.backend [validate].executor&quot;: &quot;Run&quot;,
@@ -69,7 +73,7 @@
     &quot;com.codeium.enabled&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Lenovo/IdeaProjects/LMS - LearningLab/frontend/assets/images/icons&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Lenovo/IdeaProjects/LMS - LearningLab/frontend/assets/js&quot;,
     &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -79,7 +83,8 @@
     &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.43333334&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.codeium.AppSettingsConfigurable&quot;,
+    &quot;service.view.auto.scroll.to.source&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.sync&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
   &quot;keyToStringList&quot;: {
@@ -89,24 +94,30 @@
   }
 }</component>
   <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="lk.ijse.service" />
+      <recent name="lk.ijse.dto" />
+      <recent name="lk.ijse.service.impl" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\js" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\images\icons" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\backend\src\main\java\lk\ijse\config" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\backend\src\main\java\lk\ijse\entity" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\backend\src\main\java\lk\ijse" />
-      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\pages\student" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\backend\src\main\resources\static" />
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\js" />
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\css" />
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\pages" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\backend\src\main\resources\static\uploads" />
-      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\css\common" />
-      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\pages\common" />
-      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\pages\student" />
-      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\js\common" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="lk.ijse.service" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="lk.ijse.repository" />
       <recent name="lk.ijse.util" />
     </key>
   </component>
@@ -122,8 +133,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.23654.189" />
-        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-IU-243.23654.189" />
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
       </set>
     </attachedChunks>
   </component>
@@ -163,79 +174,22 @@
       <workItem from="1742891349186" duration="1608000" />
       <workItem from="1742911537947" duration="18101000" />
       <workItem from="1742960192330" duration="16333000" />
-      <workItem from="1742995607481" duration="19435000" />
-    </task>
-    <task id="LOCAL-00010" summary="database for LearningLab">
-      <option name="closed" value="true" />
-      <created>1742152887658</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1742152887658</updated>
-    </task>
-    <task id="LOCAL-00011" summary=".idea directory changes">
-      <option name="closed" value="true" />
-      <created>1742152942075</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1742152942075</updated>
-    </task>
-    <task id="LOCAL-00012" summary="update the pom.xml file with required dependencies">
-      <option name="closed" value="true" />
-      <created>1742152962533</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1742152962534</updated>
-    </task>
-    <task id="LOCAL-00013" summary="configure application.properties file">
-      <option name="closed" value="true" />
-      <created>1742153028998</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1742153028998</updated>
-    </task>
-    <task id="LOCAL-00014" summary="messages.html sidebar navigation path change">
-      <option name="closed" value="true" />
-      <created>1742153203885</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1742153203885</updated>
-    </task>
-    <task id="LOCAL-00015" summary=".idea directory changes">
-      <option name="closed" value="true" />
-      <created>1742153271319</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1742153271319</updated>
-    </task>
-    <task id="LOCAL-00016" summary="otp send via email to register and pw reset.">
-      <option name="closed" value="true" />
-      <created>1742223283419</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1742223283419</updated>
-    </task>
-    <task id="LOCAL-00017" summary="implemented JWT into the project">
-      <option name="closed" value="true" />
-      <created>1742225371212</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1742225371212</updated>
-    </task>
-    <task id="LOCAL-00018" summary="implemented JWT into the project">
-      <option name="closed" value="true" />
-      <created>1742232333505</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1742232333505</updated>
+      <workItem from="1742995607481" duration="19870000" />
+      <workItem from="1743049414303" duration="6127000" />
+      <workItem from="1743055838973" duration="208000" />
+      <workItem from="1743056153858" duration="14140000" />
+      <workItem from="1743089048135" duration="7320000" />
+      <workItem from="1743225072048" duration="12942000" />
+      <workItem from="1743241770144" duration="450000" />
+      <workItem from="1743242241040" duration="711000" />
+      <workItem from="1743242969548" duration="11604000" />
+      <workItem from="1743302095779" duration="27761000" />
+      <workItem from="1743358039264" duration="1623000" />
+      <workItem from="1743389381004" duration="7773000" />
+      <workItem from="1743417447939" duration="21961000" />
+      <workItem from="1743480764379" duration="19767000" />
+      <workItem from="1743517118951" duration="4876000" />
+      <workItem from="1743587824207" duration="5184000" />
     </task>
     <task id="LOCAL-00019" summary="implemented JWT into the project">
       <option name="closed" value="true" />
@@ -557,7 +511,79 @@
       <option name="project" value="LOCAL" />
       <updated>1743001266672</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="add instructor request file upload into cloud server.">
+      <option name="closed" value="true" />
+      <created>1743021662201</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1743021662201</updated>
+    </task>
+    <task id="LOCAL-00060" summary="camera capture function implemented for profile picture">
+      <option name="closed" value="true" />
+      <created>1743021710443</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1743021710443</updated>
+    </task>
+    <task id="LOCAL-00061" summary=".idea changes">
+      <option name="closed" value="true" />
+      <created>1743021762611</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1743021762611</updated>
+    </task>
+    <task id="LOCAL-00062" summary="modify project file paths to fix issues and performance increase">
+      <option name="closed" value="true" />
+      <created>1743266108524</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1743266108524</updated>
+    </task>
+    <task id="LOCAL-00063" summary="instructor role request function implemented.">
+      <option name="closed" value="true" />
+      <created>1743346714099</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1743346714099</updated>
+    </task>
+    <task id="LOCAL-00064" summary="implement category CRUD operations with frontend">
+      <option name="closed" value="true" />
+      <created>1743357729649</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1743357729649</updated>
+    </task>
+    <task id="LOCAL-00065" summary="implement category CRUD operations with frontend">
+      <option name="closed" value="true" />
+      <created>1743357766634</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1743357766634</updated>
+    </task>
+    <task id="LOCAL-00066" summary="implement course CRUD operations with frontend and few changes from other class files">
+      <option name="closed" value="true" />
+      <created>1743447107924</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1743447107924</updated>
+    </task>
+    <task id="LOCAL-00067" summary="implement course CRUD operations with frontend and few changes from other class files">
+      <option name="closed" value="true" />
+      <created>1743488173274</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1743488173274</updated>
+    </task>
+    <option name="localTasksCounter" value="68" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -575,14 +601,7 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="remove an unwanted file" />
-    <MESSAGE value="implement password reset password with JWT function" />
-    <MESSAGE value="implement authentication functions with JWT." />
-    <MESSAGE value=".idea file" />
-    <MESSAGE value="load profile details into the header section" />
-    <MESSAGE value="convert normal JS into jQuery and some fixes in other files" />
     <MESSAGE value="connect with backend and add modify &amp; retrieve profile details feature" />
-    <MESSAGE value=".idea changes" />
     <MESSAGE value=" simplify endpoints to improve readability and maintainability" />
     <MESSAGE value="update password toggle logic from both auth &amp; profile pages" />
     <MESSAGE value="fix profile picture issues and some other pages issues" />
@@ -600,7 +619,14 @@
     <MESSAGE value="implement admin auth functions to get different authorization access" />
     <MESSAGE value="Implement profile picture save into cloud hosting service. Also manage read and write data from it." />
     <MESSAGE value="fix some issues for system better stable" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix some issues for system better stable" />
+    <MESSAGE value="add instructor request file upload into cloud server." />
+    <MESSAGE value="camera capture function implemented for profile picture" />
+    <MESSAGE value=".idea changes" />
+    <MESSAGE value="modify project file paths to fix issues and performance increase" />
+    <MESSAGE value="instructor role request function implemented." />
+    <MESSAGE value="implement category CRUD operations with frontend" />
+    <MESSAGE value="implement course CRUD operations with frontend and few changes from other class files" />
+    <option name="LAST_COMMIT_MESSAGE" value="implement course CRUD operations with frontend and few changes from other class files" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
