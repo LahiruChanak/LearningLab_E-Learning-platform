@@ -151,7 +151,7 @@ $(document).ready(function () {
                     $("#twoFactorModal").modal("hide");
                     $(".code-input").val("");
                     setTimeout(() => {
-                        window.location.href = "../../pages/student-dashboard.html";
+                        window.location.href = "../pages/student-dashboard.html";
                     }, 1500);
                 } else {
                     errorMessage.text(response.message || "Invalid 2FA code. Please try again.");
@@ -295,7 +295,7 @@ $(document).ready(function () {
                 $(".password-strength-bar").css({ width: "0%", background: "#e0e0e0" });
 
                 setTimeout(() => {
-                    window.location.href = "../../index.html";
+                    window.location.href = "../index.html";
                 }, 1500);
             },
             error: function (xhr) {
@@ -370,7 +370,7 @@ $(document).ready(function () {
                     $(".password-strength-bar").css({width: "0%", background: "#e0e0e0"});
 
                     setTimeout(() => {
-                        window.location.href = "../../index.html";
+                        window.location.href = "../index.html";
                     }, 1500);
                 } else {
                     showAlert("danger", response.message || "Failed to reset password");
