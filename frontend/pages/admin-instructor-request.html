@@ -37,13 +37,18 @@
         .table-responsive {
             margin-top: 20px;
         }
+
+        .table {
+            text-align: center;
+            vertical-align: middle;
+        }
     </style>
 </head>
 <body>
 <div class="container-fluid mt-5">
     <h2>Pending Instructor Requests</h2>
     <div class="table-responsive">
-        <table class="table table-striped" id="requestsTable">
+        <table class="table table-borderless table-hover" id="requestsTable">
             <thead>
             <tr>
                 <th>User</th>
@@ -70,7 +75,7 @@
                         data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body d-flex justify-content-center mb-3">
                 <img id="certificatePreview" src="" alt="Certificate">
             </div>
         </div>

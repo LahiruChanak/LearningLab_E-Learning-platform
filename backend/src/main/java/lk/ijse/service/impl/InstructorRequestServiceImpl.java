@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -117,8 +118,8 @@ public class InstructorRequestServiceImpl implements InstructorRequestService {
                 : LocalDateTime.now();
 
         // Format into custom format
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy MMMM dd - hh:mm a");
-        return approvalTime.format(formatter);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy MMMM dd - hh:mm a", Locale.US);
+        return approvalTime.format(formatter).toUpperCase(Locale.US); // Forces AM/PM to uppercase
     }
 
     private Integer parseExperience(String experience) {

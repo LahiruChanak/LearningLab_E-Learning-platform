@@ -2,11 +2,14 @@ package lk.ijse.controller;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lk.ijse.dto.InstructorRequestDTO;
 import lk.ijse.dto.ResponseDTO;
 import lk.ijse.dto.UserDTO;
 import lk.ijse.entity.InstructorRequest;
+import lk.ijse.entity.User;
 import lk.ijse.repository.InstructorRequestRepo;
+import lk.ijse.repository.UserRepo;
 import lk.ijse.service.UserService;
 import lk.ijse.service.impl.InstructorRequestServiceImpl;
 import org.modelmapper.ModelMapper;
@@ -36,10 +39,10 @@ public class InstructorRequestController {
     private InstructorRequestRepo instructorRequestRepo;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private UserRepo userRepo;
 
     @Autowired
-    private UserService userService;
+    private ModelMapper modelMapper;
 
     @Autowired
     private Cloudinary cloudinary;
@@ -47,7 +50,7 @@ public class InstructorRequestController {
     private static final String[] ALLOWED_FILE_TYPES = {"image/jpeg", "image/png", "image/gif", "application/pdf"};
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
-    @GetMapping("user/instructor/request")
+    @GetMapping("/user/instructor/request")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseDTO> getUserInstructorRequest(@AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) {
@@ -79,12 +82,16 @@ public class InstructorRequestController {
         }
     }
 
-    @PostMapping(value = "user/instructor/request", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/user/instructor/request", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseDTO> submitInstructorRequest(
             @AuthenticationPrincipal UserDetails userDetails,
-            @ModelAttribute InstructorRequestDTO requestDTO,
-            @RequestParam(value = "certificates", required = false) MultipartFile[] certificates) {
+            @RequestPart("message") String message,
+            @RequestPart("qualifications") String qualifications,
+            @RequestPart("experience") String experience,
+            @RequestPart(value = "additionalDetails", required = false) String additionalDetails,
+            @RequestPart(value = "existingCertificates", required = false) String existingCertificatesJson,
+            @RequestPart(value = "certificates", required = false) MultipartFile[] certificates) {
 
         if (userDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -99,20 +106,26 @@ public class InstructorRequestController {
             if (!existingRequests.isEmpty()) {
                 // Update existing request
                 request = existingRequests.stream()
-                        .sorted(Comparator.comparing(InstructorRequest::getRequestUpdatedAt, Comparator.nullsLast(Comparator.reverseOrder())))
+                        .sorted(Comparator.comparing(InstructorRequest::getRequestUpdatedAt,
+                                Comparator.nullsLast(Comparator.reverseOrder())))
                         .findFirst()
                         .orElse(existingRequests.get(0));
-                request.setMessage(requestDTO.getMessage());
-                request.setQualifications(requestDTO.getQualifications());
-                request.setExperience(requestDTO.getExperience());
-                request.setAdditionalDetails(requestDTO.getAdditionalDetails());
-                request.setRequestUpdatedAt(LocalDateTime.now()); // Already present, kept for clarity
+                request.setMessage(message);
+                request.setQualifications(qualifications);
+                request.setExperience(experience);
+                request.setAdditionalDetails(additionalDetails);
+                request.setRequestUpdatedAt(LocalDateTime.now());
 
-                // Handle certificate uploads
-                List<String> currentCertificates = request.getCertificates() != null ? new ArrayList<>(request.getCertificates()) : new ArrayList<>();
-                if (requestDTO.getCertificates() != null) {
-                    currentCertificates = new ArrayList<>(requestDTO.getCertificates());
+                List<String> currentCertificates = request.getCertificates() != null ?
+                        new ArrayList<>(request.getCertificates()) : new ArrayList<>();
+
+                // Handle existing certificates
+                if (existingCertificatesJson != null && !existingCertificatesJson.isEmpty()) {
+                    List<String> existingCertificates = new ObjectMapper().readValue(existingCertificatesJson, List.class);
+                    currentCertificates.addAll(existingCertificates);
                 }
+
+                // Handle new certificates
                 if (certificates != null && certificates.length > 0) {
                     for (MultipartFile certificate : certificates) {
                         if (!certificate.isEmpty()) {
@@ -140,13 +153,14 @@ public class InstructorRequestController {
                 InstructorRequestDTO updatedRequestDTO = modelMapper.map(request, InstructorRequestDTO.class);
                 return ResponseEntity.ok(new ResponseDTO(200, "Request updated successfully", updatedRequestDTO));
             } else {
-                // Create new request
                 request = new InstructorRequest();
-                request.getUser().setEmail(email);
-                request.setMessage(requestDTO.getMessage());
-                request.setQualifications(requestDTO.getQualifications());
-                request.setExperience(requestDTO.getExperience());
-                request.setAdditionalDetails(requestDTO.getAdditionalDetails());
+                User user = userRepo.findByEmail(email)
+                        .orElseThrow(() -> new RuntimeException("User not found"));
+                request.setUser(user);
+                request.setMessage(message);
+                request.setQualifications(qualifications);
+                request.setExperience(experience);
+                request.setAdditionalDetails(additionalDetails);
                 request.setRequestCreatedAt(LocalDateTime.now());
                 request.setRequestUpdatedAt(LocalDateTime.now());
                 request.setRequestStatus(InstructorRequest.RequestStatus.PENDING);
@@ -177,8 +191,7 @@ public class InstructorRequestController {
 
                 instructorRequestRepo.save(request);
                 InstructorRequestDTO newRequestDTO = modelMapper.map(request, InstructorRequestDTO.class);
-                UserDTO userDTO = instructorRequestService.submitInstructorRequest(userDetails, requestDTO);
-                return ResponseEntity.ok(new ResponseDTO(200, "Request submitted successfully", userDTO));
+                return ResponseEntity.ok(new ResponseDTO(200, "Request submitted successfully", newRequestDTO));
             }
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -205,7 +218,7 @@ public class InstructorRequestController {
         }
     }
 
-    @PutMapping("admin/instructor/requests/{requestId}/status")
+    @PutMapping("/admin/instructor/requests/{requestId}/status")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO> updateRequestStatus(
             @PathVariable Long requestId,

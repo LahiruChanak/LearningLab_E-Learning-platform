@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -32,7 +33,7 @@ public class InstructorRequest {
     @ElementCollection
     @CollectionTable(name = "instructor_request_certificates", joinColumns = @JoinColumn(name = "request_id"))
     @Column(name = "certificate_url")
-    private List<String> certificates;
+    private List<String> certificates = new ArrayList<>();
 
     @Column(name = "experience", columnDefinition = "TEXT")
     private String experience;

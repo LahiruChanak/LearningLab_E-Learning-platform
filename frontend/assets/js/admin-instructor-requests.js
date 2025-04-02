@@ -43,7 +43,7 @@ $(document).ready(function () {
             const certificates = (request.certificates && Array.isArray(request.certificates))
                 ? request.certificates.map((url, index) =>
                     `<a href="#" class="certificate-link" data-bs-toggle="modal" data-bs-target="#certificateModal" data-url="${url}">Certificate ${index + 1}</a>`
-                ).join(", ")
+                ).join(" | ")
                 : 'None';
 
             tbody.append(`

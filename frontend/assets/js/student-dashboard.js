@@ -135,7 +135,6 @@ $(document).ready(function () {
     formData.append("experience", experience);
     formData.append("additionalDetails", additionalDetails || "");
 
-    // Append existing certificates (if any) to preserve them
     const existingCertificates = [];
     $(".certificate-item").each(function () {
       existingCertificates.push($(this).data("url"));
@@ -145,7 +144,6 @@ $(document).ready(function () {
       formData.append("existingCertificates", JSON.stringify(existingCertificates));
     }
 
-    // Append new certificates
     Array.from(certificates).forEach(file => {
       formData.append("certificates", file);
     });
@@ -155,8 +153,8 @@ $(document).ready(function () {
       type: "POST",
       headers: { "Authorization": "Bearer " + token },
       data: formData,
-      processData: false,
-      contentType: false,
+      processData: false, // Prevent jQuery from processing the data
+      contentType: false, // Let the browser set the correct boundary for multipart
       success: function (response) {
         $button.prop("disabled", false);
         if (response.status === 200) {
@@ -172,13 +170,10 @@ $(document).ready(function () {
         } else {
           showAlert("danger", response.message || "Failed to process request.");
         }
-
-        setTimeout(() => {
-          window.location.reload();
-        },1500);
       },
       error: function (xhr) {
         $button.prop("disabled", false);
+        console.log("Error:", xhr);
         showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error processing request.");
       },
       complete: function () {
@@ -224,11 +219,10 @@ $(document).ready(function () {
     // Display certificates in preview
     $("#certificatesPreview").empty();
     if (request.certificates && Array.isArray(request.certificates)) {
-      request.certificates.forEach((url, index) => {
-        $("#certificatesPreview").append(
-            `<a href="#" class="certificate-link" data-bs-toggle="modal" data-bs-target="#certificateModal" data-url="${url}">Certificate ${index + 1}</a> `
-        );
-      });
+      const certificateLinks = request.certificates.map((url, index) => {
+        return `<a href="#" class="certificate-link" data-bs-toggle="modal" data-bs-target="#certificateModal" data-url="${url}">Certificate ${index + 1}</a>`;
+      }).join(" | ");
+      $("#certificatesPreview").append(certificateLinks);
     }
 
     // Disable form fields and submit button if request exists
@@ -256,10 +250,13 @@ $(document).ready(function () {
     });
   }
 
+  $("#instructorRequestModal").on("shown.bs.modal", function () {
+    fetchUserRequest();
+  });
+
   $("#certificateModal .btn-close").on("click", function () {
     $("#instructorRequestModal").modal("show");
   })
 
-  fetchUserRequest();
   fetchUserData();
 });
