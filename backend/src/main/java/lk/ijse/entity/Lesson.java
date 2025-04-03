@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "lessons")
+@Table(name = "lesson")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -24,17 +24,14 @@ public class Lesson {
     @Column(name = "title", nullable = false, length = 255)
     private String title;
 
-    @Column(name = "description", columnDefinition = "TEXT")
-    private String description;
-
-    @Column(name = "duration")
-    private Integer duration;
-
-    @Column(name = "order_number", nullable = false)
-    private Integer orderNumber;
+    @Column(name = "lesson_sequence", nullable = false)
+    private Integer lessonSequence;
 
     @Column(name = "is_published")
     private Boolean isPublished = false;
+
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<LessonVideo> videos;
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CourseResource> resources;

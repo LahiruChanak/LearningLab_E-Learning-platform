@@ -1,4 +1,11 @@
 $(document).ready(function () {
+  // Initialize tooltips
+  const tooltipTriggerList = document.querySelectorAll(
+      '[data-bs-toggle="tooltip"]'
+  );
+  const tooltipList = [...tooltipTriggerList].map(
+      (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
+  );
 
   const token = localStorage.getItem("token");
   let allCourses = [];
@@ -101,6 +108,10 @@ $(document).ready(function () {
                     </button>
                     <button class="btn btn-action btn-delete" data-id="${course.courseId}" data-title="${course.title}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Delete">
                         <i class="hgi hgi-stroke hgi-delete-02 align-middle fs-5"></i>
+                    </button>
+                    <button class="btn btn-action btn-lesson btn-success" data-id="${course.courseId}" data-title="${course.title}" data-bs-toggle="tooltip" 
+                            data-bs-placement="bottom" data-bs-title="Manage Lessons" onclick="window.location.href='instructor-lesson.html?courseId=${course.courseId}'">
+                        <i class="hgi hgi-stroke hgi-left-to-right-list-bullet align-middle fs-5"></i>
                     </button>
                 </td>
             </tr>

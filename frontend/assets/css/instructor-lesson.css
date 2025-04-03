@@ -1,0 +1,197 @@
+@import "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap";
+
+body {
+    background: linear-gradient(135deg, #e9ecef, #f8f9fa);
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.card:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.sortable-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 0;
+    background: #fff;
+    border-radius: 10px;
+    height: fit-content;
+}
+
+#addVideoBtn,
+#addNewVideoBtn,
+.manageVideoBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+    margin-right: 10px;
+    border: none;
+}
+
+#addVideoBtn i,
+#addNewVideoBtn i,
+.manageVideoBtn i {
+    font-size: 18px;
+}
+
+.lesson-item, .video-item {
+    list-style: none;
+    display: flex;
+    background: #fff;
+    align-items: center;
+    border-radius: 10px;
+    padding: 12px 15px;
+    /*margin-bottom: 12px;*/
+    border: 1px solid #e0e0e0;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.lesson-item:hover, .video-item:hover {
+    background: #f8f9fa;
+    border-color: #007bff;
+    cursor: pointer;
+}
+
+.lesson-item.draggable, .video-item.draggable {
+    cursor: move;
+}
+
+.lesson-item.dragging, .video-item.dragging {
+    opacity: 0.7;
+    background: #e9ecef;
+}
+
+.lesson-item.dragging :where(.details, i), .video-item.dragging :where(.details, i) {
+    opacity: 0;
+}
+
+.details {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.details span {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.lesson-item i, .video-item i {
+    color: #666;
+    font-size: 1.6rem;
+    transition: color 0.2s ease;
+}
+
+.lesson-item i:hover, .video-item i:hover {
+    color: #007bff;
+}
+
+.modal-content {
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+button .text-primary,
+button .text-secondary,
+button .text-warning {
+    border-radius: 10px;
+    border-color: transparent !important;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+button .text-primary:hover,
+button .text-warning:hover {
+    transform: scale(1.03);
+}
+
+h1 {
+    font-weight: 700;
+    color: #2c3e50;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.course-details {
+    background: #fff;
+    border-radius: 10px;
+    padding: 15px 20px;
+}
+
+.btn-manage.active {
+    margin-right: 15px;
+    border-color: transparent;
+    color: #aaa !important;
+}
+
+.btn-remove,
+.remove-video {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #ff4d4d;
+    border: 5px solid #fff;
+}
+
+.btn-remove i,
+.remove-video i {
+    font-size: 14px;
+    color: #fff;
+}
+
+.btn-remove:hover,
+.remove-video:hover {
+    background-color: #fff;
+}
+
+.btn-remove:hover i,
+.remove-video:hover i {
+    color: #ff4d4d;
+    font-weight: bold;
+}
+
+.lesson-item.draggable .btn-remove {
+    display: flex;
+}
+
+#deleteModalName {
+    font-weight: 600;
+    color: #ff6b6b;
+}

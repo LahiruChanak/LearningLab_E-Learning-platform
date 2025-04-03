@@ -9,11 +9,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.164);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.164);
   cursor: pointer;
   transition: all 0.4s ease;
   overflow: hidden;
   position: relative;
+}
+
+.btn-light {
+  height: 40px;
+  border-radius: 8px;
 }
 
 .svgIcon {
