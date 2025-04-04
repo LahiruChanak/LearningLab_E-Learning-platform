@@ -65,7 +65,7 @@ $(document).ready(function() {
         const lessonList = $("#lessonList");
         lessonList.empty();
         if (lessons.length === 0) {
-            lessonList.append('<li class="text-center text-muted">No lessons yet</li>');
+            lessonList.append('<li class="text-center text-muted list-unstyled">No lessons yet</li>');
         } else {
             lessons.sort((a, b) => a.lessonSequence - b.lessonSequence);
             lessons.forEach(lesson => {
@@ -91,16 +91,20 @@ $(document).ready(function() {
             courseId: currentCourseId,
             title: $("#newLessonTitle").val(),
             isPublished: $("#newIsPublished").val() === "true",
+            lessonSequence: null,
             videos: []
         };
+
         $("#newVideoList .video-item").each(function (index) {
             lessonData.videos.push({
+                videoId: null,
                 title: $(this).find(".video-title").val(),
                 videoUrl: $(this).find(".video-url").val(),
                 duration: parseInt($(this).find(".video-duration").val()) || 0,
                 videoSequence: index + 1
             });
         });
+
         $.ajax({
             url: "http://localhost:8080/api/v1/instructor/lesson",
             type: "POST",
@@ -122,22 +126,26 @@ $(document).ready(function() {
     });
 
     // Update lesson
-    $("#saveLessonBtn").on(("click"),() => {
+    $("#saveLessonBtn").on("click", () => {
         const lessonId = $("#lessonModal").data("current-lesson-id");
         const lessonData = {
             title: $("#lessonTitle").val(),
             isPublished: $("#isPublished").val() === "true",
+            lessonSequence: null,
             videos: []
         };
+
         $("#videoList .video-item").each(function (index) {
+            const videoId = $(this).data("video-id");
             lessonData.videos.push({
-                videoId: $(this).data("video-id") || Date.now(),
+                videoId: (videoId && typeof videoId === "number" && videoId > 0) ? videoId : null,
                 title: $(this).find(".video-title").val(),
                 videoUrl: $(this).find(".video-url").val(),
                 duration: parseInt($(this).find(".video-duration").val()) || 0,
                 videoSequence: index + 1
             });
         });
+
         $.ajax({
             url: `http://localhost:8080/api/v1/instructor/lesson/${lessonId}`,
             type: "PUT",
@@ -165,11 +173,12 @@ $(document).ready(function() {
             headers: { "Authorization": "Bearer " + token },
             success: function () {
                 lessons = lessons.filter(l => l.lessonId !== lessonId);
+                showAlert("success", "Lesson deleted successfully!");
                 renderLessons();
                 $("#deleteConfirmModal").modal("hide");
             },
             error: function (xhr) {
-                alert("Error deleting lesson: " + (xhr.responseJSON?.message || xhr.statusText));
+                showAlert("danger", "Error deleting lesson: " + (xhr.responseJSON?.message || xhr.statusText));
                 $("#deleteConfirmModal").modal("hide");
             }
         });
@@ -206,18 +215,19 @@ $(document).ready(function() {
         lesson.videos.sort((a, b) => a.videoSequence - b.videoSequence);
         lesson.videos.forEach((video) => {
             videoList.append(`
-                    <li class="video-item" data-video-id="${video.videoId}">
-                        <div class="details d-flex align-items-center w-100">
-                            <input type="text" class="form-control video-title me-2" value="${video.title}" placeholder="Video Title" required>
-                            <input type="url" class="form-control video-url me-2" value="${video.videoUrl}" placeholder="Video URL" required>
-                            <input type="number" class="form-control video-duration me-2" value="${video.duration}" placeholder="Duration (min)" min="0" required>
-                            <button type="button" class="remove-video"><i class="hgi hgi-stroke hgi-multiplication-sign"></i></button>
-                        </div>
-                        <i class="uil uil-draggabledots"></i>
-                    </li>
-                `);
+                <li class="video-item" data-video-id="${video.videoId}">
+                    <div class="details d-flex align-items-center w-100">
+                        <input type="text" class="form-control video-title me-2" value="${video.title}" placeholder="Video Title" required>
+                        <input type="url" class="form-control video-url me-2" value="${video.videoUrl}" placeholder="Video URL" required>
+                        <input type="number" class="form-control video-duration me-2" value="${video.duration}" placeholder="Duration (min)" min="0" required>
+                        <button type="button" class="remove-video"><i class="hgi hgi-stroke hgi-multiplication-sign"></i></button>
+                    </div>
+                    <i class="uil uil-draggabledots"></i>
+                </li>
+            `);
         });
         toggleDraggableMode(isDraggableMode, "#videoList");
+        toggleDeleteButtons("#videoList", false);
     }
 
     // Add new video (edit modal)
@@ -235,6 +245,7 @@ $(document).ready(function() {
                 </li>
             `);
         toggleDraggableMode(isDraggableMode, "#videoList");
+        toggleDeleteButtons("#videoList", false);
     });
 
     // Add new video (new lesson modal)
@@ -252,7 +263,13 @@ $(document).ready(function() {
                 </li>
             `);
         toggleDraggableMode(isDraggableMode, "#newVideoList");
+        toggleDeleteButtons("#newVideoList", false);
     });
+
+    // Toggle delete buttons visibility
+    function toggleDeleteButtons(listSelector, show) {
+        $(listSelector).find(".remove-video").css("display", show ? "flex" : "none");
+    }
 
     // Update video sequence (edit modal)
     function updateVideoSequence() {
@@ -362,11 +379,46 @@ $(document).ready(function() {
     });
 
     $(document).on("click", ".remove-video", function() {
-        $(this).closest(".video-item").remove();
-        if ($("#lessonModal").is(":visible")) {
-            updateVideoSequence();
+        const videoId = $(this).closest(".video-item").data("video-id");
+        if (videoId && videoId !== Date.now()) {
+            $.ajax({
+                url: `http://localhost:8080/api/v1/instructor/lesson/video/${videoId}`,
+                type: "DELETE",
+                headers: { "Authorization": "Bearer " + token },
+                success: function () {
+                    $(this).closest(".video-item").remove()
+                    showAlert("success", "Lesson Video deleted successfully!");
+                },
+                error: function (xhr) {
+                    showAlert("danger", "Error deleting video: " + (xhr.responseJSON?.message || xhr.statusText))
+                }
+            });
         } else {
-            updateNewVideoSequence();
+            $(this).closest(".video-item").remove();
+        }
+
+        if ($("#lessonModal").is(":visible")) updateVideoSequence();
+        else updateNewVideoSequence();
+    });
+
+    // Manage video button click handler
+    $(".manageVideoBtn").on("click", function() {
+        const targetList = $(this).data("target");
+        const $videoList = $(targetList);
+        const isVisible = $videoList.find(".remove-video").first().is(":visible");
+        const hasItems = $videoList.find(".video-item").length > 0;
+
+        toggleDeleteButtons(targetList, !isVisible);
+
+        // Only toggle button text and class if the list has items
+        if (hasItems) {
+            if (!isVisible) {
+                $(this).html('<i class="hgi hgi-stroke hgi-check-circle me-2 align-middle"></i>Done');
+                $(this).removeClass("text-warning").addClass("text-success");
+            } else {
+                $(this).html('<i class="hgi hgi-stroke hgi-pencil-edit-02 me-2 align-middle"></i>Manage');
+                $(this).removeClass("text-success").addClass("text-warning");
+            }
         }
     });
 });
