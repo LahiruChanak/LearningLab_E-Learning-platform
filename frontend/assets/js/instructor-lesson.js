@@ -305,18 +305,33 @@ $(document).ready(function() {
 
     // Toggle draggable mode
     function toggleDraggableMode(enable, listSelector = "#lessonList") {
-        const sortableList = document.querySelector(listSelector);
-        const items = sortableList.querySelectorAll(listSelector === "#lessonList" ? ".lesson-item" : ".video-item");
+        const $sortableList = $(listSelector);
+        if ($sortableList.length === 0) {
+            console.error(`No element found for selector: ${listSelector}`);
+            return;
+        }
+
+        const itemSelector = listSelector === "#lessonList" ? ".lesson-item" : ".video-item";
+        const $items = $sortableList.find(itemSelector);
+
+        console.log(`Toggling draggable mode: ${enable} for ${listSelector}, found ${$items.length} items`);
 
         if (enable) {
-            items.forEach(item => {
-                item.classList.add("draggable");
-                item.setAttribute("draggable", "true");
-                item.addEventListener("dragstart", () => {
-                    setTimeout(() => item.classList.add("dragging"), 0);
-                });
-                item.addEventListener("dragend", () => {
-                    item.classList.remove("dragging");
+            $items.each(function () {
+                const $item = $(this);
+                $item.addClass("draggable").attr("draggable", true);
+
+                // Remove any existing listeners to avoid duplicates
+                $item.off("dragstart.drag dragend.drag dragover.drag dragenter.drag");
+
+                // Add drag event listeners
+                $item.on("dragstart.drag", function (e) {
+                    console.log(`Drag started on item: ${$item.data("video-id") || $item.data("lesson-id")}`);
+                    $(this).addClass("dragging");
+                    e.originalEvent.dataTransfer.setData("text/plain", "dragging"); // Optional for better compatibility
+                }).on("dragend.drag", function () {
+                    console.log(`Drag ended on item: ${$item.data("video-id") || $item.data("lesson-id")}`);
+                    $(this).removeClass("dragging");
                     if (listSelector === "#lessonList") {
                         updateLessonSequence();
                     } else if (listSelector === "#videoList") {
@@ -327,40 +342,93 @@ $(document).ready(function() {
                 });
             });
 
-            sortableList.addEventListener("dragover", (e) => {
+            // Handle dragover and dragenter on the list
+            $sortableList.off("dragover.drag dragenter.drag drop.drag");
+            $sortableList.on("dragover.drag", function (e) {
                 e.preventDefault();
-                const draggingItem = sortableList.querySelector(".dragging");
-                const siblings = [...sortableList.querySelectorAll(`${listSelector === "#lessonList" ? ".lesson-item" : ".video-item"}:not(.dragging)`)];
-                const nextSibling = siblings.find(sibling => {
-                    const rect = sibling.getBoundingClientRect();
-                    return e.clientY <= rect.top + rect.height / 2;
-                });
-                sortableList.insertBefore(draggingItem, nextSibling || null);
-            });
+                const $draggingItem = $sortableList.find(".dragging");
+                const $siblings = $sortableList.find(`${itemSelector}:not(.dragging)`);
+                let $nextSibling = null;
 
-            sortableList.addEventListener("dragenter", e => e.preventDefault());
-        } else {
-            items.forEach(item => {
-                item.classList.remove("draggable");
-                item.removeAttribute("draggable");
-                item.replaceWith(item.cloneNode(true)); // Remove event listeners
+                $siblings.each(function () {
+                    const $sibling = $(this);
+                    const rect = $sibling[0].getBoundingClientRect();
+                    if (e.originalEvent.clientY <= rect.top + rect.height / 2) {
+                        $nextSibling = $sibling;
+                        return false;
+                    }
+                });
+
+                if ($draggingItem.length) {
+                    if ($nextSibling && $nextSibling.length) {
+                        $draggingItem.insertBefore($nextSibling);
+                    } else {
+                        $sortableList.append($draggingItem);
+                    }
+                }
+            }).on("dragenter.drag", function (e) {
+                e.preventDefault();
+            }).on("drop.drag", function (e) {
+                e.preventDefault(); // Ensure drop works smoothly
             });
+        } else {
+            $items.each(function () {
+                const $item = $(this);
+                $item.removeClass("draggable").removeAttr("draggable");
+                const $clone = $item.clone();
+                $item.replaceWith($clone); // Remove listeners by replacing
+            });
+            $sortableList.off("dragover.drag dragenter.drag drop.drag");
         }
     }
 
-    $("#manageBtn").click(function() {
-        isDraggableMode = !isDraggableMode;
-        $(this).toggleClass("active");
-        $(this).html(`
-            ${isDraggableMode ? "Done" : `<i class="hgi hgi-stroke hgi-pencil-edit-02 fs-5 me-2 align-middle"></i> Manage`}
-        `);
-        toggleDraggableMode(isDraggableMode, "#lessonList");
-        if ($("#lessonModal").is(":visible")) {
-            toggleDraggableMode(isDraggableMode, "#videoList");
+    function dragButton(button) {
+        const $button = $(button);
+        const isCurrentlyDraggable = $button.hasClass("active");
+        const newDraggableMode = !isCurrentlyDraggable;
+
+        // Determine the target list based on button ID
+        let listSelector;
+        if ($button.attr("id") === "manageBtn") {
+            listSelector = "#lessonList";
+        } else if ($button.attr("id") === "addModalManageBtn") {
+            listSelector = "#newVideoList";
+        } else if ($button.attr("id") === "updateModalManageBtn") {
+            listSelector = "#videoList";
         }
-        if ($("#newLessonModal").is(":visible")) {
-            toggleDraggableMode(isDraggableMode, "#newVideoList");
+
+        if (!listSelector) {
+            showAlert("danger", "No valid list selector found for button:", $button.attr("id"));
+            return;
         }
+
+        const $sortableList = $(listSelector);
+        const itemSelector = listSelector === "#lessonList" ? ".lesson-item" : ".video-item";
+        const $items = $sortableList.find(itemSelector);
+
+        // prevent toggling if the list is empty
+        if ($items.length === 0) {
+            showAlert("warning", "No items to manage. Please add items first.");
+            return;
+        }
+
+        $button.toggleClass("active");
+        $button.html(`
+        ${newDraggableMode ? "Done" : `<i class="hgi hgi-stroke hgi-pencil-edit-02 fs-5 me-2 align-middle"></i> Manage`}
+    `);
+        toggleDraggableMode(newDraggableMode, listSelector);
+    }
+
+    $("#manageBtn").on("click", function () {
+        dragButton(this);
+    });
+
+    $("#addModalManageBtn").on("click", function () {
+        dragButton(this);
+    });
+
+    $("#updateModalManageBtn").on("click", function () {
+        dragButton(this);
     });
 
     $(document).on("click", ".lesson-item:not(.draggable)", function() {
@@ -431,11 +499,25 @@ $(document).ready(function() {
         if (hasItems) {
             if (!isVisible) {
                 $(this).html('<i class="hgi hgi-stroke hgi-check-circle me-2 align-middle"></i>Done');
-                $(this).removeClass("text-warning").addClass("text-success");
+                $(this).removeClass("text-warning").addClass("text-secondary");
             } else {
                 $(this).html('<i class="hgi hgi-stroke hgi-pencil-edit-02 me-2 align-middle"></i>Manage');
-                $(this).removeClass("text-success").addClass("text-warning");
+                $(this).removeClass("text-secondary").addClass("text-warning");
             }
         }
     });
+
+    // $("#lessonModal").on("shown.bs.modal", function () {
+    //     const lessonId = $(this).data("current-lesson-id");
+    //     const lesson = lessons.find(l => l.lessonId === lessonId);
+    //     if (lesson) {
+    //         populateVideoList(lesson);
+    //         toggleDraggableMode(true, "#videoList");
+    //     }
+    // });
+    //
+    // $("#newLessonModal").on("shown.bs.modal", function () {
+    //     $("#newVideoList").empty();
+    //     toggleDraggableMode(true, "#newVideoList");
+    // });
 });
