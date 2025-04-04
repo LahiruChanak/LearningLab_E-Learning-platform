@@ -8,9 +8,12 @@ $(document).ready(function() {
     );
 
     const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
     let currentCourseId = null;
     let lessons = [];
     let isDraggableMode = false;
+    let tempModal = null;
 
     const urlParams = new URLSearchParams(window.location.search);
     const courseId = urlParams.get("courseId");
@@ -65,7 +68,7 @@ $(document).ready(function() {
         const lessonList = $("#lessonList");
         lessonList.empty();
         if (lessons.length === 0) {
-            lessonList.append('<li class="text-center text-muted list-unstyled">No lessons yet</li>');
+            lessonList.append('<li class="text-center text-muted list-unstyled">No lessons yet. Please add some lessons.</li>');
         } else {
             lessons.sort((a, b) => a.lessonSequence - b.lessonSequence);
             lessons.forEach(lesson => {
@@ -95,6 +98,11 @@ $(document).ready(function() {
             videos: []
         };
 
+        if (!lessonData.title) {
+            showAlert("warning", "Please fill in all the required fields to create new lessons.");
+            return;
+        }
+
         $("#newVideoList .video-item").each(function (index) {
             lessonData.videos.push({
                 videoId: null,
@@ -105,6 +113,11 @@ $(document).ready(function() {
             });
         });
 
+        if (lessonData.videos.length > 0 && (!lessonData.videos.title || !lessonData.videos.videoUrl || !lessonData.videos.duration)) {
+            showAlert("warning", "Please fill in all the required video fields.");
+            return;
+        }
+
         $.ajax({
             url: "http://localhost:8080/api/v1/instructor/lesson",
             type: "POST",
@@ -113,11 +126,15 @@ $(document).ready(function() {
             data: JSON.stringify(lessonData),
             success: function (lesson) {
                 lessons.push(lesson);
+                showAlert("success", "Lesson created successfully!");
                 renderLessons();
                 $("#newLessonModal").modal("hide");
                 $("#newLessonForm")[0].reset();
                 $("#newVideoList").empty();
-                showAlert("success", "Lesson created successfully!");
+
+                setTimeout(() => {
+                    window.location.reload();
+                },1500);
             },
             error: function (xhr) {
                 showAlert("danger", "Error creating lesson: " + (xhr.responseJSON?.message || xhr.statusText));
@@ -135,6 +152,11 @@ $(document).ready(function() {
             videos: []
         };
 
+        if (!lessonData.title) {
+            showAlert("warning", "Please fill in all the required fields to update existing lessons.");
+            return;
+        }
+
         $("#videoList .video-item").each(function (index) {
             const videoId = $(this).data("video-id");
             lessonData.videos.push({
@@ -145,6 +167,11 @@ $(document).ready(function() {
                 videoSequence: index + 1
             });
         });
+
+        if (lessonData.videos.length > 0 && (!lessonData.videos.title || !lessonData.videos.videoUrl || !lessonData.videos.duration)) {
+            showAlert("warning", "Please fill in all the required video fields.");
+            return;
+        }
 
         $.ajax({
             url: `http://localhost:8080/api/v1/instructor/lesson/${lessonId}`,
@@ -158,6 +185,10 @@ $(document).ready(function() {
                 renderLessons();
                 $("#lessonModal").modal("hide");
                 showAlert("success", "Lesson updated successfully!");
+
+                setTimeout(() => {
+                    window.location.reload();
+                },1500);
             },
             error: function (xhr) {
                 showAlert("danger", "Error updating lesson: " + (xhr.responseJSON?.message || xhr.statusText));
@@ -437,53 +468,122 @@ $(document).ready(function() {
         $("#lessonModal").modal("show");
     });
 
-    $(document).on("click", ".btn-remove", function(e) {
+    $(document).on("click",".btn-remove",function (e) {
         e.stopPropagation();
         const lessonId = $(this).data("id");
         const lesson = lessons.find(l => l.lessonId === lessonId);
+
+        $("#deleteModalTitle").text("Delete Lesson");
         $("#deleteModalName").text(lesson.title);
         $("#deleteConfirmModal").data("lesson-id", lessonId);
+        $("#deleteConfirmModal").data("delete-type", "lesson");
+
+        // Clear video data to avoid conflicts
+        $("#deleteConfirmModal").removeData("video-id").removeData("video-item");
+
         $("#deleteConfirmModal").modal("show");
     });
 
-    $("#confirmDelete").click(function() {
-        console.log("delete triggered");
-        const lessonId = $("#deleteConfirmModal").data("lesson-id");
-        deleteLesson(lessonId);
-    });
+    $("#confirmDelete").click(function () {
+        const deleteType = $("#deleteConfirmModal").data("delete-type");
 
-    $(document).on("click",".remove-video",function () {
-        const videoItem = $(this).closest(".video-item");
-        const videoId = videoItem.data("video-id");
-
-        if (videoId && typeof videoId === "number" && videoId > 0) {
-            $.ajax({
-                url: `http://localhost:8080/api/v1/instructor/lesson/video/${videoId}`,
-                type: "DELETE",
-                headers: { "Authorization": "Bearer " + token },
-                success: function () {
-                    videoItem.remove();
-                    showAlert("success", "Video deleted successfully!");
-                    // update video sequence
-                    $("#videoList .video-item").each(function (index) {
-                        $(this).find(".video-duration").next().data("video-sequence", index + 1);
-                    });
-                },
-                error: function (xhr) {
-                    showAlert("danger", "Error deleting video: " + (xhr.responseJSON?.message || xhr.statusText));
-                }
-            });
-        } else {
-            videoItem.remove();
-            showAlert("success", "Video removed from list!");
-            // update sequence for remaining items
-            $("#videoList .video-item").each(function (index) {
-                $(this).find(".video-duration").next().data("video-sequence", index + 1);
-            });
+        if (!token && role !== "INSTRUCTOR") {
+            showAlert("danger", "Please log in as an instructor to perform this action.");
         }
 
-        if ($("#lessonModal").is(":visible")) updateVideoSequence();
-        else updateNewVideoSequence();
+        if (deleteType === "lesson") {
+            const lessonId = $("#deleteConfirmModal").data("lesson-id");
+            deleteLesson(lessonId);
+        } else if (deleteType === "video") {
+            const videoId = $("#deleteConfirmModal").data("video-id");
+            const $videoItem = $($("#deleteConfirmModal").data("video-item"));
+
+            if (videoId && typeof videoId === "number" && videoId > 0) {
+                $.ajax({
+                    url: `http://localhost:8080/api/v1/instructor/lesson/video/${videoId}`,
+                    type: "DELETE",
+                    headers: { "Authorization": "Bearer " + token },
+                    success: function () {
+                        $videoItem.remove();
+                        showAlert("success", "Video deleted successfully!");
+                        const $manageVideoBtn = $("#lessonModal").is(":visible") ? $("#updateModalManageBtn") : $("#addModalManageBtn");
+                        toggleDraggableMode($manageVideoBtn.hasClass("active"), $manageVideoBtn);
+                        updateVideoSequence();
+                        updateNewVideoSequence();
+
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    },
+                    error: function (xhr) {
+                        showAlert("danger", "Error deleting video: " + (xhr.responseJSON?.message || xhr.statusText));
+                    },
+                    complete: function () {
+                        $("#deleteConfirmModal").modal("hide");
+                        tempModal.modal("show");
+                    }
+                });
+            } else {
+                $videoItem.remove();
+                showAlert("success", "Video removed from list!");
+                const $manageVideoBtn = $("#lessonModal").is(":visible") ? $("#updateModalManageBtn") : $("#addModalManageBtn");
+                toggleDraggableMode($manageVideoBtn.hasClass("active"), $manageVideoBtn);
+                if ($("#lessonModal").is(":visible")) updateVideoSequence();
+                else updateNewVideoSequence();
+                $("#deleteConfirmModal").modal("hide");
+            }
+        } else {
+            showAlert("danger", "Unknown delete type: " + deleteType);
+            $("#deleteConfirmModal").modal("hide");
+        }
+    });
+
+    $(document).on("click", ".remove-video", function () {
+        const $videoItem = $(this).closest(".video-item");
+        const videoId = $videoItem.data("video-id");
+        const videoTitle = $videoItem.find(".video-title").val() || "Untitled Video";
+
+        // Set modal content for video
+        $("#deleteModalTitle").text("Delete Video");
+        $("#deleteModalName").text(videoTitle);
+        $("#deleteConfirmModal").data("video-id", videoId);
+        $("#deleteConfirmModal").data("video-item", $videoItem[0]);
+        $("#deleteConfirmModal").data("delete-type", "video");
+
+        // Clear lesson data to avoid conflicts
+        $("#deleteConfirmModal").removeData("lesson-id");
+
+        // get active modal to hide
+        const $activeModal = $(".modal.show");
+        if ($activeModal.length) {
+            const activeModalId = $activeModal.attr("id");
+            tempModal = $("#" + activeModalId);
+        }
+
+        tempModal.modal("hide");
+        $("#deleteConfirmModal").modal("show");
+    });
+
+    $(".cancelBtn, .btn-close").on("click", function () {
+        // If delete modal is visible, hide it and show previous modal
+        if ($("#deleteConfirmModal").is(":visible")) {
+            $("#deleteConfirmModal").modal("hide");
+
+            if (typeof tempModal !== "undefined" && tempModal) {
+                tempModal.modal("show");
+            } else {
+                console.warn("tempModal is not defined or initialized");
+            }
+        }
+        // If any manage button is active, toggle off manage mode
+        else if ($(".manageVideoBtn.active").length > 0) {
+            $(".manageVideoBtn.active").each(function () {
+                $(this).removeClass("text-secondary, active").addClass("text-warning");
+                $(this).html('<i class="hgi hgi-stroke hgi-pencil-edit-02 me-2 align-middle"></i>Manage');
+            });
+        } else {
+            $(".modal.show").modal("hide");
+        }
     });
 
     // Manage video button click handler
@@ -506,18 +606,4 @@ $(document).ready(function() {
             }
         }
     });
-
-    // $("#lessonModal").on("shown.bs.modal", function () {
-    //     const lessonId = $(this).data("current-lesson-id");
-    //     const lesson = lessons.find(l => l.lessonId === lessonId);
-    //     if (lesson) {
-    //         populateVideoList(lesson);
-    //         toggleDraggableMode(true, "#videoList");
-    //     }
-    // });
-    //
-    // $("#newLessonModal").on("shown.bs.modal", function () {
-    //     $("#newVideoList").empty();
-    //     toggleDraggableMode(true, "#newVideoList");
-    // });
 });
