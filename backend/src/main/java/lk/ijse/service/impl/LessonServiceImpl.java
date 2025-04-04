@@ -11,6 +11,7 @@ import lk.ijse.service.LessonService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -115,10 +116,28 @@ public class LessonServiceImpl implements LessonService {
         return modelMapper.map(updatedLesson, LessonDTO.class);
     }
 
+    @Override
+    @Transactional
     public void deleteLesson(Long lessonId) {
         Lesson lesson = lessonRepo.findById(lessonId)
-                .orElseThrow(() -> new RuntimeException("Lesson not found"));
+                .orElseThrow(() -> new RuntimeException("Lesson not found with ID: " + lessonId));
+
+        Long courseId = lesson.getCourse().getCourseId();
         lessonRepo.delete(lesson);
+
+        // re-sequence remaining lessons
+        List<Lesson> remainingLessons = lessonRepo.findByCourseCourseId(courseId);
+        for (int i = 0; i < remainingLessons.size(); i++) {
+            remainingLessons.get(i).setLessonSequence(i + 1);
+        }
+        lessonRepo.saveAll(remainingLessons);
+    }
+
+    @Override
+    public void deleteLessonVideo(Long videoId) {
+        LessonVideo video = lessonVideoRepo.findById(videoId)
+                .orElseThrow(() -> new RuntimeException("Video not found with ID: " + videoId));
+        lessonVideoRepo.delete(video);
     }
 
     public void updateLessonSequence(List<LessonDTO> lessonDTOs) {

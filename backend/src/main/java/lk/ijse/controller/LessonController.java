@@ -44,6 +44,13 @@ public class LessonController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/video/{videoId}")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    public ResponseEntity<Void> deleteLessonVideo(@PathVariable Long videoId) {
+        lessonService.deleteLessonVideo(videoId);
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping("/sequence")
     @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<Void> updateLessonSequence(@RequestBody List<LessonDTO> lessonDTOs) {

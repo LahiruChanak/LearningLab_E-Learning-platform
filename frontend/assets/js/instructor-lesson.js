@@ -175,6 +175,7 @@ $(document).ready(function() {
                 lessons = lessons.filter(l => l.lessonId !== lessonId);
                 showAlert("success", "Lesson deleted successfully!");
                 renderLessons();
+                fetchLessons();
                 $("#deleteConfirmModal").modal("hide");
             },
             error: function (xhr) {
@@ -183,6 +184,10 @@ $(document).ready(function() {
             }
         });
     }
+
+    $(document).on("click", ".delete-lesson", function () {
+        deleteLesson();
+    });
 
     // Update lesson sequence
     function updateLessonSequence() {
@@ -374,27 +379,39 @@ $(document).ready(function() {
     });
 
     $("#confirmDelete").click(function() {
+        console.log("delete triggered");
         const lessonId = $("#deleteConfirmModal").data("lesson-id");
         deleteLesson(lessonId);
     });
 
-    $(document).on("click", ".remove-video", function() {
-        const videoId = $(this).closest(".video-item").data("video-id");
-        if (videoId && videoId !== Date.now()) {
+    $(document).on("click",".remove-video",function () {
+        const videoItem = $(this).closest(".video-item");
+        const videoId = videoItem.data("video-id");
+
+        if (videoId && typeof videoId === "number" && videoId > 0) {
             $.ajax({
                 url: `http://localhost:8080/api/v1/instructor/lesson/video/${videoId}`,
                 type: "DELETE",
                 headers: { "Authorization": "Bearer " + token },
                 success: function () {
-                    $(this).closest(".video-item").remove()
-                    showAlert("success", "Lesson Video deleted successfully!");
+                    videoItem.remove();
+                    showAlert("success", "Video deleted successfully!");
+                    // update video sequence
+                    $("#videoList .video-item").each(function (index) {
+                        $(this).find(".video-duration").next().data("video-sequence", index + 1);
+                    });
                 },
                 error: function (xhr) {
-                    showAlert("danger", "Error deleting video: " + (xhr.responseJSON?.message || xhr.statusText))
+                    showAlert("danger", "Error deleting video: " + (xhr.responseJSON?.message || xhr.statusText));
                 }
             });
         } else {
-            $(this).closest(".video-item").remove();
+            videoItem.remove();
+            showAlert("success", "Video removed from list!");
+            // update sequence for remaining items
+            $("#videoList .video-item").each(function (index) {
+                $(this).find(".video-duration").next().data("video-sequence", index + 1);
+            });
         }
 
         if ($("#lessonModal").is(":visible")) updateVideoSequence();
