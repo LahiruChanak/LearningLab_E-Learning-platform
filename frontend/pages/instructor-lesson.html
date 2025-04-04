@@ -17,17 +17,32 @@
     <link rel="stylesheet" href="../assets/css/instructor-lesson.css">
     <link rel="stylesheet" href="../assets/css/alert.css">
     <link rel="stylesheet" href="../assets/css/button.css">
+    <link rel="stylesheet" href="../assets/css/color.css">
 </head>
 <body>
-<div class="container py-5">
-    <h1 class="text-center mb-5">Lesson Management</h1>
+<div class="container py-4">
+    <div class="d-flex align-items-center mb-4">
+        <a href="admin-course.html" class="back-btn">
+            <i class="hgi hgi-stroke hgi-arrow-left-01 fs-3 align-middle" data-bs-toggle="tooltip" data-bs-title="To Courses" data-bs-placement="bottom"></i>
+        </a>
+        <h1 class="text-center w-100">Lesson Management</h1>
+    </div>
 
     <!-- Course Details -->
     <div class="card mb-5" id="courseDetails" style="display: none;">
         <div class="card-body course-details">
-            <h5 class="card-title" id="courseTitle"></h5>
-            <p id="courseDescription" class="mb-2"></p>
-            <p class="mb-0"><strong>Price:</strong> $<span id="coursePrice"></span></p>
+            <img src="" alt="Course Image" class="card-img-top" id="courseImage">
+            <div>
+                <div class="d-flex align-items-center">
+                    <h5 class="card-title me-3" id="courseTitle"></h5>
+                    <div class="d-flex align-items-center justify-content-start gap-2 badge-container">
+                        <div class="badge rounded-pill bg-primary-subtle text-primary px-2 rounded-pill" id="courseLevel"></div>
+                        <div class="badge rounded-pill bg-primary-subtle text-primary px-2 rounded-pill" id="courseStatus"></div>
+                    </div>
+                </div>
+                <p id="courseDescription" class="mb-2"></p>
+                <p class="mb-0"><strong>Price:</strong> $<span id="coursePrice"></span></p>
+            </div>
         </div>
     </div>
 

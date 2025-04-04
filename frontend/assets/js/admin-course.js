@@ -93,8 +93,8 @@ $(document).ready(function () {
                 <td>${course.price}</td>
                 <td>
                     <span class="badge rounded-pill px-2 ${course.level === 'BEGINNER' ? 'bg-warning' :
-            course.level === 'INTERMEDIATE' ? 'bg-success' : 'bg-danger'}">
-                          ${course.level.charAt(0).toUpperCase() + course.level.slice(1).toLowerCase()}
+                        course.level === 'INTERMEDIATE' ? 'bg-success' : 'bg-danger'}">
+                        ${course.level.charAt(0).toUpperCase() + course.level.slice(1).toLowerCase()}
                     </span>
                 </td>
                 <td>
@@ -109,7 +109,7 @@ $(document).ready(function () {
                     <button class="btn btn-action btn-delete" data-id="${course.courseId}" data-title="${course.title}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Delete">
                         <i class="hgi hgi-stroke hgi-delete-02 align-middle fs-5"></i>
                     </button>
-                    <button class="btn btn-action btn-lesson btn-success" data-id="${course.courseId}" data-title="${course.title}" data-bs-toggle="tooltip" 
+                    <button class="btn btn-action btn-view" data-id="${course.courseId}" data-title="${course.title}" data-bs-toggle="tooltip" 
                             data-bs-placement="bottom" data-bs-title="Manage Lessons" onclick="window.location.href='instructor-lesson.html?courseId=${course.courseId}'">
                         <i class="hgi hgi-stroke hgi-left-to-right-list-bullet align-middle fs-5"></i>
                     </button>

@@ -1,9 +1,16 @@
 :root {
   --primary: #007bff;
+  --primary-subtle: #cfe2ff;
   --secondary: #6c757d;
+  --secondary-subtle: #e2e3e5;
   --success: #22c55e;
+  --success-subtle: #d1fae5;
   --danger: #ef4444;
+  --danger-subtle: #fee2e2;
   --warning: #ffd93d;
+  --warning-subtle: #fff3c5;
+  --info: #3b82f6;
+  --info-subtle: #cff4fc;
 
   --primary-hover: #0056b3;
   --secondary-hover: #545b62;
@@ -12,7 +19,7 @@
   --warning-hover: #e0a800;
 }
 
-/* bootstrap primary color */
+/* ----------- bootstrap primary color ----------- */
 .btn-primary,
 .bg-primary {
   background-color: var(--primary) !important;
@@ -31,8 +38,11 @@
 .text-primary {
   color: var(--primary) !important;
 }
+.bg-primary-subtle {
+  background-color: var(--primary-subtle) !important;
+}
 
-/* bootstrap secondary color */
+/* ----------- bootstrap secondary color ----------- */
 .btn-secondary,
 .bg-secondary {
   background-color: var(--secondary) !important;
@@ -51,8 +61,11 @@
 .text-secondary {
   color: var(--secondary) !important;
 }
+.bg-secondary-subtle {
+  background-color: var(--secondary-subtle) !important;
+}
 
-/* bootstrap success color */
+/* ----------- bootstrap success color ----------- */
 .btn-success,
 .bg-success {
   background-color: var(--success) !important;
@@ -71,8 +84,11 @@
 .text-success {
   color: var(--success) !important;
 }
+.bg-success-subtle {
+  background-color: var(--success-subtle) !important;
+}
 
-/* bootstrap danger color */
+/* ----------- bootstrap danger color ----------- */
 .btn-danger,
 .bg-danger {
   background-color: var(--danger) !important;
@@ -91,8 +107,11 @@
 .text-danger {
   color: var(--danger) !important;
 }
+.bg-danger-subtle {
+  background-color: var(--danger-subtle) !important;
+}
 
-/* bootstrap warning color */
+/* ----------- bootstrap warning color ----------- */
 .btn-warning {
   background-color: var(--warning) !important;
 }
@@ -109,4 +128,7 @@
 }
 .text-warning {
   color: var(--warning) !important;
+}
+.bg-warning-subtle {
+  background-color: var(--warning-subtle) !important;
 }

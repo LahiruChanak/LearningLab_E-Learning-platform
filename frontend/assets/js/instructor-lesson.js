@@ -32,7 +32,15 @@ $(document).ready(function() {
                     const course = response.data.find(c => c.courseId === courseId);
                     if (course) {
                         $("#courseDetails").show();
+                        $("#courseImage").attr("src",course.thumbnail || "../assets/images/icons/placeholder.svg");
                         $("#courseTitle").text(course.title);
+                        $("#courseLevel").attr("class", `badge rounded-pill px-2 
+                            ${course.level === 'BEGINNER' ? 'bg-warning-subtle text-warning' :
+                            course.level === 'INTERMEDIATE' ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}`)
+                            .text(course.level.charAt(0).toUpperCase() + course.level.slice(1).toLowerCase());
+                        $("#courseStatus").attr("class", `badge rounded-pill px-2
+                            ${course.isPublished ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}`)
+                            .text(course.isPublished ? "Published" : "Draft");
                         $("#courseDescription").text(course.description);
                         $("#coursePrice").text(course.price.toFixed(2));
                         currentCourseId = courseId;
