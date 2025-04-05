@@ -48,7 +48,7 @@ $(document).ready(function () {
               ? $(`#${formId} select[name='categoryId']`)
               : $("select[name='categoryId']");
           $categorySelect.empty();
-          $categorySelect.append('<option value="">Select Category</option>');
+          $categorySelect.append('<option value="">All Category</option>');
           response.data.forEach(category => {
             $categorySelect.append(`<option value="${category.categoryId}">${category.name}</option>`);
           });
