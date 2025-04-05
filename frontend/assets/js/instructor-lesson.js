@@ -23,8 +23,14 @@ $(document).ready(function() {
 
     // Fetch course details and lessons
     function loadCourseLessons(courseId) {
+
+        if (!token) {
+            showAlert("danger", "Please login to the system to load courses.");
+            return;
+        }
+
         $.ajax({
-            url: `http://localhost:8080/api/v1/instructor/course`,
+            url: `http://localhost:8080/api/v1/course`,
             type: "GET",
             headers: { "Authorization": "Bearer " + token },
             success: function (response) {
@@ -56,6 +62,12 @@ $(document).ready(function() {
 
     // Fetch and render lessons
     function fetchLessons(courseId) {
+
+        if (!token) {
+            showAlert("danger", "Please login to the system to load lessons.");
+            return;
+        }
+
         $.ajax({
             url: `http://localhost:8080/api/v1/instructor/lesson/course/${courseId}`,
             type: "GET",
@@ -126,6 +138,11 @@ $(document).ready(function() {
             return;
         }
 
+        if (!token) {
+            showAlert("danger", "Please login to the system to create new lessons.");
+            return;
+        }
+
         $.ajax({
             url: "http://localhost:8080/api/v1/instructor/lesson",
             type: "POST",
@@ -181,6 +198,11 @@ $(document).ready(function() {
             return;
         }
 
+        if (!token) {
+            showAlert("danger", "Please login to the system to update existing lessons.");
+            return;
+        }
+
         $.ajax({
             url: `http://localhost:8080/api/v1/instructor/lesson/${lessonId}`,
             type: "PUT",
@@ -206,6 +228,12 @@ $(document).ready(function() {
 
     // Delete lesson
     function deleteLesson(lessonId) {
+
+        if (!token) {
+            showAlert("danger", "Please login to the system to delete lessons.");
+            return;
+        }
+
         $.ajax({
             url: `http://localhost:8080/api/v1/instructor/lesson/${lessonId}`,
             type: "DELETE",
@@ -237,6 +265,12 @@ $(document).ready(function() {
             updatedLessons.push({ lessonId, lessonSequence: index + 1 });
             $(item).find(".details span").text(`${$(item).find(".details span").text().split(" (")[0]} (Sequence: ${index + 1}) - ${$(item).data("published") ? "Published" : "Draft"}`);
         });
+
+        if (!token) {
+            showAlert("danger", "Please login to the system to update lessons sequence.");
+            return;
+        }
+
         $.ajax({
             url: "http://localhost:8080/api/v1/instructor/lesson/sequence",
             type: "PUT",
@@ -346,14 +380,12 @@ $(document).ready(function() {
     function toggleDraggableMode(enable, listSelector = "#lessonList") {
         const $sortableList = $(listSelector);
         if ($sortableList.length === 0) {
-            console.error(`No element found for selector: ${listSelector}`);
+            showAlert("warning", "No element found for selector: " + listSelector);
             return;
         }
 
         const itemSelector = listSelector === "#lessonList" ? ".lesson-item" : ".video-item";
         const $items = $sortableList.find(itemSelector);
-
-        console.log(`Toggling draggable mode: ${enable} for ${listSelector}, found ${$items.length} items`);
 
         if (enable) {
             $items.each(function () {
@@ -408,14 +440,14 @@ $(document).ready(function() {
             }).on("dragenter.drag", function (e) {
                 e.preventDefault();
             }).on("drop.drag", function (e) {
-                e.preventDefault(); // Ensure drop works smoothly
+                e.preventDefault();
             });
         } else {
             $items.each(function () {
                 const $item = $(this);
                 $item.removeClass("draggable").removeAttr("draggable");
                 const $clone = $item.clone();
-                $item.replaceWith($clone); // Remove listeners by replacing
+                $item.replaceWith($clone);
             });
             $sortableList.off("dragover.drag dragenter.drag drop.drag");
         }
@@ -614,4 +646,16 @@ $(document).ready(function() {
             }
         }
     });
+
+/* -------------------------------------------------- Admin Codes --------------------------------------------------- */
+
+    // check the user role and show admin-only features
+    if (role === "ADMIN") {
+        $("#addLessonBtn, #manageBtn, #addVideoBtn, #updateModalManageBtn, #saveLessonBtn").hide();
+
+        $("#newLessonModal, #lessonModal").find(".form-control, .form-select").prop("disabled", true);
+        $("#videoList, #newVideoList").addClass("disabled");
+    }
+
+
 });

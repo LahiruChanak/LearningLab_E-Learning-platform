@@ -106,7 +106,7 @@ body {
 .btn-action {
   padding: 3px 8px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   transition: all 0.3s ease;
 }
 
@@ -117,16 +117,25 @@ body {
 
 .btn-view,
 .btn-success {
-  background-color: #2ebb62;
+  background-color: #22c55e;
   color: #fff;
   transition: all 0.4s ease;
 }
 
 .btn-edit,
-.btn-warning {
+.btn-warning,
+.btn-status {
   background-color: #ffd93d;
   color: #000;
   transition: all 0.4s ease;
+}
+
+.btn-status.active {
+  color: #22c55e !important;
+}
+
+.btn-status.inactive {
+  color: #ef4444 !important;
 }
 
 .btn-delete,
@@ -412,7 +421,18 @@ body {
   pointer-events: all !important;
 }
 
-#deleteModalName {
+#deleteModalName,
+#statusUpdateName {
   font-weight: 600;
   color: #ff6b6b;
+}
+
+.btn-confirm-activate {
+  background-color: #28a745 !important;
+  color: white;
+}
+
+.btn-confirm-deactivate {
+  background-color: #dc3545 !important;
+  color: white;
 }

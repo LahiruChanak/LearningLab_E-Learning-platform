@@ -22,17 +22,26 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
 
-    @GetMapping("/instructor/course")
-    @PreAuthorize("hasRole('INSTRUCTOR')")
-    public ResponseEntity<ResponseDTO> getInstructorCourses(
-            @AuthenticationPrincipal UserDetails userDetails) {
+    @GetMapping("/course")
+    @PreAuthorize("hasAnyRole('INSTRUCTOR', 'ADMIN')")
+    public ResponseEntity<ResponseDTO> getCourses(@AuthenticationPrincipal UserDetails userDetails) {
         try {
             if (userDetails == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(new ResponseDTO(401, "Unauthorized", null));
             }
-            List<CourseDTO> courses = courseService.getInstructorCourses(userDetails.getUsername());
-            return ResponseEntity.ok(new ResponseDTO(200, "Courses fetched successfully", courses));
+
+            List<CourseDTO> courses;
+            boolean isAdmin = userDetails.getAuthorities().stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+
+            if (isAdmin) {
+                courses = courseService.getAllCourses();
+                return ResponseEntity.ok(new ResponseDTO(200, "All courses fetched successfully", courses));
+            } else {
+                courses = courseService.getInstructorCourses(userDetails.getUsername());
+                return ResponseEntity.ok(new ResponseDTO(200, "Instructor courses fetched successfully", courses));
+            }
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ResponseDTO(404, e.getMessage(), null));
@@ -60,7 +69,7 @@ public class CourseController {
     }
 
     @PutMapping(value = "/instructor/course/{courseId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('INSTRUCTOR')")
+    @PreAuthorize("hasAnyRole('INSTRUCTOR', 'ADMIN')")
     public ResponseEntity<ResponseDTO> updateCourse(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long courseId,
@@ -71,7 +80,7 @@ public class CourseController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(new ResponseDTO(401, "Unauthorized", null));
             }
-            CourseDTO updatedCourse = courseService.updateCourse(courseId, courseDTO, thumbnail, userDetails.getUsername());
+            CourseDTO updatedCourse = courseService.updateCourse(courseId, courseDTO, thumbnail, userDetails);
             return ResponseEntity.ok(new ResponseDTO(200, "Course updated successfully", updatedCourse));
         } catch (RuntimeException e) {
             if (e.getMessage().contains("Course not found") || e.getMessage().contains("permission")) {

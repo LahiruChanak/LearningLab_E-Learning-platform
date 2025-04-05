@@ -17,7 +17,7 @@ public class LessonController {
     private LessonService lessonService;
 
     @GetMapping("/course/{courseId}")
-    @PreAuthorize("hasRole('INSTRUCTOR')")
+    @PreAuthorize("hasAnyRole('INSTRUCTOR', 'ADMIN')")
     public ResponseEntity<List<LessonDTO>> getLessonsByCourse(@PathVariable Long courseId) {
         List<LessonDTO> lessons = lessonService.getLessonsByCourse(courseId);
         return ResponseEntity.ok(lessons);

@@ -1,5 +1,6 @@
 /* ------------- delete btn ------------- */
-.delete-btn {
+.delete-btn,
+.status-btn {
   width: 100px;
   height: 40px;
   border-radius: 8px;
@@ -26,11 +27,16 @@
   transition: all 0.5s ease;
 }
 
+.svgIcon.toggle {
+  width: 25px;
+}
+
 .svgIcon path {
   fill: white !important;
 }
 
-.delete-btn:hover {
+.delete-btn:hover,
+.status-btn:hover {
   width: 100px;
   border-radius: 50px;
   background-color: #ef4444 !important;
@@ -38,13 +44,26 @@
   transition: all 0.5s ease;
 }
 
-.delete-btn:hover .svgIcon {
+.status-btn-on:hover {
+  background-color: #279f52 !important;
+}
+.status-btn-off:hover {
+  background-color: #ef4444 !important;
+}
+
+.delete-btn:hover .svgIcon,
+.status-btn:hover .svgIcon {
   width: 70px;
   transform: translateY(45%);
   transition: all 0.4s ease;
 }
 
-.delete-btn::before {
+.status-btn:hover .svgIcon {
+  transform: translateY(40%);
+}
+
+.delete-btn::before,
+.status-btn::before {
   position: absolute;
   top: -28px;
   content: "Yes, Delete";
@@ -53,11 +72,20 @@
   transition: all 0.4s ease;
 }
 
-.delete-btn:hover::before {
+.status-btn-on::before {
+  top: -25px;
+  content: "Yes, Publish";
+}
+
+.status-btn-off::before {
+  top: -25px;
+  content: "Yes, Unpublish";
+}
+
+.delete-btn:hover::before,
+.status-btn:hover::before {
   font-size: 13px;
   opacity: 1;
   transform: translateY(30px);
   transition: all 0.4s ease;
 }
-
-/* ------------- update btn ------------- */

@@ -1,7 +1,7 @@
 @import "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap";
 
 body {
-    background: linear-gradient(135deg, #e9ecef, #f8f9fa);
+    background: linear-gradient(135deg, #e9ecef, #f5f6f8);
     font-family: 'Poppins', sans-serif;
     color: #333;
 }
@@ -35,6 +35,18 @@ body {
     background: #fff;
     border-radius: 10px;
     height: fit-content;
+}
+
+#videoList.disabled,
+#newVideoList.disabled {
+    pointer-events: none;
+}
+
+#videoList.disabled .form-control,
+#newVideoList.disabled .form-control {
+    cursor: not-allowed;
+    border-color: #ced4da;
+    background-color: #e9ecef;
 }
 
 #addVideoBtn,

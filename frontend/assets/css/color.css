@@ -1,15 +1,16 @@
 :root {
   --primary: #007bff;
-  --primary-subtle: #cfe2ff;
   --secondary: #6c757d;
-  --secondary-subtle: #e2e3e5;
   --success: #22c55e;
-  --success-subtle: #d1fae5;
   --danger: #ef4444;
-  --danger-subtle: #fee2e2;
   --warning: #ffd93d;
-  --warning-subtle: #fff3c5;
   --info: #3b82f6;
+
+  --primary-subtle: #cfe2ff;
+  --secondary-subtle: #e2e3e5;
+  --success-subtle: #d1fae5;
+  --danger-subtle: #fee2e2;
+  --warning-subtle: #fff3c5;
   --info-subtle: #cff4fc;
 
   --primary-hover: #0056b3;
@@ -17,6 +18,7 @@
   --success-hover: #1e8449;
   --danger-hover: #c82333;
   --warning-hover: #e0a800;
+  --info-hover: #2563eb;
 }
 
 /* ----------- bootstrap primary color ----------- */

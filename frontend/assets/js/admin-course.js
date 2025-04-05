@@ -63,7 +63,7 @@ $(document).ready(function () {
   // ---------------- Fetch courses ----------------
   function fetchCourses() {
     $.ajax({
-      url: "http://localhost:8080/api/v1/instructor/course",
+      url: "http://localhost:8080/api/v1/course",
       type: "GET",
       headers: { "Authorization": "Bearer " + token },
       success: function (response) {
@@ -81,45 +81,77 @@ $(document).ready(function () {
   function renderCourses(courses) {
     const $tbody = $("#courseTableBody");
     $tbody.empty();
+    const userRole = getUserRole();
+
     if (courses.length === 0) {
       $tbody.append('<tr><td colspan="7" class="text-center align-middle" style="height: 100px;">No courses found</td></tr>');
     } else {
       courses.forEach(course => {
+        const editButton = userRole !== "ADMIN" ? `
+                <button class="btn btn-action btn-edit" data-course='${JSON.stringify(course)}' data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Edit">
+                    <i class="hgi hgi-stroke hgi-pencil-edit-02 align-middle fs-5"></i>
+                </button>
+            ` : '';
+
+        const deleteButton = userRole !== "ADMIN" ? `
+                <button class="btn btn-action btn-delete" data-id="${course.courseId}" data-title="${course.title}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Delete">
+                    <i class="hgi hgi-stroke hgi-delete-02 align-middle fs-5"></i>
+                </button>
+            ` : '';
+
+        const viewButton = `
+                <button class="btn btn-action btn-view" data-id="${course.courseId}" data-title="${course.title}" data-bs-toggle="tooltip" data-bs-placement="bottom" 
+                        data-bs-title="${userRole === 'ADMIN' ? 'View' : 'Manage Lessons'}" onclick="window.location.href='instructor-lesson.html?courseId=${course.courseId}'">
+                    <i class="hgi hgi-stroke hgi-left-to-right-list-bullet align-middle fs-5"></i>
+                </button>
+            `;
+
+        const statusButton = userRole === "ADMIN" ? `
+                <button class="btn border-0 btn-status bg-transparent ${course.isPublished ? 'active' : 'inactive'}" data-id="${course.courseId}" data-status="${course.isPublished}" 
+                            data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="${course.isPublished ? 'Activated' : 'Deactivated'}">
+                    <i class="hgi hgi-stroke ${course.isPublished ? 'hgi-toggle-on' : 'hgi-toggle-off'} fs-4 align-middle"></i>
+                </button>
+            ` : '';
+
+        const modalButton =
+
         $tbody.append(`
-            <tr>
-                <td class="text-start"><img src="${course.thumbnail}" class="img-fluid course-thumbnail me-3" alt="thumbnail">${course.title}</td>
-                <td>LMS-100${course.courseId}</td>
-                <td>${course.description}</td>
-                <td>${course.price}</td>
-                <td>
-                    <span class="badge rounded-pill px-2 ${course.level === 'BEGINNER' ? 'bg-warning' :
-                        course.level === 'INTERMEDIATE' ? 'bg-success' : 'bg-danger'}">
-                        ${course.level.charAt(0).toUpperCase() + course.level.slice(1).toLowerCase()}
-                    </span>
-                </td>
-                <td>
-                    <span class="badge rounded-pill px-2 ${course.isPublished ? 'bg-success' : 'bg-danger'}">
-                        ${course.isPublished ? "Active" : "Inactive"}
-                    </span>
-                </td>
-                <td>
-                    <button class="btn btn-action btn-edit" data-course='${JSON.stringify(course)}' data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Edit">
-                        <i class="hgi hgi-stroke hgi-pencil-edit-02 align-middle fs-5"></i>
-                    </button>
-                    <button class="btn btn-action btn-delete" data-id="${course.courseId}" data-title="${course.title}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Delete">
-                        <i class="hgi hgi-stroke hgi-delete-02 align-middle fs-5"></i>
-                    </button>
-                    <button class="btn btn-action btn-view" data-id="${course.courseId}" data-title="${course.title}" data-bs-toggle="tooltip" 
-                            data-bs-placement="bottom" data-bs-title="Manage Lessons" onclick="window.location.href='instructor-lesson.html?courseId=${course.courseId}'">
-                        <i class="hgi hgi-stroke hgi-left-to-right-list-bullet align-middle fs-5"></i>
-                    </button>
-                </td>
-            </tr>
-        `);
+                <tr>
+                    <td class="text-start"><img src="${course.thumbnail}" class="img-fluid course-thumbnail me-3" alt="thumbnail">${course.title}</td>
+                    <td>LMS-100${course.courseId}</td>
+                    <td>${course.description}</td>
+                    <td>${course.price}</td>
+                    <td>
+                        <span class="badge rounded-pill px-2 ${course.level === 'BEGINNER' ? 'bg-warning-subtle text-warning' :
+                            course.level === 'INTERMEDIATE' ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}">
+                            ${course.level.charAt(0).toUpperCase() + course.level.slice(1).toLowerCase()}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge rounded-pill px-2 ${course.isPublished ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}">
+                            ${course.isPublished ? "Active" : "Inactive"}
+                        </span>
+                    </td>
+                    <td>
+                        ${editButton}
+                        ${deleteButton}
+                        ${viewButton}
+                        ${statusButton}
+                    </td>
+                </tr>
+            `);
       });
 
       $('[data-bs-toggle="tooltip"]').tooltip(); // Initialize tooltips
     }
+  }
+
+  function getUserRole() {
+    const role = localStorage.getItem("role");
+    if (role) {
+      return role === "ADMIN" ? "ADMIN" : "INSTRUCTOR";
+    }
+    return "INSTRUCTOR";
   }
 
   // Handle form submission
@@ -357,4 +389,67 @@ $(document).ready(function () {
     return null;
   }
 
+/* -------------------------------------------------- Admin Codes --------------------------------------------------- */
+
+  // check the user role and show admin-only features
+  const role = localStorage.getItem("role");
+  if (role === "ADMIN") {
+    $("#addNewCourse").hide();
+    $(".btn-view").attr("data-bs-title", "View") // change tooltip text
+  }
+
+  // show modal for updating status
+  $(document).on("click", ".btn-status", function () {
+    const $button = $(this);
+    const courseId = $button.data("id");
+    const newStatus = !($(this).data("status") === true || $(this).data("status") === "true");
+    $("#confirmStatusUpdate").removeClass(newStatus ? "status-btn-off" : "status-btn-on")
+        .addClass(newStatus ? "status-btn-on" : "status-btn-off");
+
+    $("#statusUpdateTitle").text(newStatus ? "Publish Course" : "Unpublish Course");
+    $("#statusUpdateAction").text(newStatus ? "publish" : "unpublish");
+    $("#statusUpdateName").text($button.closest("tr").find("td:first").text());
+    $("#statusUpdateModal").data("course-id", courseId);
+    $("#statusUpdateModal").data("new-status", newStatus);
+    $("#statusUpdateModal").data("button", $button[0]);
+
+    $("#statusUpdateModal").modal("show");
+  });
+
+  $("#confirmStatusUpdate").click(function () {
+    const courseId = $("#statusUpdateModal").data("course-id");
+    const newStatus = $("#statusUpdateModal").data("new-status");
+    const $button = $($("#statusUpdateModal").data("button"));
+    const token = localStorage.getItem("token");
+
+    const formData = new FormData();
+    formData.append("courseDTO", new Blob([JSON.stringify({
+      courseId: courseId,
+      isPublished: newStatus
+    })], { type: "application/json" }));
+
+    $.ajax({
+      url: `http://localhost:8080/api/v1/instructor/course/${courseId}`,
+      type: "PUT",
+      headers: { "Authorization": "Bearer " + token },
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function (response) {
+        if (response.status === 200) {
+          $button.removeClass(newStatus ? "inactive" : "active")
+              .addClass(newStatus ? "active" : "inactive");
+          $button.data("status", newStatus);
+          $button.tooltip("dispose");
+          showAlert("success", `Course ${newStatus ? "published" : "unpublished"} successfully!`);
+          $("#statusUpdateModal").modal("hide");
+          fetchCourses();
+        }
+      },
+      error: function (xhr) {
+        showAlert("danger", "Error updating course status: " + (xhr.responseJSON?.message || xhr.statusText));
+        $("#statusUpdateModal").modal("hide");
+      }
+    });
+  });
 });

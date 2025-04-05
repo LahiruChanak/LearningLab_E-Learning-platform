@@ -12,6 +12,7 @@ import lk.ijse.repository.InstructorRepo;
 import lk.ijse.service.CourseService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -86,13 +87,23 @@ public class CourseServiceImpl implements CourseService {
         return modelMapper.map(course, CourseDTO.class);
     }
 
-    @Override
     @Transactional
-    public CourseDTO updateCourse(Long courseId, CourseDTO courseDTO, MultipartFile thumbnail, String instructorEmail) {
+    @Override
+    public CourseDTO updateCourse(Long courseId, CourseDTO courseDTO, MultipartFile thumbnail, UserDetails userDetails) {
+        // Check if user is admin
+        boolean isAdmin = userDetails.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
 
-        Course course = courseRepo.findByInstructorEmailAndCourseId(instructorEmail, courseId)
-                .orElseThrow(() -> new RuntimeException("Course not found or you don’t have permission to update it"));
-
+        Course course;
+        if (isAdmin) {
+            // Admins can update any course
+            course = courseRepo.findById(courseId)
+                    .orElseThrow(() -> new RuntimeException("Course not found"));
+        } else {
+            // Instructors can only update their own courses
+            course = courseRepo.findByInstructorEmailAndCourseId(userDetails.getUsername(), courseId)
+                    .orElseThrow(() -> new RuntimeException("Course not found or you don’t have permission to update it"));
+        }
 
         if (courseDTO.getTitle() != null) course.setTitle(courseDTO.getTitle());
         if (courseDTO.getDescription() != null) course.setDescription(courseDTO.getDescription());
@@ -108,7 +119,7 @@ public class CourseServiceImpl implements CourseService {
         if (thumbnail != null && !thumbnail.isEmpty()) {
             try {
                 Map uploadResult = cloudinary.uploader().upload(thumbnail.getBytes(), ObjectUtils.asMap(
-                        "public_id", "course_thumbnails/" + instructorEmail + "_" + System.currentTimeMillis() + "_" + thumbnail.getOriginalFilename(),
+                        "public_id", "course_thumbnails/" + userDetails.getUsername() + "_" + System.currentTimeMillis() + "_" + thumbnail.getOriginalFilename(),
                         "overwrite", true,
                         "resource_type", "image"
                 ));
@@ -135,6 +146,14 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<CourseDTO> getFilteredCourses(String instructorEmail, Long categoryId, String level, Boolean isPublished, String title) {
         List<Course> courses = courseRepo.findCoursesByFilters(instructorEmail, categoryId, level, isPublished, title);
+        return courses.stream()
+                .map(course -> modelMapper.map(course, CourseDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CourseDTO> getAllCourses() {
+        List<Course> courses = courseRepo.findAll();
         return courses.stream()
                 .map(course -> modelMapper.map(course, CourseDTO.class))
                 .collect(Collectors.toList());
