@@ -25,7 +25,7 @@ public class JwtUtil implements Serializable {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    private static final long JWT_TOKEN_VALIDITY = 24 * 60 * 60; // 24 hours
+    private static final long JWT_TOKEN_VALIDITY = 7 * 24 * 60 * 60; // 1 week
     private static final String HMAC_SHA256 = "HmacSHA256";
 
     private Key getSigningKey() {
