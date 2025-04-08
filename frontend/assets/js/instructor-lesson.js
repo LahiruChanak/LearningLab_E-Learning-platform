@@ -88,7 +88,7 @@ $(document).ready(function() {
         const lessonList = $("#lessonList");
         lessonList.empty();
         if (lessons.length === 0) {
-            lessonList.append('<li class="text-center text-muted list-unstyled">No lessons yet. Please add some lessons.</li>');
+            lessonList.append('<li class="text-center text-muted list-unstyled p-3">No lessons yet. Please add some lessons.</li>');
         } else {
             lessons.sort((a, b) => a.lessonSequence - b.lessonSequence);
             lessons.forEach(lesson => {

@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -24,4 +27,6 @@ public class UserDTO {
     private String passwordUpdatedAt;
     private String emailUpdatedAt;
     private boolean twoFactorEnabled;
+    private LocalDateTime createdAt;
+    private Integer courseCount;    // for instructor
 }

@@ -1,4 +1,4 @@
-/* ------------- delete btn ------------- */
+/* ------------- confirmation modal btn ------------- */
 .delete-btn,
 .status-btn {
   width: 100px;
@@ -44,6 +44,14 @@
   transition: all 0.5s ease;
 }
 
+.status-btn-on .svgIcon {
+  transform: rotate(0deg);
+}
+
+.status-btn-off .svgIcon {
+  transform: rotate(180deg);
+}
+
 .status-btn-on:hover {
   background-color: #279f52 !important;
 }
@@ -60,6 +68,10 @@
 
 .status-btn:hover .svgIcon {
   transform: translateY(40%);
+}
+
+.status-btn-off:hover .svgIcon {
+  transform: rotate(180deg) translateY(-35%);
 }
 
 .delete-btn::before,
@@ -79,7 +91,7 @@
 
 .status-btn-off::before {
   top: -25px;
-  content: "Yes, Unpublish";
+  content: "Yes, Draft";
 }
 
 .delete-btn:hover::before,
@@ -88,4 +100,36 @@
   opacity: 1;
   transform: translateY(30px);
   transition: all 0.4s ease;
+}
+
+/* ------------- Table action btn ------------- */
+.btn-action {
+  padding: 3px 8px;
+  border: none;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn-view,
+.btn-success {
+  background-color: #2ebb62;
+  color: #fff;
+  transition: all 0.4s ease;
+}
+
+.btn-edit,
+.btn-warning {
+  background-color: #ffd93d;
+  color: #000;
+  transition: all 0.4s ease;
+}
+
+.btn-delete {
+  background-color: #ff6b6b;
+  color: #fff;
 }

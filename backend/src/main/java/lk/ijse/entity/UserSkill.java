@@ -25,15 +25,4 @@ public class UserSkill {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "skill_id", nullable = false)
     private Skill skill;
-
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "proficiency")
-//    private Proficiency proficiency;
-//
-//    @Column(name = "acquired_at")
-//    private LocalDateTime acquiredAt = LocalDateTime.now();
-//
-//    public enum Proficiency {
-//        BEGINNER, INTERMEDIATE, EXPERT
-//    }
 }

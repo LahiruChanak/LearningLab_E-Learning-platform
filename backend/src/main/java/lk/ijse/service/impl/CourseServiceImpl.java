@@ -90,17 +90,15 @@ public class CourseServiceImpl implements CourseService {
     @Transactional
     @Override
     public CourseDTO updateCourse(Long courseId, CourseDTO courseDTO, MultipartFile thumbnail, UserDetails userDetails) {
-        // Check if user is admin
+
         boolean isAdmin = userDetails.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
 
         Course course;
         if (isAdmin) {
-            // Admins can update any course
             course = courseRepo.findById(courseId)
                     .orElseThrow(() -> new RuntimeException("Course not found"));
         } else {
-            // Instructors can only update their own courses
             course = courseRepo.findByInstructorEmailAndCourseId(userDetails.getUsername(), courseId)
                     .orElseThrow(() -> new RuntimeException("Course not found or you don’t have permission to update it"));
         }
@@ -154,6 +152,14 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<CourseDTO> getAllCourses() {
         List<Course> courses = courseRepo.findAll();
+        return courses.stream()
+                .map(course -> modelMapper.map(course, CourseDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CourseDTO> getPublishedCourses() {
+        List<Course> courses = courseRepo.findByIsPublishedTrue();
         return courses.stream()
                 .map(course -> modelMapper.map(course, CourseDTO.class))
                 .collect(Collectors.toList());

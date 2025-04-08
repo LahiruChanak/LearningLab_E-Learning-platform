@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -42,6 +43,11 @@ public class User {
     @Column(name = "email_updated_at")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime emailUpdatedAt;
+
+    @ElementCollection
+    @CollectionTable(name = "user_previous_emails", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "previous_email")
+    private List<String> previousEmail = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)

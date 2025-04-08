@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
@@ -348,6 +349,64 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDTO(500, "Error processing deletion request: " + e.getMessage(), null));
+        }
+    }
+
+/* -------------------------------------------------- ADMIN CODES --------------------------------------------------- */
+
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> getAllUsers(@AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            if (userDetails == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new ResponseDTO(401, "Unauthorized", null));
+            }
+            List<UserDTO> users = userService.getAllUsers();
+            return ResponseEntity.ok(new ResponseDTO(200, "Users fetched successfully", users));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(500, "Error fetching users: " + e.getMessage(), null));
+        }
+    }
+
+    @PutMapping("/{userId}/status")
+    public ResponseEntity<ResponseDTO> updateUserStatus(
+            @PathVariable("userId") Long userId,
+            @RequestBody Map<String, Boolean> requestBody,
+            Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO(401, "Unauthorized", null));
+        }
+
+        String email = authentication.getName();
+        User admin = userService.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Admin not found"));
+
+        if (!admin.getRole().equals(User.Role.ADMIN)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ResponseDTO(403, "Only admins can update user status", null));
+        }
+
+        try {
+            User user = userService.findById(userId)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+            boolean newStatus = requestBody.get("isActive");
+            user.setIsActive(newStatus);
+            if (!newStatus) {
+                user.setDeactivatedAt(LocalDateTime.now());
+            } else {
+                user.setDeactivatedAt(null);
+            }
+            userService.updateProfile(user);
+
+            UserDTO updatedDTO = modelMapper.map(user, UserDTO.class);
+            return ResponseEntity.ok(new ResponseDTO(200, "User status updated successfully", updatedDTO));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(500, "Error updating status: " + e.getMessage(), null));
         }
     }
 

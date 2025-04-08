@@ -1,9 +1,9 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
 @font-face {
   font-family: "Skate";
   src: url("../font/skate.ttf") format("truetype");
 }
-
-@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 
 :root {
   --primary-color: #6c5dd3;
@@ -97,12 +97,20 @@ body {
   transform: translateY(-3px);
 }
 
-.course-icon {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/*.course-thumbnail {*/
+/*  width: 50px;*/
+/*  height: 50px;*/
+/*  border-radius: 50%;*/
+/*  object-fit: cover;*/
+/*  border: 2px solid #ccc;*/
+/*  padding: 2px;*/
+/*}*/
+
+.course-thumbnail {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
 }
 
 .progress {
@@ -202,7 +210,6 @@ body {
 .course-card {
   background: #fff;
   border-radius: 12px;
-  padding: 1.5rem;
   margin-bottom: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: all 0.4s ease;
@@ -408,4 +415,64 @@ body {
   .filter-column {
     width: 100%;
   }
+}
+
+/* ---------------------------------------------------- */
+/* Grid View Specific */
+.grid-view .course-details {
+  padding: 0;
+}
+
+.grid-view .course-meta span {
+  font-size: 0.9rem;
+}
+
+.grid-view .course-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* List View Specific */
+.list-view {
+  flex-direction: row;
+  align-items: center;
+}
+
+.list-view .course-thumbnail {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-right: 20px;
+}
+
+.list-view .course-details {
+  flex-grow: 1;
+}
+
+.list-view .course-meta span {
+  font-size: 0.9rem;
+  margin-right: 15px;
+}
+
+.list-view .course-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.course-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.course-details .badge {
+  padding: 0.25rem 0.5rem;
+  border: none;
+  margin: 0 !important;
+  font-weight: normal;
 }

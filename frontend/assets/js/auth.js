@@ -247,6 +247,8 @@ $(document).ready(function () {
             return;
         }
 
+        $("#signup-btn span").removeClass("d-none");
+
         const signupOtpUrl = `http://localhost:8080/api/v1/auth/send-otp`;
 
         $.ajax({
@@ -257,6 +259,7 @@ $(document).ready(function () {
                 $("#otpModal").modal("show");
                 localStorage.setItem("signupData", JSON.stringify({email, fullName, password}));
                 showAlert("success", "OTP sent to your email. Please check your inbox!");
+                $("#signup-btn span").addClass("d-none");
             },
             error: function (xhr) {
                 showAlert("danger", "Error sending OTP: " + (xhr.responseJSON?.message || xhr.statusText));
@@ -287,10 +290,10 @@ $(document).ready(function () {
             success: function (response) {
                 $("#otpModal").modal("hide");
                 localStorage.setItem("token", response.data.token);
-                localStorage.setItem("role", response.data.role); // Store role
+                localStorage.setItem("role", response.data.role);
                 showAlert("success", "Registration successful! Redirecting...");
 
-                localStorage.removeItem("signupData");
+                localStorage.removeItem(signupData)
                 $("#signupForm")[0].reset();
                 $(".password-strength-bar").css({ width: "0%", background: "#e0e0e0" });
 

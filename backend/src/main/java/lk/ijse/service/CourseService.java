@@ -11,8 +11,6 @@ public interface CourseService {
 
     CourseDTO createCourse(CourseDTO courseDTO, MultipartFile thumbnail, String instructorEmail);
 
-//    CourseDTO updateCourse(Long courseId, CourseDTO courseDTO, MultipartFile thumbnail, String instructorEmail);
-
     CourseDTO updateCourse(Long courseId, CourseDTO courseDTO, MultipartFile thumbnail, UserDetails userDetails);
 
     void deleteCourse(Long courseId, String instructorEmail);
@@ -22,5 +20,7 @@ public interface CourseService {
     List<CourseDTO> getFilteredCourses(String instructorEmail, Long categoryId, String level, Boolean isPublished, String title);
 
     List<CourseDTO> getAllCourses();
+
+    List<CourseDTO> getPublishedCourses();
 
 }

@@ -45,8 +45,8 @@ body {
 }
 
 .logo-img {
-  width: 40px;
-  height: 40px;
+  width: 37px;
+  height: 37px;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -115,7 +115,7 @@ body {
 .chart-card {
   background: white;
   border-radius: var(--border-radius);
-  padding: 1.5rem;
+  padding: 1.5rem 1.5rem 0 1.5rem;
   flex-grow: 1;
   box-shadow: var(--card-shadow);
 }
@@ -176,49 +176,6 @@ body {
   height: 32px;
   border-radius: 50%;
   margin-right: 0.75rem;
-}
-
-.btn-action {
-  padding: 3px 8px;
-  border: none;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.text-success {
-  color: #2ebb62 !important;
-}
-
-.text-warning {
-  color: #ffd93d !important;
-}
-
-.text-danger {
-  color: #ff6b6b !important;
-}
-
-.btn-view,
-.btn-success {
-  background-color: #2ebb62;
-  color: #fff;
-  transition: all 0.4s ease;
-}
-
-.btn-edit,
-.btn-warning {
-  background-color: #ffd93d;
-  color: #000;
-  transition: all 0.4s ease;
-}
-
-.btn-delete {
-  background-color: #ff6b6b;
-  color: #fff;
-}
-
-.btn-action:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
 }
 
 .nav-tabs .nav-link {

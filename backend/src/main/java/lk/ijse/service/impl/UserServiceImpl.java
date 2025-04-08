@@ -1,17 +1,15 @@
 package lk.ijse.service.impl;
 
 import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import dev.samstevens.totp.code.*;
 import dev.samstevens.totp.qr.QrData;
 import dev.samstevens.totp.secret.DefaultSecretGenerator;
 import dev.samstevens.totp.time.SystemTimeProvider;
 import dev.samstevens.totp.time.TimeProvider;
-import lk.ijse.dto.InstructorRequestDTO;
 import lk.ijse.dto.UserDTO;
-import lk.ijse.entity.InstructorRequest;
 import lk.ijse.entity.User;
-import lk.ijse.repository.InstructorRequestRepo;
+import lk.ijse.entity.UserSkill;
+import lk.ijse.repository.CourseRepo;
 import lk.ijse.repository.UserRepo;
 import lk.ijse.service.UserService;
 import lk.ijse.util.VarList;
@@ -28,8 +26,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
-import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -42,12 +38,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private UserRepo userRepo;
 
     @Autowired
+    private CourseRepo courseRepo;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -256,6 +253,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         LocalDateTime thirtyDaysAgo = LocalDateTime.now().minusDays(30);
         List<User> inactiveUsers = userRepo.findByIsActiveFalseAndDeactivatedAtBefore(thirtyDaysAgo);
         userRepo.deleteAll(inactiveUsers);
+    }
+
+    @Override
+    public List<UserDTO> getAllUsers() {
+        List<User> users = userRepo.findAll();
+        return users.stream().map(user -> {
+            UserDTO dto = modelMapper.map(user, UserDTO.class);
+            if (user.getRole() == User.Role.INSTRUCTOR) {
+                dto.setCourseCount(courseRepo.countByInstructorUserUserId(user.getUserId()));
+            }
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<User> findById(Long userId) {
+        return userRepo.findById(userId);
     }
 
 }

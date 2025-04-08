@@ -23,7 +23,7 @@ public class CourseController {
     private CourseService courseService;
 
     @GetMapping("/course")
-    @PreAuthorize("hasAnyRole('INSTRUCTOR', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('INSTRUCTOR', 'ADMIN', 'STUDENT')")
     public ResponseEntity<ResponseDTO> getCourses(@AuthenticationPrincipal UserDetails userDetails) {
         try {
             if (userDetails == null) {
@@ -34,13 +34,23 @@ public class CourseController {
             List<CourseDTO> courses;
             boolean isAdmin = userDetails.getAuthorities().stream()
                     .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+            boolean isInstructor = userDetails.getAuthorities().stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_INSTRUCTOR"));
+            boolean isStudent = userDetails.getAuthorities().stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_STUDENT"));
 
             if (isAdmin) {
                 courses = courseService.getAllCourses();
                 return ResponseEntity.ok(new ResponseDTO(200, "All courses fetched successfully", courses));
-            } else {
+            } else if (isInstructor) {
                 courses = courseService.getInstructorCourses(userDetails.getUsername());
                 return ResponseEntity.ok(new ResponseDTO(200, "Instructor courses fetched successfully", courses));
+            } else if (isStudent) {
+                courses = courseService.getPublishedCourses();
+                return ResponseEntity.ok(new ResponseDTO(200, "Published courses fetched successfully", courses));
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new ResponseDTO(401, "Unauthorized", null));
             }
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

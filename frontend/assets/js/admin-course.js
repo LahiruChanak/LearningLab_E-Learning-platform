@@ -108,7 +108,7 @@ $(document).ready(function () {
 
         const statusButton = userRole === "ADMIN" ? `
                 <button class="btn border-0 btn-status bg-transparent ${course.isPublished ? 'active' : 'inactive'}" data-id="${course.courseId}" data-status="${course.isPublished}" 
-                            data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="${course.isPublished ? 'Activated' : 'Deactivated'}">
+                            data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="${course.isPublished ? 'Published' : 'Draft'}">
                     <i class="hgi hgi-stroke ${course.isPublished ? 'hgi-toggle-on' : 'hgi-toggle-off'} fs-4 align-middle"></i>
                 </button>
             ` : '';
@@ -129,7 +129,7 @@ $(document).ready(function () {
                     </td>
                     <td>
                         <span class="badge rounded-pill px-2 ${course.isPublished ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}">
-                            ${course.isPublished ? "Active" : "Inactive"}
+                            ${course.isPublished ? "Published" : "Draft"}
                         </span>
                     </td>
                     <td>
@@ -405,9 +405,10 @@ $(document).ready(function () {
     const newStatus = !($(this).data("status") === true || $(this).data("status") === "true");
     $("#confirmStatusUpdate").removeClass(newStatus ? "status-btn-off" : "status-btn-on")
         .addClass(newStatus ? "status-btn-on" : "status-btn-off");
-
-    $("#statusUpdateTitle").text(newStatus ? "Publish Course" : "Unpublish Course");
-    $("#statusUpdateAction").text(newStatus ? "publish" : "unpublish");
+    $("#statusUpdateIcon").removeClass(newStatus ? "hgi-toggle-off text-danger" : "hgi-toggle-on text-success")
+        .addClass(newStatus ? "hgi-toggle-on text-success" : "hgi-toggle-off text-danger");
+    $("#statusUpdateTitle").text(newStatus ? "Publish Course" : "Draft Course");
+    $("#statusUpdateAction").text(newStatus ? "publish" : "draft");
     $("#statusUpdateName").text($button.closest("tr").find("td:first").text());
     $("#statusUpdateModal").data("course-id", courseId);
     $("#statusUpdateModal").data("new-status", newStatus);

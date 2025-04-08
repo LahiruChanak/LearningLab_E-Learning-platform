@@ -41,7 +41,7 @@
 
         <nav class="nav flex-column mb-4">
           <a
-            class="nav-link active"
+            class="nav-link"
             href="admin-dashboard.html"
             data-bs-toggle="tooltip"
             data-bs-placement="right"
@@ -51,7 +51,7 @@
             <span class="ms-2">Dashboard</span>
           </a>
           <a
-            class="nav-link"
+            class="nav-link active"
             href="#"
             data-bs-toggle="tooltip"
             data-bs-placement="right"
@@ -62,7 +62,7 @@
           </a>
           <a
             class="nav-link"
-            href="#"
+            href="messages.html"
             data-bs-toggle="tooltip"
             data-bs-placement="right"
             data-bs-title="Messages"
@@ -72,33 +72,23 @@
           </a>
           <a
             class="nav-link"
-            href="#"
+            href="leaderboard.html"
             data-bs-toggle="tooltip"
             data-bs-placement="right"
-            data-bs-title="Grades"
+            data-bs-title="Leaderboard"
           >
             <i class="hgi-stroke hgi-analytics-01 fs-5 align-middle"></i>
             <span class="ms-2">Grades</span>
           </a>
           <a
             class="nav-link"
-            href="#"
+            href="schedule.html"
             data-bs-toggle="tooltip"
             data-bs-placement="right"
             data-bs-title="Schedule"
           >
             <i class="hgi-stroke hgi-calendar-03 fs-5 align-middle"></i>
             <span class="ms-2">Schedule</span>
-          </a>
-          <a
-            class="nav-link"
-            href="#"
-            data-bs-toggle="tooltip"
-            data-bs-placement="right"
-            data-bs-title="Settings"
-          >
-            <i class="hgi-stroke hgi-settings-01 fs-5 align-middle"></i>
-            <span class="ms-2">Settings</span>
           </a>
           <a
             class="nav-link logout"
@@ -403,12 +393,19 @@
     </div>
 
     <!-- Status Confirmation Modal -->
-    <div class="modal fade" id="statusUpdateModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div
+       class="modal fade"
+       id="statusUpdateModal"
+       tabindex="-1"
+       aria-hidden="true"
+       data-bs-backdrop="static"
+       data-bs-keyboard="false"
+    >
       <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content border-0 shadow rounded-4">
           <div class="modal-body text-center p-4">
             <div class="mb-1">
-              <i class="hgi hgi-stroke hgi-toggle-on fs-3 align-middle text-primary"></i>
+              <i class="hgi hgi-stroke hgi-toggle-on fs-2 align-middle text-success" id="statusUpdateIcon"></i>
             </div>
             <h5 class="mb-2" id="statusUpdateTitle">Confirm Status Update</h5>
             <p class="text-muted small mb-4">

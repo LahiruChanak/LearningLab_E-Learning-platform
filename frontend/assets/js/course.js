@@ -22,98 +22,121 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   // Course Data (Sample data - would typically come from a backend API)
-  let courses = [
-    {
-      id: 1,
-      name: "Free Sketch from A to Z: Become an UX UI Designer",
-      sales: 150,
-      comments: 15,
-      likes: 242,
-      level: "beginner",
-      duration: "2-5",
-      date: "2024-03-01",
-      image: "assets/images/courses/sketch.jpg",
-      category: "UI Design",
-      rating: 4.5,
-      instructor: "John Doe",
-      price: 0,
-    },
-    {
-      id: 2,
-      name: "Android UI-UX Design And Material Design Clone",
-      sales: 150,
-      comments: 15,
-      likes: 242,
-      level: "intermediate",
-      duration: "5+",
-      date: "2024-02-28",
-      image: "assets/images/courses/android.jpg",
-      category: "UI Design",
-      rating: 3.8,
-      instructor: "Jane Smith",
-      price: 19.99,
-    },
-    {
-      id: 3,
-      name: "Photography for Beginner - Complete Guide 2021",
-      sales: 150,
-      comments: 15,
-      likes: 242,
-      level: "beginner",
-      duration: "0-2",
-      date: "2024-02-27",
-      image: "assets/images/courses/photography.jpg",
-      category: "Photography",
-      rating: 5.0,
-      instructor: "John Doe",
-      price: 0,
-    },
-    {
-      id: 4,
-      name: "Complete Python BootCamp: Go from zero to hero in Python",
-      sales: 150,
-      comments: 15,
-      likes: 242,
-      level: "beginner",
-      duration: "2-5",
-      date: "2024-02-26",
-      image: "assets/images/courses/python.jpg",
-      category: "Development",
-      rating: 4.3,
-      instructor: "Jane Smith",
-      price: 19.99,
-    },
-    {
-      id: 5,
-      name: "Complete Web Development BootCamp: Go from zero to hero in Web",
-      sales: 150,
-      comments: 15,
-      likes: 242,
-      level: "beginner",
-      duration: "2-5",
-      date: "2024-02-25",
-      image: "assets/images/courses/web.jpg",
-      category: "Development",
-      rating: 2.0,
-      instructor: "Lisa Johnson",
-      price: 19.99,
-    },
-    {
-      id: 6,
-      name: "Complete Web Development BootCamp: Go from zero to hero in Web",
-      sales: 150,
-      comments: 15,
-      likes: 242,
-      level: "beginner",
-      duration: "2-5",
-      date: "2024-02-24",
-      image: "assets/images/courses/web.jpg",
-      category: "Marketing",
-      rating: 1.0,
-      instructor: "Lisa Johnson",
-      price: 19.99,
-    },
-  ];
+  // let courses = [
+  //   {
+  //     id: 1,
+  //     name: "Free Sketch from A to Z: Become an UX UI Designer",
+  //     sales: 150,
+  //     comments: 15,
+  //     likes: 242,
+  //     level: "beginner",
+  //     duration: "2-5",
+  //     date: "2024-03-01",
+  //     image: "assets/images/courses/sketch.jpg",
+  //     category: "UI Design",
+  //     rating: 4.5,
+  //     instructor: "John Doe",
+  //     price: 0,
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Android UI-UX Design And Material Design Clone",
+  //     sales: 150,
+  //     comments: 15,
+  //     likes: 242,
+  //     level: "intermediate",
+  //     duration: "5+",
+  //     date: "2024-02-28",
+  //     image: "assets/images/courses/android.jpg",
+  //     category: "UI Design",
+  //     rating: 3.8,
+  //     instructor: "Jane Smith",
+  //     price: 19.99,
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Photography for Beginner - Complete Guide 2021",
+  //     sales: 150,
+  //     comments: 15,
+  //     likes: 242,
+  //     level: "beginner",
+  //     duration: "0-2",
+  //     date: "2024-02-27",
+  //     image: "assets/images/courses/photography.jpg",
+  //     category: "Photography",
+  //     rating: 5.0,
+  //     instructor: "John Doe",
+  //     price: 0,
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Complete Python BootCamp: Go from zero to hero in Python",
+  //     sales: 150,
+  //     comments: 15,
+  //     likes: 242,
+  //     level: "beginner",
+  //     duration: "2-5",
+  //     date: "2024-02-26",
+  //     image: "assets/images/courses/python.jpg",
+  //     category: "Development",
+  //     rating: 4.3,
+  //     instructor: "Jane Smith",
+  //     price: 19.99,
+  //   },
+  //   {
+  //     id: 5,
+  //     name: "Complete Web Development BootCamp: Go from zero to hero in Web",
+  //     sales: 150,
+  //     comments: 15,
+  //     likes: 242,
+  //     level: "beginner",
+  //     duration: "2-5",
+  //     date: "2024-02-25",
+  //     image: "assets/images/courses/web.jpg",
+  //     category: "Development",
+  //     rating: 2.0,
+  //     instructor: "Lisa Johnson",
+  //     price: 19.99,
+  //   },
+  //   {
+  //     id: 6,
+  //     name: "Complete Web Development BootCamp: Go from zero to hero in Web",
+  //     sales: 150,
+  //     comments: 15,
+  //     likes: 242,
+  //     level: "beginner",
+  //     duration: "2-5",
+  //     date: "2024-02-24",
+  //     image: "assets/images/courses/web.jpg",
+  //     category: "Marketing",
+  //     rating: 1.0,
+  //     instructor: "Lisa Johnson",
+  //     price: 19.99,
+  //   },
+  // ];
+
+  function fetchCourses(viewType = 'grid') {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      showAlert("danger", "Please login to the system to view courses.");
+      return;
+    }
+
+    $.ajax({
+      url: "http://localhost:8080/api/v1/course",
+      type: "GET",
+      headers: { "Authorization": "Bearer " + token },
+      success: function (response) {
+        if (response.status === 200) {
+          renderCourses(response.data, viewType);
+        }
+      },
+      error: function (xhr) {
+        showAlert("danger", "Error fetching courses: " + (xhr.responseJSON?.message || xhr.statusText));
+      }
+    });
+  }
 
   // Star Rating Event Listeners
   const stars = $(".stars i.hgi-star");
@@ -449,62 +472,80 @@ document.addEventListener("DOMContentLoaded", function () {
     coursesContainer.classList.toggle("list-view", view === "list");
   }
 
-  function renderCourses(coursesToRender) {
-    coursesContainer.innerHTML = "";
+  function renderCourses(coursesToRender, viewType = 'grid') {
+    const $coursesContainer = $("#coursesContainer");
+    $coursesContainer.empty();
 
     if (coursesToRender.length === 0) {
-      coursesContainer.innerHTML = `
-                <div class="col-12 text-center py-5">
-                    <h5 class="text-muted">No courses found matching your criteria</h5>
-                </div>
-            `;
+      $coursesContainer.html(`
+            <div class="col-12 text-center py-5">
+                <h5 class="text-muted">No courses found matching your criteria</h5>
+            </div>
+        `);
       return;
     }
 
-    coursesToRender.forEach((course) => {
-      const courseElement = document.createElement("div");
-      courseElement.className = "col-md-6";
-
-      // Highlight the searched text if there is a search term
-      let displayName = course.name;
+    coursesToRender.forEach(course => {
+      let displayTitle = course.title;
       if (currentState.searchTerm) {
         const regex = new RegExp(`(${currentState.searchTerm})`, "gi");
-        displayName = course.name.replace(
-          regex,
-          '<span class="highlight">$1</span>'
-        );
+        displayTitle = course.title.replace(regex, '<span class="highlight">$1</span>');
       }
 
-      courseElement.innerHTML = `
-                <div class="course-card">
-                    <div class="d-flex justify-content-between mb-3">
-                        <div>
-                            <p class="mb-1">${displayName}</p>
-                            <div class="d-flex align-items-center">
-                                <i class="hgi-stroke hgi-user-circle-02 me-1"></i>
-                                <span>${course.sales} Sales</span>
-                                <i class="hgi-stroke hgi-comment-01 ms-3 me-1"></i>
-                                <span>${course.comments} Comments</span>
-                                <i class="hgi-stroke hgi-favourite ms-3 me-1"></i>
-                                <span>${course.likes} Likes</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="avatar-group">
-                            <img src="assets/images/user.jpg" alt="Student" class="avatar">
-                            <img src="assets/images/user.jpg" alt="Student" class="avatar">
-                            <img src="assets/images/user.jpg" alt="Student" class="avatar">
-                        </div>
-                        <button class="btn btn-light">
-                            <i class="hgi-stroke hgi-arrow-right-01"></i>
-                        </button>
+      // Common content for both views
+      const courseContent = `
+            <img src="${course.thumbnail || 'assets/images/default-thumbnail.jpg'}" alt="${course.title}" class="course-thumbnail mb-3">
+            <div class="course-details">
+                <h5 class="course-title">${displayTitle}</h5>
+                <div class="course-meta d-flex align-items-center flex-wrap">
+                    <span><i class="hgi-stroke hgi-user-circle-02 me-1"></i>${course.enrollments ? course.enrollments.length : 0} Enrollments</span>
+                    <span class="ms-3"><i class="hgi-stroke hgi-comment-01 me-1"></i>${course.comments || 0} Comments</span>
+                    <span class="ms-3"><i class="hgi-stroke hgi-favourite me-1"></i>${course.likes || 0} Likes</span>
+                </div>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <small class="badge rounded-pill bg-primary-subtle text-primary">${course.instructor?.fullName || course.instructor?.email || "Unknown Instructor"}</small>
+                    <small class="badge rounded-pill bg-success-subtle text-success">${course.category?.name || "Uncategorized"}</small>
+                    <small class="badge rounded-pill bg-warning-subtle text-warning">${course.level.charAt(0).toUpperCase() + course.level.slice(1).toLowerCase()}</small>
+                </div>
+                <div class="course-footer mt-3">
+                    <strong class="price">$${course.price.toFixed(2)}</strong>
+                    <button class="btn btn-light view-course" data-id="${course.courseId}">
+                        <i class="hgi-stroke hgi-arrow-right-01"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+
+      let courseHtml = '';
+      if (viewType === 'grid') {
+        courseHtml = `
+                <div class="col-md-5 col-lg-3 mb-4">
+                    <div class="course-card grid-view">
+                        ${courseContent}
                     </div>
                 </div>
             `;
-      coursesContainer.appendChild(courseElement);
+      } else {
+        courseHtml = `
+                <div class="col-6 mb-4">
+                    <div class="course-card list-view d-flex">
+                        ${courseContent}
+                    </div>
+                </div>
+            `;
+      }
+      $coursesContainer.append(courseHtml);
     });
   }
+
+  $('.layout-btn').on('click', function() {
+    const viewType = $(this).data('view');
+
+    $('.layout-btn').removeClass('active');
+    $(this).addClass('active');
+
+    fetchCourses(viewType);
+  });
 
   // Debounce function for search input
   function debounce(func, wait) {
@@ -542,5 +583,6 @@ document.addEventListener("DOMContentLoaded", function () {
     updateUI();
   });
 
+  fetchCourses();
   updateUI();
 });

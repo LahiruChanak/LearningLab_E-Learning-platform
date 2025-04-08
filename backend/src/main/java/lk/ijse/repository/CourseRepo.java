@@ -14,11 +14,14 @@ public interface CourseRepo extends JpaRepository<Course, Long> {
 
     List<Course> findByCategory(Category category);
 
-    // this query is used to find courses to each instructor email
-    @Query("SELECT c FROM Course c WHERE c.instructor.user.email = :email AND c.courseId = :courseId")
-    Optional<Course> findByInstructorEmailAndCourseId(String email, Long courseId);
+    List<Course> findByIsPublishedTrue();
+
+    int countByInstructorUserUserId(Long userId);
 
     List<Course> findByInstructor(Instructor instructor);
+
+    @Query("SELECT c FROM Course c WHERE c.instructor.user.email = :email AND c.courseId = :courseId")
+    Optional<Course> findByInstructorEmailAndCourseId(String email, Long courseId);
 
     @Query("SELECT c FROM Course c WHERE c.instructor.user.email = :email " +
             "AND (:categoryId IS NULL OR c.category.categoryId = :categoryId) " +

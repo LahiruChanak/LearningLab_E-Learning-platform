@@ -45,4 +45,7 @@ public interface UserService {
 
     void permanentlyDeleteInactiveAccounts();
 
+    List<UserDTO> getAllUsers();
+
+    Optional<User> findById(Long userId);
 }
