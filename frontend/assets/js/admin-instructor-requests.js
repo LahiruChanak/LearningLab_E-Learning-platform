@@ -54,7 +54,7 @@ $(document).ready(function () {
                 : 'None';
 
             tbody.append(`
-                <tr>
+                <tr data-request-updated-at="${new Date(request.requestCreatedAt).getTime()}">
                     <td>${request.userEmail}</td>
                     <td>${request.message}</td>
                     <td>${request.qualifications}</td>
@@ -86,6 +86,8 @@ $(document).ready(function () {
             $("#modalMessage").text(row.find("td:eq(1)").text());
             $("#modalQualifications").text(row.find("td:eq(2)").text());
             $("#modalExperience").text(row.find("td:eq(3)").text());
+            $("#modalCreatedAt").text(new Date(requests.find(r => r.id === requestId).requestCreatedAt).toLocaleString('sv-SE').replace(/-/g, '/'));
+            $("#modalUpdatedAt").text(new Date(requests.find(r => r.id === requestId).requestUpdatedAt).toLocaleString('sv-SE').replace(/-/g, '/'));
             $("#modalStatus").text(row.find("td:eq(5) .user-status").text());
             $("#requestStatus").val(row.find("td:eq(5) .user-status").text());
             $("#saveRequestAction").data("request-id", requestId);
@@ -136,6 +138,32 @@ $(document).ready(function () {
         $("#requestsTable tbody tr").each(function () {
             const status = $(this).find(".user-status").text();
             $(this).toggle(filterStatus === "" || status === filterStatus);
+        });
+    });
+
+    $("#sort").on("change", function () {
+        const sortValue = $(this).val();
+        const tbody = $("#requestsTable tbody");
+        const rows = tbody.find("tr").get();
+
+        rows.sort(function (a, b) {
+            const experienceA = parseInt($(a).find("td:eq(3)").text()) || 0;
+            const experienceB = parseInt($(b).find("td:eq(3)").text()) || 0;
+
+            if (sortValue === "newest" || sortValue === "oldest") {
+                const timeA = $(a).data("request-updated-at") || 0;
+                const timeB = $(b).data("request-updated-at") || 0;
+                return sortValue === "newest" ? timeB - timeA : timeA - timeB;
+            } else if (sortValue === "experience") {
+                return experienceB - experienceA;
+            } else if (sortValue === "noExperience") {
+                return experienceA - experienceB;
+            }
+        });
+
+        tbody.empty();
+        $.each(rows, function (index, row) {
+            tbody.append(row);
         });
     });
 });

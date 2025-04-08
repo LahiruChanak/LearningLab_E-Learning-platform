@@ -47,7 +47,7 @@
                 <i class="hgi hgi-stroke hgi-user-circle fs-5 align-middle"></i>
                 <span class="ms-2">Users</span>
             </a>
-            <a class="nav-link active" href="admin-instructor-requests.html" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Instructor Requests">
+            <a class="nav-link active" href="admin-instructor-request.html" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Instructor Requests">
                 <i class="hgi-stroke hgi-user-check-02 fs-5 align-middle"></i>
                 <span class="ms-2">Instructor Requests</span>
             </a>
@@ -76,10 +76,19 @@
                 <div class="col">
                     <label for="filterStatus" class="form-label">Request Status</label>
                     <select id="filterStatus" class="form-select">
-                        <option value="">All Statuses</option>
-                        <option value="PENDING">Pending</option>
-                        <option value="APPROVED">Approved</option>
-                        <option value="REJECTED">Rejected</option>
+                        <option value="" class="small">All Statuses</option>
+                        <option value="PENDING" class="small">Pending</option>
+                        <option value="APPROVED" class="small">Approved</option>
+                        <option value="REJECTED" class="small">Rejected</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label for="sort" class="form-label">Sort By</label>
+                    <select id="sort" class="form-select">
+                        <option value="newest" class="small">Newest First</option>
+                        <option value="oldest" class="small">Oldest First</option>
+                        <option value="experience" class="small">Most Experience</option>
+                        <option value="noExperience" class="small">Least Experience</option>
                     </select>
                 </div>
             </div>
@@ -140,6 +149,8 @@
                     <p><strong>Message:</strong> <span id="modalMessage" class="small"></span></p>
                     <p><strong>Qualifications:</strong> <span id="modalQualifications" class="small"></span></p>
                     <p><strong>Experience:</strong> <span id="modalExperience" class="small"></span></p>
+                    <p><strong>Created At:</strong> <span id="modalCreatedAt" class="small"></span></p>
+                    <p><strong>Updated At:</strong> <span id="modalUpdatedAt" class="small"></span></p>
                     <p><strong>Current Status:</strong> <span id="modalStatus" class="small"></span></p>
                 </div>
                 <form id="requestStatusForm" class="needs-validation" novalidate>
