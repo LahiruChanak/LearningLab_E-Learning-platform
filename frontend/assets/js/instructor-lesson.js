@@ -133,7 +133,7 @@ $(document).ready(function() {
             });
         });
 
-        if (lessonData.videos.length > 0 && (!lessonData.videos.title || !lessonData.videos.videoUrl || !lessonData.videos.duration)) {
+        if (lessonData.videos.length > 0 && (lessonData.videos.title === "" || lessonData.videos.videoUrl === "" || lessonData.videos.duration === 0)) {
             showAlert("warning", "Please fill in all the required video fields.");
             return;
         }
@@ -193,7 +193,7 @@ $(document).ready(function() {
             });
         });
 
-        if (lessonData.videos.length > 0 && (!lessonData.videos.title || !lessonData.videos.videoUrl || !lessonData.videos.duration)) {
+        if (lessonData.videos.length > 0 && (lessonData.videos.title === "" || lessonData.videos.videoUrl === "" || lessonData.videos.duration === 0)) {
             showAlert("warning", "Please fill in all the required video fields.");
             return;
         }

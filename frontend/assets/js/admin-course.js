@@ -113,7 +113,7 @@ $(document).ready(function () {
                 </button>
             ` : '';
 
-        const modalButton =
+        // const modalButton =
 
         $tbody.append(`
                 <tr>
@@ -122,7 +122,7 @@ $(document).ready(function () {
                     <td>${course.description}</td>
                     <td>${course.price}</td>
                     <td>
-                        <span class="badge rounded-pill px-2 ${course.level === 'BEGINNER' ? 'bg-warning-subtle text-warning' :
+                        <span class="badge rounded-pill bg px-2 ${course.level === 'BEGINNER' ? 'bg-warning-subtle text-warning' :
                             course.level === 'INTERMEDIATE' ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}">
                             ${course.level.charAt(0).toUpperCase() + course.level.slice(1).toLowerCase()}
                         </span>

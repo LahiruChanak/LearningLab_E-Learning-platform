@@ -1,5 +1,5 @@
 $(document).ready(function () {
-  // Bootstrap Tooltip
+
   const tooltipTriggerList = document.querySelectorAll(
     '[data-bs-toggle="tooltip"]'
   );
@@ -7,199 +7,14 @@ $(document).ready(function () {
     (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
   );
 
-  // Track current video
-  let currentVideoId = "";
-
-  // Flag to track if user is enrolled
+  const courseId = getCourseIdFromUrl();
   let isEnrolled = false;
+  let allCourses = [];
+  const token = localStorage.getItem("token");
 
-  // Function to initialize lessons
-  function initializeLessons() {
-    // Unlock the first lesson in the first chapter (section) only
-    const firstChapter = $(".accordion-item#chapter1").first();
-    const firstLesson = firstChapter.find(".lesson-item").first();
-
-    if (firstLesson.length) {
-      unlockLesson(firstLesson);
-    }
-
-    // Ensure other lessons remain locked until interacted with
-    $(".lesson-item").not(firstLesson).addClass("locked");
-
-    // Update enrollment status
-    isEnrolled = true;
+  if (courseId) {
+    fetchCourseDetails(courseId);
   }
-
-  // Function to unlock a lesson
-  function unlockLesson(lessonElement) {
-    lessonElement.removeClass("locked");
-    lessonElement.find(".hgi-square-lock-02").remove();
-    // Ensure the lesson is now clickable by removing any potential restrictions
-    lessonElement.css("pointer-events", "auto");
-  }
-
-  // Function to unlock the next lesson
-  function unlockNextLesson(currentLesson) {
-    const nextLesson = currentLesson.next(".lesson-item");
-    if (nextLesson.length) {
-      unlockLesson(nextLesson);
-    } else {
-      // If this is the last lesson in a section, unlock the first lesson in the next section
-      const currentSection = currentLesson.closest(".accordion-item");
-      const nextSection = currentSection.next(".accordion-item");
-      if (nextSection.length) {
-        // Unlock the section header first
-        const sectionHeader = nextSection.find(".accordion-button");
-        if (sectionHeader.hasClass("locked")) {
-          sectionHeader.removeClass("locked");
-          sectionHeader.find(".hgi-square-lock-02").remove();
-        }
-
-        // Then unlock the first lesson
-        const firstLessonInNextSection = nextSection
-          .find(".lesson-item")
-          .first();
-        if (firstLessonInNextSection.length) {
-          unlockLesson(firstLessonInNextSection);
-        }
-      }
-    }
-  }
-
-  // Function to check if all beginner lessons are completed
-  function areAllBeginnerLessonsCompleted() {
-    const beginnerSections = $(".accordion-item[data-level='beginner']");
-    let allCompleted = true;
-
-    beginnerSections.each(function () {
-      const totalLessons = $(this).find(".lesson-item").length;
-      const completedLessons = $(this).find(".hgi-check").length;
-      if (completedLessons < totalLessons) {
-        allCompleted = false;
-        return false; // Break the loop
-      }
-    });
-
-    return allCompleted;
-  }
-
-  // Function to check if all lessons in the second chapter are completed
-  function areSecondChapterLessonsCompleted() {
-    const secondChapter = $("#chapter2");
-    const totalLessons = secondChapter.find(".lesson-item").length;
-    const completedLessons = secondChapter.find(
-      ".lesson-item .hgi-check"
-    ).length;
-    return totalLessons === completedLessons && totalLessons > 0;
-  }
-
-  // Function to unlock the third chapter (quiz)
-  function unlockThirdChapter() {
-    if (areSecondChapterLessonsCompleted()) {
-      const thirdChapter = $("#section3");
-      const quizLesson = $("#lesson3_1");
-
-      // Unlock the third chapter header
-      const thirdChapterHeader = $("#chapter3");
-      thirdChapterHeader.removeClass("locked");
-      thirdChapterHeader.find(".hgi-square-lock-02").remove();
-
-      // Unlock the quiz lesson
-      quizLesson.removeClass("locked");
-      quizLesson.find(".hgi-square-lock-02").remove();
-      quizLesson.css("pointer-events", "auto");
-
-      isThirdChapterUnlocked = true;
-    }
-  }
-
-  // Handle lesson item clicks
-  $(".lesson-item").on("click", function () {
-    // Check if the lesson is locked or user is not enrolled
-    if ($(this).hasClass("locked") || !isEnrolled) {
-      if (!isEnrolled) {
-        showAlert(
-          "warning",
-          "Please enroll in this course to access the content!"
-        );
-      }
-      return;
-    }
-
-    // Check if this is the quiz lesson
-    if ($(this).attr("id") === "lesson3_1") {
-      if (!isThirdChapterUnlocked) {
-        alert(
-          "Please complete all lessons in the second chapter to access the quiz!"
-        );
-        return;
-      }
-
-      // Manually show the quiz modal if third chapter is unlocked
-      const quizModal = new bootstrap.Modal(
-        document.getElementById("quizModal")
-      );
-      quizModal.show();
-      return;
-    }
-
-    // Check if this is an intermediate lesson and beginner content isn't completed
-    const sectionLevel = $(this).closest(".accordion-item").data("level");
-    if (sectionLevel === "intermediate" && !areAllBeginnerLessonsCompleted()) {
-      alert("Please complete all beginner lessons first!");
-      return;
-    }
-
-    const videoId = $(this).data("video-id");
-    if (videoId && videoId !== currentVideoId) {
-      currentVideoId = videoId;
-      // Update iframe source
-      $(".video-container iframe").attr(
-        "src",
-        `https://www.youtube.com/embed/${videoId}`
-      );
-
-      // Update lesson status immediately
-      $(this).find("i.hgi-check").remove();
-      $(this).find("i.hgi-tick-01").removeClass("d-none").addClass("d-block");
-
-      // Check if all beginner lessons are completed
-      if (areAllBeginnerLessonsCompleted()) {
-        $(".accordion-item[data-level='intermediate']").each(function () {
-          const sectionHeader = $(this).find(".accordion-button");
-          if (sectionHeader.hasClass("locked")) {
-            sectionHeader.removeClass("locked");
-            sectionHeader.find(".hgi-square-lock-02").remove();
-          }
-        });
-      }
-
-      $(".lesson-item i.hgi-play").removeClass("text-primary");
-      $(this).find("i.hgi-play").addClass("text-primary");
-      unlockNextLesson($(this));
-      updateSectionProgress();
-      unlockThirdChapter();
-    }
-  });
-
-  // Handle enrollment button
-  $(".btn-enroll").on("click", function () {
-    const $btn = $(this);
-    $btn.prop("disabled", true);
-    $btn.html(
-      '<span class="spinner-border spinner-border-sm me-2"></span>Enrolling...'
-    );
-
-    setTimeout(function () {
-      $btn.html(
-        'Enrolled <i class="hgi-stroke hgi-tick-01 text-white fs-5 align-middle"></i>'
-      );
-      $btn.removeClass("btn-primary").addClass("btn-success");
-      initializeLessons();
-      updateSectionProgress();
-      unlockThirdChapter();
-    }, 1500);
-  });
 
   // Handle share button
   $(".btn-share").on("click", function () {
@@ -223,36 +38,35 @@ $(document).ready(function () {
   });
 
   // Track section progress
-  function updateSectionProgress() {
-    const $accordion = $(".accordion");
-    const totalLessons = $accordion.find(".lesson-item").length;
-    const completedLessons = $accordion.find(".hgi-check").length;
-    const progress = Math.round((completedLessons / totalLessons) * 100);
-
-    // Update the main progress info
-    $("#progress").text(progress);
-
-    // Update individual section progress
-    $accordion.each(function () {
-      const sectionTotalLessons = $(this).find(".lesson-item").length;
-      const sectionCompletedLessons = $(this).find(".hgi-check").length;
-      const sectionProgress = Math.round(
-        (sectionCompletedLessons / sectionTotalLessons) * 100
-      );
-    });
-  }
+  // function updateSectionProgress() {
+  //   const $accordion = $(".accordion");
+  //   const totalLessons = $accordion.find(".lesson-item").length;
+  //   const completedLessons = $accordion.find(".hgi-check").length;
+  //   const progress = Math.round((completedLessons / totalLessons) * 100);
+  //
+  //   // Update the main progress info
+  //   $("#progress").text(progress);
+  //
+  //   // Update individual section progress
+  //   $accordion.each(function () {
+  //     const sectionTotalLessons = $(this).find(".lesson-item").length;
+  //     const sectionCompletedLessons = $(this).find(".hgi-check").length;
+  //     const sectionProgress = Math.round(
+  //       (sectionCompletedLessons / sectionTotalLessons) * 100
+  //     );
+  //   });
+  // }
 
   // Update progress when lessons are completed
-  $(".lesson-item").on("click", function () {
-    if ($(this).hasClass("locked") || !isEnrolled) {
-      return;
-    }
-    if (!$(this).find(".hgi-check").length) {
-      $(this).append('<i class="hgi-stroke hgi-check"></i>');
-      updateSectionProgress();
-      unlockThirdChapter();
-    }
-  });
+  // $(".lesson-item").on("click", function () {
+  //   if ($(this).hasClass("locked") || !isEnrolled) {
+  //     return;
+  //   }
+  //   if (!$(this).find(".hgi-check").length) {
+  //     $(this).append('<i class="hgi-stroke hgi-check"></i>');
+  //     updateSectionProgress();
+  //   }
+  // });
 
   // Initialize Bootstrap tabs and set initial state
   $(".tab-pane").hide();
@@ -513,4 +327,230 @@ $(document).ready(function () {
   $(".btn-outline-success[data-bs-target='#quizResultModal']").addClass(
     "d-none"
   );
+
+///////////////////////////////////////////////////////////////
+  function getCourseIdFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('courseId');
+  }
+
+  function fetchCourseDetails(courseId) {
+    if (!token) {
+      showAlert("danger", "Please login to the system to view course details.");
+      return;
+    }
+
+    $.ajax({
+      url: "http://localhost:8080/api/v1/course",
+      type: "GET",
+      headers: { "Authorization": "Bearer " + token },
+      success: function (response) {
+
+        if (response.status === 200 && Array.isArray(response.data)) {
+          allCourses = response.data;
+
+          const numericCourseId = Number(courseId);
+          const course = allCourses.find(course => course.courseId === numericCourseId);
+
+          if (course) {
+            updateCourseDetails(course);
+            fetchLessons(courseId);
+          } else {
+            showAlert("danger", `Course with ID ${courseId} not found in the course list.`);
+          }
+        } else {
+          showAlert("danger", "Invalid response format from server.");
+        }
+      },
+      error: function (xhr) {
+        showAlert("danger", "Error fetching courses: " + (xhr.responseJSON?.message || xhr.statusText));
+      }
+    });
+  }
+
+  function fetchLessons(courseId) {
+    if (!token) {
+      showAlert("danger", "Please login to the system to load lessons.");
+      return;
+    }
+
+    $.ajax({
+      url: `http://localhost:8080/api/v1/instructor/lesson/course/${courseId}`,
+      type: "GET",
+      headers: { "Authorization": "Bearer " + token },
+      success: function (response) {
+        renderLessons(response);
+      },
+      error: function (xhr) {
+        showAlert("danger", "Error fetching lessons: " + (xhr.responseJSON?.message || xhr.statusText));
+      }
+    });
+  }
+
+  function updateCourseDetails(course) {
+    $('#courseTitle').text(course.title);
+    $('#courseDescription').text(course.description);
+    $('#authorName').text(course.instructorId);
+    $('#authorTitle').text(course.title + " Specialist");
+    $('#authorBio').text(course.instructorId);
+
+    // Update course metadata
+    $('.course-meta').html(`
+        <span><i class="hgi-stroke hgi-user-circle-02 me-1"></i>${course.enrollments ? course.enrollments.length : 0} Enrollments</span>
+        <span class="ms-3"><i class="hgi-stroke hgi-comment-01 me-1"></i>${course.comments || 0} Comments</span>
+        <span class="ms-3"><i class="hgi-stroke hgi-favourite me-1"></i>${course.likes || 0} Likes</span>
+    `);
+
+    // course badge
+    $('.d-flex.align-items-center.gap-2').html(`
+        <span class="badge rounded-pill bg-primary-subtle text-primary"></span>
+        <span class="badge rounded-pill bg-warning-subtle text-warning">${course.level.charAt(0).toUpperCase() + course.level.slice(1).toLowerCase()}</span>
+    `);
+  }
+
+  // Function to render lessons
+  function renderLessons(lessons) {
+    const $accordion = $("#courseAccordion");
+    $accordion.empty();
+
+    if (!lessons || lessons.length === 0) {
+      $accordion.html('<p class="text-muted p-3">No lessons available for this course.</p>');
+      return;
+    }
+
+    lessons.forEach((lesson, index) => {
+      let totalDuration = 0;
+      const videos = lesson.videos || [lesson];
+      videos.forEach(video => {
+        totalDuration += parseInt(video.duration) || 0;
+      });
+
+      const videoItems = videos.map((video, videoIndex) => `
+      <div class="lesson-item d-flex align-items-center locked" data-video-url="${video.videoUrl || ''}" 
+             id="lesson_${index + 1}_video_${videoIndex + 1}">
+        <i class="hgi-stroke hgi-play fs-5 align-middle me-3"></i>
+        <div class="flex-grow-1">
+          <p class="mb-0">${video.title || 'Lesson Video'}</p>
+          <small class="text-muted">${parseInt(video.duration) || 0} min</small>
+        </div>
+        <i class="hgi-stroke hgi-square-lock-02 fs-5 align-middle text-muted"></i>
+        <i class="hgi-stroke hgi-tick-01 align-middle fs-4 d-none"></i>
+      </div>
+    `).join('');
+
+      const accordionItem = `
+      <div class="accordion-item" id="chapter${index + 1}">
+        <h2 class="accordion-header">
+          <button class="accordion-button shadow-none ${index === 0 ? '' : 'collapsed'}" 
+                  type="button" 
+                  data-bs-toggle="collapse" 
+                  data-bs-target="#section${index}">
+            <div class="d-flex justify-content-between w-100 me-3">
+              <span class="course-topic">${lesson.name || lesson.title}</span>
+              <span class="duration">${totalDuration} min</span>
+            </div>
+          </button>
+        </h2>
+        <div id="section${index}" 
+             class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" 
+             data-bs-parent="#courseAccordion">
+          <div class="accordion-body px-2 pb-1 d-flex flex-column gap-3">
+            ${videoItems}
+          </div>
+        </div>
+      </div>
+    `;
+
+      $accordion.append(accordionItem);
+    });
+
+    $('.badge.bg-primary-subtle').text(`${lessons.length} Lessons`);
+    // $(".lesson-item").css("pointer-events", "none");
+  }
+
+  // Function to initialize lessons after enrollment
+  function initializeLessons() {
+    isEnrolled = true;
+
+    // Unlock the first video of the first lesson
+    const firstVideo = $("#lesson_1_video_1");
+    if (firstVideo.length) {
+      unlockLesson(firstVideo);
+    }
+  }
+
+  // Function to unlock a lesson video
+  function unlockLesson(lessonElement) {
+    lessonElement.removeClass("locked");
+    lessonElement.find(".hgi-square-lock-02").addClass("d-none");
+    lessonElement.css("pointer-events", "auto");
+  }
+
+  // Function to lock a lesson video
+  function lockLesson(lessonElement) {
+    lessonElement.addClass("locked");
+    lessonElement.find(".hgi-square-lock-02").removeClass("d-none");
+    lessonElement.css("pointer-events", "none");
+  }
+
+  // Function to mark a lesson as watched
+  function markAsWatched(lessonElement) {
+    lessonElement.find(".hgi-tick-01").removeClass("d-none").addClass("d-block");
+  }
+
+  // Function to unlock the next lesson video
+  function unlockNextLesson(currentLesson) {
+    const nextLesson = currentLesson.next(".lesson-item");
+    if (nextLesson.length) {
+      unlockLesson(nextLesson);
+    } else {
+      const currentSection = currentLesson.closest(".accordion-item");
+      const nextSection = currentSection.next(".accordion-item");
+      if (nextSection.length) {
+        const firstLessonInNextSection = nextSection.find(".lesson-item").first();
+        if (firstLessonInNextSection.length) {
+          unlockLesson(firstLessonInNextSection);
+        }
+      }
+    }
+  }
+
+  // Handle lesson item clicks
+  $("#courseAccordion").on("click", ".lesson-item", function (e) {
+    if (!isEnrolled || $(this).hasClass("locked")) {
+      if (!isEnrolled) {
+        showAlert("warning", "Please enroll in this course to access the content!");
+      }
+      e.preventDefault();
+      return;
+    }
+
+    const videoUrl = $(this).data("video-url");
+    if (videoUrl) {
+      $(".video-container #videoPlayer").attr("src", videoUrl);
+      markAsWatched($(this));
+      unlockNextLesson($(this));
+    }
+  });
+
+  // Handle enrollment button
+  $("#enrollButton").on("click", function () {
+    const $btn = $(this);
+    $btn.prop("disabled", true);
+    $btn.html('<span class="spinner-border spinner-border-sm me-2"></span>Enrolling...');
+
+    if (!token) {
+      showAlert("danger", "Please login to the system to enroll in this course.");
+      $btn.prop("disabled", false).html("Enroll Now");
+      return;
+    }
+
+    setTimeout(function () {
+      $btn.html('Enrolled <i class="hgi-stroke hgi-tick-01 text-white fs-5 align-middle"></i>');
+      $btn.removeClass("btn-primary").addClass("btn-success");
+      showAlert("success", "Successfully enrolled in the course!");
+      $("#videoPlayer").removeClass("pe-none").addClass("pe-auto");
+      initializeLessons();
+    }, 1500);
+  });
 });

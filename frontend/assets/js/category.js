@@ -1,4 +1,12 @@
 $(document).ready(function () {
+    // Initialize tooltips
+    const tooltipTriggerList = document.querySelectorAll(
+        '[data-bs-toggle="tooltip"]'
+    );
+    const tooltipList = [...tooltipTriggerList].map(
+        (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
+    );
+
     // Load categories on page load
     fetchCategories();
 
@@ -110,16 +118,20 @@ $(document).ready(function () {
                                 <td>${category.categoryId}</td>
                                 <td>${category.name}</td>
                                 <td>
-                                    <button class="btn btn-sm btn-warning edit-category me-2" data-id="${category.categoryId}" data-name="${category.name}">
-                                        <i class="bi bi-pencil-square"></i> Edit
+                                    <button class="btn btn-action btn-edit edit-category me-2" data-id="${category.categoryId}" data-name="${category.name}" 
+                                                data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Edit">
+                                       <i class="hgi hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-danger delete-category" data-id="${category.categoryId}">
-                                        <i class="bi bi-trash"></i> Delete
+                                    <button class="btn btn-action btn-delete delete-category" data-id="${category.categoryId}"
+                                                data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Delete">
+                                        <i class="hgi hgi-stroke hgi-delete-01 fs-5 align-middle"></i>
                                     </button>
                                 </td>
                             </tr>
                         `);
                     });
+
+                    $(".btn-action").tooltip({trigger: "hover"});
                 }
             },
             error: function (xhr) {

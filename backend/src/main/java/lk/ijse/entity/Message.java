@@ -37,4 +37,12 @@ public class Message {
 
     @Column(name = "is_read")
     private Boolean isRead = false;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "chat-type", nullable = false)
+    private ChatType chatType;
+
+    public enum ChatType {
+        PRIVATE, GROUP
+    }
 }

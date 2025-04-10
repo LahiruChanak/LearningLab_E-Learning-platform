@@ -1,153 +1,7 @@
-// Sample data for contacts - simulating server data
-const contacts = [
-  {
-    id: 1,
-    name: "Alexis Sears",
-    lastMessage: "You can change the ord...",
-    time: "11:33",
-    avatar: "assets/images/user.jpg",
-    isGroup: false,
-    isArchived: false,
-  },
-  {
-    id: 2,
-    name: "Web Development",
-    lastMessage: "Discussing next sprint",
-    time: "11:39",
-    avatar: "assets/images/user.jpg",
-    isGroup: true,
-    isArchived: false,
-  },
-  {
-    id: 3,
-    name: "William",
-    lastMessage: "How have you been?",
-    time: "Fri",
-    avatar: "assets/images/user.jpg",
-    isGroup: false,
-    isArchived: true,
-  },
-  {
-    id: 4,
-    name: "John Doe",
-    lastMessage: "How are you?",
-    time: "Yesterday",
-    avatar: "assets/images/user.jpg",
-    isGroup: false,
-    isArchived: true,
-  },
-  {
-    id: 5,
-    name: "Sarah Johnson",
-    lastMessage: "Can you help me?",
-    time: "10:45",
-    avatar: "assets/images/user.jpg",
-    isGroup: false,
-    isArchived: false,
-  },
-  {
-    id: 6,
-    name: "Emily Davis Friends Group",
-    lastMessage: "Can you help me?",
-    time: "10:45",
-    avatar: "assets/images/user.jpg",
-    isGroup: true,
-    isArchived: false,
-  },
-];
-
-// Sample data for available contacts (simulating server data)
-const availableContacts = [
-  {
-    id: 7,
-    name: "Michael Brown",
-    avatar: "assets/images/user.jpg",
-    role: "Student",
-  },
-  {
-    id: 8,
-    name: "Emma Wilson",
-    avatar: "assets/images/user.jpg",
-    role: "Instructor",
-  },
-  {
-    id: 9,
-    name: "David Clark",
-    avatar: "assets/images/user.jpg",
-    role: "Student",
-  },
-  {
-    id: 10,
-    name: "Sophia Lee",
-    avatar: "assets/images/user.jpg",
-    role: "Student",
-  },
-  {
-    id: 11,
-    name: "Oliver Davis",
-    avatar: "assets/images/user.jpg",
-    role: "Instructor",
-  },
-  {
-    id: 12,
-    name: "Ava Adams",
-    avatar: "assets/images/user.jpg",
-    role: "Instructor",
-  },
-];
-
-// Sample messages for each chat - simulating server data
-const chatMessages = {
-  1: [
-    { id: 1, text: "Hi Alexis! How are you?", sent: true, time: "09:30" },
-    {
-      id: 2,
-      text: "Hey! I'm good, thanks. How about you?",
-      sent: false,
-      time: "09:31",
-    },
-    {
-      id: 3,
-      text: "I'm doing great! Just working on the project.",
-      sent: true,
-      time: "09:32",
-    },
-  ],
-  2: [
-    {
-      id: 1,
-      text: "Team, let's discuss the next sprint tasks.",
-      sent: false,
-      time: "11:00",
-      sender: "John",
-    },
-    {
-      id: 2,
-      text: "I've prepared the documentation.",
-      sent: false,
-      time: "11:05",
-      sender: "Sarah",
-    },
-    { id: 3, text: "Great work everyone!", sent: true, time: "11:10" },
-  ],
-  3: [
-    {
-      id: 1,
-      text: "William, do you have the report ready?",
-      sent: true,
-      time: "Yesterday",
-    },
-    {
-      id: 2,
-      text: "Yes, I'll send it shortly.",
-      sent: false,
-      time: "Yesterday",
-    },
-  ],
-};
-
 let currentChatId = null;
 let currentFilter = "all";
+let token = localStorage.getItem('token') || null;
+let availableContacts = [];
 
 // Simulated API endpoints
 const api = {
@@ -178,6 +32,22 @@ const api = {
     return $.Deferred().resolve(contacts[contactIndex]);
   },
 };
+
+// Standalone function to fetch contacts from backend
+function fetchContacts() {
+  return $.ajax({
+    url: 'http://localhost:8080/api/v1/chat/contacts',
+    type: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  }).then(response => {
+    console.log('Contacts fetched from API:', response);
+    return response;
+  }).fail(error => {
+    console.error('Error fetching contacts:', error);
+  });
+}
 
 // Function to show welcome screen
 function showWelcomeScreen() {
@@ -285,7 +155,7 @@ function selectChat(chatId) {
   renderMessages(chatId);
 }
 
-// Function to send message
+// Function to send the message
 function sendMessage(text) {
   if (!text.trim() || !currentChatId) return;
 
@@ -317,36 +187,32 @@ function filterAvailableContacts(searchText) {
 // Function to render available contacts in dropdown
 function renderAvailableContacts(contactsList = availableContacts) {
   if (contactsList.length === 0) {
-    $(".new-contact-list").html(
-      '<div class="text-center p-3 pt-4 mt-2">No contacts found</div>'
-    );
+    $(".new-contact-list").html('<div class="text-center p-3 pt-4 mt-2">No contacts found</div>');
+    console.log('No available contacts to render');
     return;
   }
 
-  const contactsHtml = contactsList
-    .map(
-      (contact) => `
-        <div class="new-contact-item" data-contact-id="${contact.id}">
-          <img src="${contact.avatar}" alt="${contact.name}" class="contact-avatar" />
-          <div class="contact-info">
-            <div class="contact-name">${contact.name}</div>
-            <div class="contact-role">${contact.role}</div>
-          </div>
-        </div>
-      `
-    )
-    .join("");
+  const contactsHtml = contactsList.map(contact => `
+    <div class="new-contact-item" data-contact-id="${contact.id}">
+      <img src="${contact.avatar}" alt="${contact.name}" class="contact-avatar" />
+      <div class="contact-info">
+        <div class="contact-name">${contact.name}</div>
+        <div class="contact-role">${contact.role || 'User'}</div>
+      </div>
+    </div>
+  `).join("");
 
   $(".new-contact-list").html(contactsHtml);
 }
 
 // Function to start new chat
 function startNewChat(contactId) {
-  const selectedContact = availableContacts.find((c) => c.id === contactId);
+  const selectedContact = availableContacts.find(c => c.id === contactId);
+  if (!selectedContact) {
+    console.error('Contact not found:', contactId);
+    return;
+  }
 
-  if (!selectedContact) return;
-
-  // Create new chat entry
   const newChat = {
     id: selectedContact.id,
     name: selectedContact.name,
@@ -357,22 +223,39 @@ function startNewChat(contactId) {
     isArchived: false,
   };
 
-  // Initialize empty message array for new chat
-  chatMessages[newChat.id] = [];
-
-  // Add to contacts list if not exists
-  if (!contacts.some((c) => c.id === newChat.id)) {
+  if (!contacts.some(c => c.id === newChat.id)) {
     contacts.unshift(newChat);
   }
 
-  $("#newMessageBtn").dropdown("hide");
+  if (!chatMessages[newChat.id]) {
+    chatMessages[newChat.id] = [];
+  }
 
-  // Select the new chat
-  selectChat(newChat.id);
-  renderContacts();
+  currentChatId = newChat.id; // Set current chat ID
+  $(".user-info h6").text(selectedContact.name); // Update header
+  $(".user-avatar").attr("src", selectedContact.avatar);
+  $(".chat-header, .chat-input").show(); // Show chat UI
+  $("#chatMessages").html('<div class="message"><div class="message-text">Start chatting with ' + selectedContact.name + '</div></div>'); // Load initial message
+  $("#chatMessages").show(); // Ensure visibility
+  $("#newMessageBtn").dropdown("hide"); // Close dropdown
+
+  renderContacts(); // Update #contactList
+  console.log('New chat started for:', selectedContact);
 }
 
 $(document).ready(() => {
+  fetchContacts().then(response => {
+    availableContacts = response.map(contact => ({
+      id: contact.userId,
+      name: contact.fullName,
+      avatar: contact.profilePicture || "../assets/images/icons/placeholder.svg",
+      role: contact.role || 'User'
+    }));
+    renderAvailableContacts();
+  }).fail(error => {
+    console.error('Failed to fetch contacts:', error);
+  });
+
   // Add event listeners for message type buttons
   $("[data-message-type]").on("click", function () {
     currentFilter = $(this).data("messageType");
@@ -413,8 +296,10 @@ $(document).ready(() => {
   });
 
   // Add event listener for new contact selection
-  $(document).on("click", ".new-contact-item", function () {
+  $(document).on("click", ".new-contact-item", function (e) {
+    e.preventDefault();
     const contactId = $(this).data("contactId");
+    console.log('Contact clicked:', contactId); // Debug click
     startNewChat(contactId);
   });
 

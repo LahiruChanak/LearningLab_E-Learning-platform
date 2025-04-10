@@ -329,6 +329,7 @@ public class UserController {
         String username = authentication.getName();
         User user = userService.getCurrentUser(username);
         Map<String, Object> userData = Map.of(
+                "userId", user.getUserId(),
                 "fullName", user.getFullName(),
                 "email", user.getEmail()
         );

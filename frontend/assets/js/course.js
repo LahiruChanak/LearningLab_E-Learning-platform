@@ -1,12 +1,16 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const courseSearch = document.getElementById("courseSearch");
-  const sortDropdown = document.getElementById("sortDropdown");
-  const filterDropdown = document.getElementById("filterDropdown");
-  const activeFilters = document.getElementById("activeFilters");
-  const viewToggleBtns = document.querySelectorAll("[data-view]");
-  const coursesContainer = document.querySelector(".row.g-4");
+$(document).ready(function () {
+  const courseSearch = $("#courseSearch");
+  const sortDropdown = $("#sortDropdown");
+  const filterDropdown = $("#filterDropdown");
+  const activeFilters = $("#activeFilters");
+  const viewToggleBtns = $("[data-view]");
+  const coursesContainer = $(".row.g-4");
+  let allCourses = [];
+  let currentCourse = null;
+  let lessons = [];
+  const token = localStorage.getItem("token");
 
-  // State Management
+// State Management
   let currentState = {
     searchTerm: "",
     levels: [],
@@ -21,119 +25,46 @@ document.addEventListener("DOMContentLoaded", function () {
     maxPrice: null,
   };
 
-  // Course Data (Sample data - would typically come from a backend API)
-  // let courses = [
-  //   {
-  //     id: 1,
-  //     name: "Free Sketch from A to Z: Become an UX UI Designer",
-  //     sales: 150,
-  //     comments: 15,
-  //     likes: 242,
-  //     level: "beginner",
-  //     duration: "2-5",
-  //     date: "2024-03-01",
-  //     image: "assets/images/courses/sketch.jpg",
-  //     category: "UI Design",
-  //     rating: 4.5,
-  //     instructor: "John Doe",
-  //     price: 0,
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Android UI-UX Design And Material Design Clone",
-  //     sales: 150,
-  //     comments: 15,
-  //     likes: 242,
-  //     level: "intermediate",
-  //     duration: "5+",
-  //     date: "2024-02-28",
-  //     image: "assets/images/courses/android.jpg",
-  //     category: "UI Design",
-  //     rating: 3.8,
-  //     instructor: "Jane Smith",
-  //     price: 19.99,
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Photography for Beginner - Complete Guide 2021",
-  //     sales: 150,
-  //     comments: 15,
-  //     likes: 242,
-  //     level: "beginner",
-  //     duration: "0-2",
-  //     date: "2024-02-27",
-  //     image: "assets/images/courses/photography.jpg",
-  //     category: "Photography",
-  //     rating: 5.0,
-  //     instructor: "John Doe",
-  //     price: 0,
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "Complete Python BootCamp: Go from zero to hero in Python",
-  //     sales: 150,
-  //     comments: 15,
-  //     likes: 242,
-  //     level: "beginner",
-  //     duration: "2-5",
-  //     date: "2024-02-26",
-  //     image: "assets/images/courses/python.jpg",
-  //     category: "Development",
-  //     rating: 4.3,
-  //     instructor: "Jane Smith",
-  //     price: 19.99,
-  //   },
-  //   {
-  //     id: 5,
-  //     name: "Complete Web Development BootCamp: Go from zero to hero in Web",
-  //     sales: 150,
-  //     comments: 15,
-  //     likes: 242,
-  //     level: "beginner",
-  //     duration: "2-5",
-  //     date: "2024-02-25",
-  //     image: "assets/images/courses/web.jpg",
-  //     category: "Development",
-  //     rating: 2.0,
-  //     instructor: "Lisa Johnson",
-  //     price: 19.99,
-  //   },
-  //   {
-  //     id: 6,
-  //     name: "Complete Web Development BootCamp: Go from zero to hero in Web",
-  //     sales: 150,
-  //     comments: 15,
-  //     likes: 242,
-  //     level: "beginner",
-  //     duration: "2-5",
-  //     date: "2024-02-24",
-  //     image: "assets/images/courses/web.jpg",
-  //     category: "Marketing",
-  //     rating: 1.0,
-  //     instructor: "Lisa Johnson",
-  //     price: 19.99,
-  //   },
-  // ];
-
+  // fetch courses
   function fetchCourses(viewType = 'grid') {
-    const token = localStorage.getItem("token");
-
     if (!token) {
-      showAlert("danger", "Please login to the system to view courses.");
+        showAlert("danger", "Please login to the system to view courses.");
+        return;
+    }
+
+    $.ajax({
+        url: "http://localhost:8080/api/v1/course",
+        type: "GET",
+        headers: { "Authorization": "Bearer " + token },
+        success: function (response) {
+            if (response.status === 200) {
+                allCourses = response.data;
+                renderCourses(response.data, viewType);
+            }
+        },
+        error: function (xhr) {
+            showAlert("danger", "Error fetching courses: " + (xhr.responseJSON?.message || xhr.statusText));
+        }
+    });
+  }
+
+  // Fetch course lessons
+  function fetchLessons(courseId) {
+    if (!token) {
+      showAlert("danger", "Please login to the system to load lessons.");
       return;
     }
 
     $.ajax({
-      url: "http://localhost:8080/api/v1/course",
+      url: `http://localhost:8080/api/v1/instructor/lesson/course/${courseId}`,
       type: "GET",
       headers: { "Authorization": "Bearer " + token },
       success: function (response) {
-        if (response.status === 200) {
-          renderCourses(response.data, viewType);
-        }
+        lessons = response;
+        renderLessons(courseId);
       },
       error: function (xhr) {
-        showAlert("danger", "Error fetching courses: " + (xhr.responseJSON?.message || xhr.statusText));
+        showAlert("danger", "Error fetching lessons: " + (xhr.responseJSON?.message || xhr.statusText));
       }
     });
   }
@@ -177,53 +108,44 @@ document.addEventListener("DOMContentLoaded", function () {
     .appendTo("head");
 
   // Event Listeners
-  courseSearch.addEventListener(
-    "input",
-    debounce(function (e) {
-      currentState.searchTerm = e.target.value.toLowerCase();
-      updateUI();
-    }, 300)
-  );
+  courseSearch.on("input", debounce(function () {
+    currentState.searchTerm = courseSearch.val().toLowerCase();
+    updateUI();
+  }, 300));
 
-  document.querySelectorAll(".dropdown-item[data-sort]").forEach((item) => {
-    item.addEventListener("click", function (e) {
-      e.preventDefault();
-      currentState.sortType = this.dataset.sort;
-      updateUI();
-    });
+  $(".dropdown-item[data-sort]").on("click", function (e) {
+    e.preventDefault();
+    currentState.sortType = $(this).data("sort");
+    updateUI();
   });
 
   // Filter checkboxes
-  document
-    .querySelectorAll(
-      'input[id^="level"], input[id^="duration"], input[id^="instructor"], input[id^="category"]'
-    )
-    .forEach((checkbox) => {
-      checkbox.addEventListener("change", function () {
-        const type = this.id.startsWith("level")
-          ? "levels"
-          : this.id.startsWith("duration")
-          ? "durations"
-          : this.id.startsWith("instructor")
-          ? "instructors"
-          : "categories";
-        if (this.checked) {
-          currentState[type] = [...currentState[type], this.value];
-        } else {
-          currentState[type] = currentState[type].filter(
-            (val) => val !== this.value
-          );
-        }
-        updateUI();
-      });
-    });
+  $('input[id^="level"], input[id^="duration"], input[id^="instructor"], input[id^="category"]').on("change", function () {
+    const id = this.id;
+    const value = this.value;
+    const checked = this.checked;
+
+    const type = id.startsWith("level")
+        ? "levels"
+        : id.startsWith("duration")
+            ? "durations"
+            : id.startsWith("instructor")
+                ? "instructors"
+                : "categories";
+
+    if (checked) {
+      currentState[type] = [...currentState[type], value];
+    } else {
+      currentState[type] = currentState[type].filter(val => val !== value);
+    }
+
+    updateUI();
+  });
 
   // View toggle
-  viewToggleBtns.forEach((btn) => {
-    btn.addEventListener("click", function () {
-      currentState.view = this.dataset.view;
-      updateUI();
-    });
+  viewToggleBtns.on("click", function () {
+    currentState.view = $(this).data("view");
+    updateUI();
   });
 
   function updateUI() {
@@ -238,30 +160,24 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Price range inputs
-  const minPriceInput = document.getElementById("minPrice");
-  const maxPriceInput = document.getElementById("maxPrice");
+  const minPriceInput = $("#minPrice");
+  const maxPriceInput = $("#maxPrice");
 
-  minPriceInput.addEventListener(
-    "input",
-    debounce(function (e) {
-      currentState.minPrice =
-        e.target.value === "" ? null : parseFloat(e.target.value);
-      updateUI();
-    }, 300)
-  );
+  minPriceInput.on("input", debounce(function () {
+    const value = minPriceInput.val();
+    currentState.minPrice = value === "" ? null : parseFloat(value);
+    updateUI();
+  }, 300));
 
-  maxPriceInput.addEventListener(
-    "input",
-    debounce(function (e) {
-      currentState.maxPrice =
-        e.target.value === "" ? null : parseFloat(e.target.value);
-      updateUI();
-    }, 300)
-  );
+  maxPriceInput.on("input", debounce(function () {
+    const value = maxPriceInput.val();
+    currentState.maxPrice = value === "" ? null : parseFloat(value);
+    updateUI();
+  }, 300));
 
   function filterAndSortCourses() {
     // Filter courses
-    let filtered = courses.filter((course) => {
+    let filtered = allCourses.filter((course) => {
       const matchesSearch = course.name
         .toLowerCase()
         .includes(currentState.searchTerm);
@@ -472,6 +388,7 @@ document.addEventListener("DOMContentLoaded", function () {
     coursesContainer.classList.toggle("list-view", view === "list");
   }
 
+  // Render Courses function
   function renderCourses(coursesToRender, viewType = 'grid') {
     const $coursesContainer = $("#coursesContainer");
     $coursesContainer.empty();
@@ -487,12 +404,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     coursesToRender.forEach(course => {
       let displayTitle = course.title;
-      if (currentState.searchTerm) {
+      if (currentState && currentState.searchTerm) {
         const regex = new RegExp(`(${currentState.searchTerm})`, "gi");
         displayTitle = course.title.replace(regex, '<span class="highlight">$1</span>');
       }
 
-      // Common content for both views
       const courseContent = `
             <img src="${course.thumbnail || 'assets/images/default-thumbnail.jpg'}" alt="${course.title}" class="course-thumbnail mb-3">
             <div class="course-details">
@@ -516,25 +432,27 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
         `;
 
-      let courseHtml = '';
-      if (viewType === 'grid') {
-        courseHtml = `
-                <div class="col-md-5 col-lg-3 mb-4">
-                    <div class="course-card grid-view">
-                        ${courseContent}
-                    </div>
+      let courseHtml = viewType === 'grid' ? `
+            <div class="col-md-5 col-lg-3 mb-4">
+                <div class="course-card grid-view">
+                    ${courseContent}
                 </div>
-            `;
-      } else {
-        courseHtml = `
-                <div class="col-6 mb-4">
-                    <div class="course-card list-view d-flex">
-                        ${courseContent}
-                    </div>
+            </div>
+        ` : `
+            <div class="col-6 mb-4">
+                <div class="course-card list-view d-flex">
+                    ${courseContent}
                 </div>
-            `;
-      }
+            </div>
+        `;
+
       $coursesContainer.append(courseHtml);
+    });
+
+    // Add click event handler for view course buttons
+    $('.view-course').on('click', function() {
+      const courseId = $(this).data('id');
+      window.location.href = `course-content.html?courseId=${courseId}`;
     });
   }
 
@@ -583,6 +501,6 @@ document.addEventListener("DOMContentLoaded", function () {
     updateUI();
   });
 
-  fetchCourses();
+  fetchCourses('grid');
   updateUI();
 });
