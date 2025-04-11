@@ -95,7 +95,8 @@ $(document).ready(function () {
                 if (response.status === 200) {
                     // Login successful, no 2FA required
                     localStorage.setItem("token", response.data.token);
-                    localStorage.setItem("role", response.data.role); // Store role
+                    localStorage.setItem("role", response.data.role);
+                    localStorage.setItem('userId', response.data.userId);
                     showAlert("success", "Login successful! Redirecting...");
 
                     setTimeout(() => {
@@ -147,6 +148,8 @@ $(document).ready(function () {
                 if (response.status === 200) {
                     errorMessage.text("");
                     localStorage.setItem("token", response.data.token);
+                    localStorage.setItem("role", response.data.role);
+                    localStorage.setItem('userId', response.data.userId);
                     showAlert("success", "2FA verified, login successful!");
                     $("#twoFactorModal").modal("hide");
                     $(".code-input").val("");

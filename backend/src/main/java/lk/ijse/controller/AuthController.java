@@ -110,10 +110,10 @@ public class AuthController {
             }
 
             String token = jwtUtil.generateToken(userDetails);
-            // Fetch the user to get the role
+            // Fetch the user to get the role and userId
             User user = userService.findByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-            AuthDTO authDTO = new AuthDTO(email, token, user.getRole().name());
+            AuthDTO authDTO = new AuthDTO(user.getUserId(), email, token, user.getRole().name());
 
             return ResponseEntity.ok(new ResponseDTO(200, "Login successful", authDTO));
         } catch (Exception e) {
@@ -130,7 +130,10 @@ public class AuthController {
         if (userService.verify2FACode(email, code)) {
             UserDetails userDetails = userService.loadUserByUsername(email);
             String token = jwtUtil.generateToken(userDetails);
-            AuthDTO authDTO = new AuthDTO(email, token);
+            // Fetch the user to get the userId
+            User user = userService.findByEmail(email)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+            AuthDTO authDTO = new AuthDTO(user.getUserId(), email, token);
             return ResponseEntity.ok(new ResponseDTO(200, "2FA verified, login successful", authDTO));
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

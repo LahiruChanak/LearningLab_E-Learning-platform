@@ -2,7 +2,6 @@ package lk.ijse.service;
 
 import lk.ijse.dto.CourseDTO;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

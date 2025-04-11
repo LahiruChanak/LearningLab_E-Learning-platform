@@ -5,9 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.*;
 
 @Entity
-@Table(name = "enrollment", uniqueConstraints = @UniqueConstraint(columnNames = {"student_id", "course_id"}))
+@Table(name = "enrollment", uniqueConstraints = @UniqueConstraint(columnNames = {"student_id", "course_id"})) // Ensure each student can enroll in a course once
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -28,6 +29,9 @@ public class Enrollment {
     @Column(name = "enrollment_date", nullable = false, updatable = false)
     private LocalDateTime enrollmentDate = LocalDateTime.now();
 
-    @Column(name = "progress")
-    private Double progress = 0.0;
+    // Collection to track completed video IDs across all lessons
+    @ElementCollection
+    @CollectionTable(name = "completed_videos", joinColumns = @JoinColumn(name = "enrollment_id"))
+    @Column(name = "video_id")
+    private Set<Long> completedVideoIds = new HashSet<>();
 }

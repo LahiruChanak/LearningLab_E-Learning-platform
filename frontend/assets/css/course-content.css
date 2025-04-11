@@ -172,14 +172,13 @@ body {
 
 .accordion-button {
   background: white;
-  box-shadow: none !important;
   border: 1px solid #ccc !important;
   border-radius: 12px !important;
   padding: 16px 20px;
   font-weight: 500;
   color: var(--text-color);
   transition: all 0.4s ease;
-  box-shadow: var(--shadow-sm);
+  box-shadow: none !important;
 }
 
 .accordion-button:not(.collapsed) {
@@ -431,4 +430,10 @@ i.hgi-star.half-filled {
 .announcement-item p {
   font-size: 0.9rem;
   color: #666;
+}
+
+#courseLevel {
+  position: relative;
+  top: -10px;
+  left: -10px;
 }
