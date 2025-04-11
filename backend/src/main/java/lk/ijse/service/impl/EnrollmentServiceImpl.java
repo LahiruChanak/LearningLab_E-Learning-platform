@@ -35,6 +35,15 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     @Transactional
+    public Enrollment markVideoAsCompleted(Long enrollmentId, Long videoId) {
+        Enrollment enrollment = enrollmentRepo.findById(enrollmentId)
+                .orElseThrow(() -> new RuntimeException("Enrollment not found"));
+        enrollment.getCompletedVideoIds().add(videoId);
+        return enrollmentRepo.save(enrollment);
+    }
+
+    @Override
+    @Transactional
     public EnrollmentDTO enrollStudent(Long studentId, Long courseId) {
 
         Optional<Enrollment> existingEnrollment = enrollmentRepo.findByStudentIdAndCourseId(studentId, courseId);

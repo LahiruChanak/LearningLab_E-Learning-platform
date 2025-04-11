@@ -17,10 +17,6 @@ $(document).ready(function () {
         fetchCourseDetails(courseId);
     }
 
-    if (studentId && courseId && token) {
-        checkEnrollment(studentId, courseId, token);
-    }
-
     // Handle share button
     $(".btn-share").on("click", function () {
         // Create a temporary input element
@@ -385,6 +381,9 @@ $(document).ready(function () {
             headers: {"Authorization": "Bearer " + token},
             success: function (response) {
                 renderLessons(response);
+                if (studentId && courseId && token) {
+                    checkEnrollment(studentId, courseId, token);
+                }
             },
             error: function (xhr) {
                 showAlert("danger", "Error fetching lessons: " + (xhr.responseJSON?.message || xhr.statusText));
@@ -402,16 +401,15 @@ $(document).ready(function () {
 
         // Update course metadata
         $('.course-meta').html(`
-        <span><i class="hgi-stroke hgi-user-circle-02 me-1"></i>${course.enrollments ? course.enrollments.length : 0} Enrollments</span>
-        <span class="ms-3"><i class="hgi-stroke hgi-comment-01 me-1"></i>${course.comments || 0} Comments</span>
-        <span class="ms-3"><i class="hgi-stroke hgi-favourite me-1"></i>${course.likes || 0} Likes</span>
-    `);
+            <span><i class="hgi-stroke hgi-user-circle-02 me-1"></i>${course.enrollments ? course.enrollments.length : 0} Enrollments</span>
+            <span class="ms-3"><i class="hgi-stroke hgi-comment-01 me-1"></i>${course.comments || 0} Comments</span>
+            <span class="ms-3"><i class="hgi-stroke hgi-favourite me-1"></i>${course.likes || 0} Likes</span>
+        `);
 
-        // course badge
         $('.d-flex.align-items-center.gap-2').html(`
-        <span class="badge rounded-pill bg-primary-subtle text-primary"></span>
-        <span class="badge rounded-pill bg-success-subtle text-success" id="progress-badge"></span>
-    `);
+            <span class="badge rounded-pill bg-primary-subtle text-primary"></span>
+            <span class="badge rounded-pill bg-success-subtle text-success" id="progress-badge"></span>
+        `);
     }
 
     // Function to render lessons
@@ -425,45 +423,46 @@ $(document).ready(function () {
             });
 
             html += `
-              <div class="accordion-item">
+            <div class="accordion-item">
                 <h2 class="accordion-header">
-                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${lessonIndex}">
-                    <div class="d-flex justify-content-between w-100 me-3">
-                        <span class="course-topic">0${lessonIndex + 1}: ${lesson.title}</span>
-                        <span class="duration">${totalDuration} min</span>
-                    </div>
-                  </button>
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${lessonIndex}">
+                        <div class="d-flex justify-content-between w-100 me-3">
+                            <span class="course-topic">0${lessonIndex + 1}: ${lesson.title}</span>
+                            <span class="duration">${totalDuration} min</span>
+                        </div>
+                    </button>
                 </h2>
                 <div id="collapse${lessonIndex}" class="accordion-collapse collapse ${lessonIndex === 0 ? 'show' : ''}" data-bs-parent="#courseAccordion">
-                  <div class="accordion-body d-flex flex-column gap-3 pb-1">`;
+                    <div class="accordion-body d-flex flex-column gap-3 pb-1">`;
             lesson.videos.forEach((video, videoIndex) => {
                 const isFirstLesson = lessonIndex === 0 && videoIndex === 0;
                 html += `
                 <div class="lesson-item d-flex align-items-center ${isFirstLesson ? '' : 'locked'}" 
                      data-video-id="${video.videoId}" data-video-url="${video.videoUrl}">
                     <i class="hgi-stroke hgi-play fs-5 align-middle me-3"></i>
-                  <div class="flex-grow-1 d-flex flex-column gap-1">
-                    <span>${video.title}</span>
-                    <small class="text-muted">${parseInt(video.duration) || 0} min</small>
-                  </div>
-                  <i class="hgi-stroke hgi-square-lock-02 fs-5 align-middle text-muted ${isFirstLesson ? 'd-none' : ''}"></i>
-                  <i class="hgi-stroke hgi-tick-01 fs-4 align-middle d-none"></i>
+                    <div class="flex-grow-1 d-flex flex-column gap-1">
+                        <span>${video.title}</span>
+                        <small class="text-muted">${parseInt(video.duration) || 0} min</small>
+                    </div>
+                    <i class="hgi-stroke hgi-square-lock-02 fs-5 align-middle text-muted ${isFirstLesson ? 'd-none' : ''}"></i>
+                    <i class="hgi-stroke hgi-tick-01 fs-4 align-middle d-none"></i>
                 </div>`;
             });
             html += `
-              </div>
-            </div>
-          </div>`;
+                    </div>
+                </div>
+            </div>`;
         });
 
         $("#courseAccordion").html(html);
         $('.badge.bg-primary-subtle').text(`${lessons.length} Lessons`);
+        updateSectionProgress();
     }
 
     // Function to initialize lessons after enrollment
     function initializeLessons() {
         const firstVideo = $(".lesson-item").first();
-        if (firstVideo.length) {
+        if (firstVideo.length && !firstVideo.find(".hgi-tick-01").hasClass("d-block")) {
             unlockLesson(firstVideo);
         }
     }
@@ -484,7 +483,9 @@ $(document).ready(function () {
 
     // Function to mark a lesson as watched
     function markAsWatched(lessonElement) {
+        console.log("Marking as watched:", lessonElement.data("video-id"));
         lessonElement.find(".hgi-tick-01").removeClass("d-none").addClass("d-block");
+        lessonElement.find(".hgi-square-lock-02").addClass("d-none");
     }
 
     // Function to unlock the next lesson video
@@ -508,7 +509,7 @@ $(document).ready(function () {
         const totalLessons = $(".lesson-item").length;
         const completedLessons = $(".lesson-item .hgi-tick-01.d-block").length;
         const progress = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
-        $("#progress-badge").text(`${progress || 0}% Completed`);
+        $("#progress-badge").text(`${progress}% Completed`);
     }
 
     // Handle lesson item clicks
@@ -532,7 +533,6 @@ $(document).ready(function () {
             markAsWatched($(this));
             unlockNextLesson($(this));
 
-            // Save completion to backend
             $.ajax({
                 url: `http://localhost:8080/api/v1/enrollment/${enrollmentId}/complete-video`,
                 method: "PUT",
@@ -543,7 +543,7 @@ $(document).ready(function () {
                     updateSectionProgress();
                 },
                 error: function (xhr) {
-                    console.error("Failed to save video completion:", xhr.responseJSON?.message);
+                    showAlert("danger", "Failed to save video completion: " + (xhr.responseJSON?.message || "Unknown error"));
                 }
             });
         }
@@ -557,7 +557,7 @@ $(document).ready(function () {
             headers: {"Authorization": `Bearer ${token}`},
             success: function (response) {
                 if (response.status === 200) {
-                    // Student is enrolled
+                    console.log("Completed video IDs from DB:", response.data.completedVideoIds);
                     isEnrolled = true;
                     $("#enrollButton")
                         .html('Enrolled <i class="hgi-stroke hgi-tick-01 text-white fs-5 align-middle"></i>')
@@ -566,15 +566,15 @@ $(document).ready(function () {
                         .prop("disabled", true)
                         .data("enrollment-id", response.data.enrollmentId);
 
-                    // Reflect watched progress
                     const completedVideoIds = response.data.completedVideoIds || [];
                     $(".lesson-item").each(function () {
-                        const videoId = $(this).data("video-id");
-                        if (completedVideoIds.includes(videoId)) {
+                        const videoId = Number($(this).data("video-id"));
+                        if (completedVideoIds.map(Number).includes(videoId)) {
                             markAsWatched($(this));
                             unlockNextLesson($(this));
                         }
                     });
+
                     updateSectionProgress();
                     initializeLessons();
                 }

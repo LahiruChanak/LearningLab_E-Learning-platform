@@ -9,6 +9,8 @@ public interface EnrollmentService {
 
     Optional<Enrollment> getEnrollment(Long studentId, Long courseId);
 
+    Enrollment markVideoAsCompleted(Long enrollmentId, Long videoId);
+
     EnrollmentDTO enrollStudent(Long studentId, Long courseId);
 
     EnrollmentDTO updateCompletedVideos(Long enrollmentId, Long videoId);
