@@ -69,6 +69,7 @@ public class CourseResourceController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('INSTRUCTOR', 'ADMIN', 'STUDENT')")
     public ResponseEntity<ResponseDTO> getResources(@PathVariable Long courseId) {
         try {
             List<CourseResourceDTO> resources = resourceService.getResourcesByCourseId(courseId);

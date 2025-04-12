@@ -1,5 +1,15 @@
 @import "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap";
 
+:root {
+    --primary-color: #8b72ee;
+    --secondary-color: #ebedfb;
+    --text-color: #344054;
+    --muted-color: #667085;
+    --shadow-sm: 0 1px 3px rgba(16, 24, 40, 0.1);
+    --shadow-md: 0 4px 8px rgba(16, 24, 40, 0.12);
+    --gradient-bg: linear-gradient(135deg, #7f56d9, #9e77ed);
+}
+
 body {
     background: linear-gradient(135deg, #e9ecef, #f5f6f8);
     font-family: 'Poppins', sans-serif;
@@ -260,11 +270,10 @@ h1 {
     border: none;
 }
 
-#lessons-tab,
-#resources-tab {
+.nav-item .nav-link {
     border: none;
-    border-bottom: 2px solid transparent;
-    background-color: transparent;
+    border-bottom: 2px solid transparent !important;
+    background-color: transparent !important;
     color: #666;
     font-weight: 600;
     font-size: 1.2rem;
@@ -272,6 +281,48 @@ h1 {
 }
 
 .nav-item .nav-link.active {
-    color: #007bff;
-    border-color: #007bff !important;
+    color: #666 !important;
+    border-color: #666 !important;
+}
+
+/* Accordion Styles */
+.accordion {
+    height: fit-content;
+}
+
+.accordion-item {
+    border: none;
+    border-radius: 15px !important;
+    background: white;
+    padding: 15px 20px;
+}
+
+.accordion-button {
+    background: white;
+    border: 1px solid #ccc !important;
+    border-radius: 12px !important;
+    padding: 16px 20px;
+    font-weight: 500;
+    color: var(--text-color);
+    transition: all 0.4s ease;
+    box-shadow: none !important;
+}
+
+.accordion-button:not(.collapsed) {
+    background: var(--secondary-color);
+    color: var(--primary-color);
+    border-color: var(--primary-color) !important;
+}
+
+.accordion-button:hover {
+    background: var(--secondary-color);
+    border-color: var(--primary-color);
+}
+
+.accordion-body {
+    background-color: var(--secondary-color) !important;
+    width: calc(100% - 10px);
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    margin: 10px auto 0;
 }

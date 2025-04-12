@@ -55,148 +55,6 @@ $(document).ready(function () {
         $(this).addClass("active");
     });
 
-    // Handle FAQ form submission
-    $("#faqForm").on("submit", function (e) {
-        e.preventDefault();
-        const question = $("#questionText").val().trim();
-        if (question) {
-            alert("Thank you for your question! We'll respond shortly.");
-            $("#questionText").val("");
-        }
-    });
-
-    // Handle star rating with hover effects
-    let selectedRating = 0;
-    const ratingStars = $(".rating-input i.hgi-star");
-
-    // Add hover effects
-    ratingStars.hover(
-        function () {
-            const hoverRating = $(this).data("rating");
-            ratingStars.removeClass("filled");
-            $(this).prevAll().addBack().addClass("filled");
-        },
-        function () {
-            ratingStars.removeClass("filled");
-            if (selectedRating > 0) {
-                ratingStars.slice(0, selectedRating).addClass("filled");
-            }
-        }
-    );
-
-    // Handle click events
-    ratingStars.on("click", function () {
-        selectedRating = $(this).data("rating");
-        ratingStars.removeClass("filled");
-        $(this).prevAll().addBack().addClass("filled");
-    });
-
-    // Handle review form submission
-    $("#reviewForm").on("submit", function (e) {
-        e.preventDefault();
-        const reviewText = $("#reviewText").val().trim();
-        if (selectedRating === 0) {
-            alert("Please select a rating");
-            return;
-        }
-        if (reviewText) {
-            // Add the new review to the list
-            const newReview = `
-        <div class="review-item">
-          <div class="d-flex align-items-center mb-2">
-            <img src="assets/images/user.jpg" alt="User" class="rounded-circle me-2" width="40" height="40">
-            <div class="flex-grow-1">
-              <h6 class="mb-0">You</h6>
-              <div class="stars">
-                ${"<i class='hgi-stroke hgi-star align-middle filled'></i>".repeat(
-                selectedRating
-            )}
-                ${"<i class='hgi-stroke hgi-star align-middle'></i>".repeat(
-                5 - selectedRating
-            )}
-              </div>
-            </div>
-            <div class="dropdown">
-              <button class="btn border-0 p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="hgi-stroke hgi-more-vertical-circle-01 align-middle"></i>
-              </button>
-              <ul class="dropdown-menu p-0">
-                <li>
-                  <button class="dropdown-item edit-review text-warning" type="button">
-                    <i class="hgi-stroke hgi-pencil-edit-02 me-2 align-middle"></i>Edit
-                  </button>
-                </li>
-                <li>
-                  <button class="dropdown-item delete-review text-danger" type="button">
-                    <i class="hgi-stroke hgi-delete-02 me-2 align-middle"></i>Delete
-                  </button>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <p class="mb-0 review-text">${reviewText}</p>
-          <div class="edit-form d-none mt-2">
-            <textarea class="form-control edit-review-text">${reviewText}</textarea>
-            <div class="d-flex align-items-center mt-2">
-              <button class="btn border-0 text-success btn-sm save-edit">✔</button>
-              <button class="btn border-0 text-secondary btn-sm cancel-edit">✘</button>
-            </div>
-          </div>
-        </div>
-      `;
-            const $newReview = $(newReview);
-
-            // Append the new review to the review container
-            $(".reviews-container").append($newReview);
-
-            // Reinitialize Bootstrap tooltips for dynamically added elements
-            $newReview.find('[data-bs-toggle="tooltip"]').tooltip();
-
-            // Handle edit review
-            $newReview.find(".edit-review").on("click", function () {
-                const $reviewItem = $(this).closest(".review-item");
-                $reviewItem.find(".review-text").addClass("d-none");
-                $reviewItem.find(".edit-form").removeClass("d-none");
-            });
-
-            // Handle save edit
-            $newReview.find(".save-edit").on("click", function () {
-                const $reviewItem = $(this).closest(".review-item");
-                const newText = $reviewItem.find(".edit-review-text").val().trim();
-                if (newText) {
-                    $reviewItem.find(".review-text").text(newText).removeClass("d-none");
-                    $reviewItem.find(".edit-form").addClass("d-none");
-                }
-            });
-
-            // Handle cancel edit
-            $newReview.find(".cancel-edit").on("click", function () {
-                const $reviewItem = $(this).closest(".review-item");
-                $reviewItem.find(".review-text").removeClass("d-none");
-                $reviewItem.find(".edit-form").addClass("d-none");
-            });
-
-            // Handle delete review
-            $newReview.find(".delete-review").on("click", function () {
-                if (confirm("Are you sure you want to delete this review?")) {
-                    $(this).closest(".review-item").remove();
-                }
-            });
-            $(".review-list").prepend($newReview);
-
-            // Reset form
-            $("#reviewText").val("");
-            $(".rating-input i").removeClass("filled");
-            selectedRating = 0;
-        }
-    });
-
-    // Handle resource downloads
-    $(".resource-item button").on("click", function () {
-        const resourceName = $(this).closest(".resource-item").find("h6").text();
-        alert(`Downloading ${resourceName}...`);
-    });
-
     // Quiz functionality
     const quizAnswers = {
         q1: "a",
@@ -620,4 +478,327 @@ $(document).ready(function () {
     }
 
     fetchInstructorDetails(courseId);
+
+// ---------------------------------------------------------------------------------------------------
+
+    let resourcesData = [];
+
+    // ----------- fetch resources -----------
+    function fetchResources() {
+        $.ajax({
+            url: `http://localhost:8080/api/v1/course/${courseId}/resources`,
+            type: "GET",
+            headers: { "Authorization": "Bearer " + token },
+            success: function (response) {
+                if (response.status === 200) {
+                    resourcesData = response.data;
+                    renderResources(response.data);
+                } else {
+                    showAlert("danger", response.message || "Failed to load resources.");
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error loading resources.");
+            }
+        });
+    }
+
+    // ----------- render resources -----------
+    function renderResources(resources) {
+        const $list = $("#resourcesList").empty();
+        if (resources.length === 0) {
+            $list.html('<p class="text-center text-muted p-3">No resources available. Add a resource to get started.</p>');
+            return;
+        }
+        resources.forEach(resource => {
+            const iconClass = getResourceIcon(resource.type);
+            const resourceHtml = `
+                <div class="resource-item d-flex align-items-center p-3 border rounded-3" data-resource-id="${resource.resourceId}">
+                    <i class="hgi hgi-stroke ${iconClass} fs-4 me-3"></i>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">${resource.title}</h6>
+                        <small class="text-muted">${resource.type}${resource.type !== 'LINK' ? ', Uploaded' : ''}</small>
+                    </div>
+                    <button class="btn text-primary btn-sm me-2 btn-download-resource">
+                        <i class="hgi hgi-stroke hgi-file-download fs-5 align-middle"></i> Download
+                    </button>
+                </div>`;
+            $list.append(resourceHtml);
+        });
+    }
+
+    // ----------- get resource icon -----------
+    function getResourceIcon(type) {
+        switch (type.toUpperCase()) {
+            case 'DOCUMENT': return 'hgi-book-edit text-danger';
+            case 'IMAGE': return 'hgi-image-02 text-primary';
+            case 'VIDEO': return 'hgi-video-02 text-success';
+            case 'ARCHIVE': return 'hgi-file-zip text-warning';
+            case 'LINK': return 'hgi-link-02 text-info';
+            default: return 'hgi-file-01';
+        }
+    }
+
+    // ----------- download resources -----------
+    $(document).on("click", ".btn-download-resource", function () {
+        const resourceId = $(this).closest(".resource-item").data("resource-id");
+        const resource = resourcesData.find(r => r.resourceId === resourceId);
+
+        if (resource && resource.url) {
+            window.open(resource.url, "_blank");
+        } else {
+            showAlert("danger", "Resource URL not found for download.");
+        }
+    });
+
+    fetchResources();
+
+// ---------------------------------------------------------------------------------------------------
+
+    let announcementsData = [];
+
+    // Fetch Announcements
+    function fetchAnnouncements() {
+        $.ajax({
+            url: `http://localhost:8080/api/v1/course/${courseId}/announcements`,
+            type: "GET",
+            headers: { "Authorization": "Bearer " + token },
+            success: function (response) {
+                if (response.status === 200) {
+                    announcementsData = response.data;
+                    renderAnnouncements(response.data);
+                } else {
+                    showAlert("danger", response.message || "Failed to load announcements.");
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error loading announcements.");
+            }
+        });
+    }
+
+    // Render Announcements
+    function renderAnnouncements(announcements) {
+        const $list = $("#announcementsList").empty();
+        if (announcements.length === 0) {
+            $list.html('<p class="text-center text-muted p-3">No announcements available. Add an announcement to get started.</p>');
+            return;
+        }
+        announcements.forEach(announcement => {
+            const dateFormatted = new Date(announcement.date).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+
+            const announcementHtml = `
+                <div class="announcement-item d-flex align-items-center p-3 border rounded-3" data-announcement-id="${announcement.announcementId}">
+                    <i class="hgi hgi-stroke hgi-megaphone-02 fs-4 me-3 text-primary align-self-start"></i>
+                    <div class="flex-grow-1 me-3">
+                        <h6 class="mb-1">${announcement.title}</h6>
+                        <small class="text-muted">Posted on ${dateFormatted}</small>
+                        <p class="mb-0 mt-1">${announcement.description}</p>
+                    </div>
+                </div>`;
+            $list.append(announcementHtml);
+        });
+    }
+
+    fetchAnnouncements();
+
+// ---------------------------------------------------------------------------------------------------
+
+    // Fetch and display reviews and stats
+    function fetchReviewsAndStats() {
+        $.ajax({
+            url: `http://localhost:8080/api/v1/course/${courseId}/reviews/stats`,
+            type: "GET",
+            headers: { "Authorization": "Bearer " + token },
+            success: function (response) {
+                if (response.status === 200) {
+                    const stats = response.data;
+                    renderReviewStats(stats.averageRating, stats.reviewCount);
+                } else {
+                    showAlert("danger", response.message || "Failed to load review stats.");
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error loading review stats.");
+            }
+        });
+
+        // Fetch reviews
+        $.ajax({
+            url: `http://localhost:8080/api/v1/course/${courseId}/reviews`,
+            type: "GET",
+            headers: { "Authorization": "Bearer " + token },
+            success: function (response) {
+                if (response.status === 200) {
+                    renderReviews(response.data);
+                } else {
+                    showAlert("danger", response.message || "Failed to load reviews.");
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error loading reviews.");
+            }
+        });
+    }
+
+    // Render average rating and count
+    function renderReviewStats(averageRating, reviewCount) {
+        const $ratingContainer = $(".course-rating");
+        $ratingContainer.find("h5").text(`${averageRating.toFixed(1)} out of 5`);
+
+        const $stars = $ratingContainer.find(".stars");
+        $stars.empty();
+        const fullStars = Math.floor(averageRating);
+        const halfStar = averageRating % 1 >= 0.5 ? 1 : 0;
+
+        for (let i = 0; i < fullStars; i++) {
+            $stars.append('<i class="hgi-stroke hgi-star fs-5 align-middle filled"></i>');
+        }
+        if (halfStar) {
+            $stars.append('<i class="hgi-stroke hgi-star fs-5 align-middle half-filled"></i>');
+        }
+        for (let i = fullStars + halfStar; i < 5; i++) {
+            $stars.append('<i class="hgi-stroke hgi-star fs-5 align-middle"></i>');
+        }
+
+        $ratingContainer.find("p.text-muted").text(`Based on ${reviewCount} reviews`);
+    }
+
+    // Render review list
+    function renderReviews(reviews) {
+        const $list = $("#reviewsList").empty();
+
+        if (reviews.length === 0) {
+            $list.append('<p class="text-muted text-center">No reviews yet.</p>');
+            return;
+        }
+        reviews.forEach(review => {
+            const starsHtml = Array(review.rating).fill('<i class="hgi-stroke hgi-star align-middle filled"></i>').join("") +
+                Array(5 - review.rating).fill('<i class="hgi-stroke hgi-star align-middle"></i>').join("");
+
+            const reviewHtml = `
+                <div class="review-item">
+                    <div class="d-flex align-items-center gap-1">
+                        <img src="${review.studentProfileImage || '../assets/images/icons/placeholder.svg'}" 
+                             alt="User" class="rounded-circle me-2 align-self-start" width="40" height="40"/>
+                        <div>
+                            <h6 class="mb-0">${review.studentName}</h6>
+                            <div class="stars">${starsHtml}</div>
+                            <p class="mb-0 mt-2 text-muted">${review.comment}</p>
+                        </div>
+                    </div>
+                </div>`;
+            $list.append(reviewHtml);
+        });
+    }
+
+    // Rating input interaction
+    let selectedRating = 0;
+    const ratingStars = $(".rating-input .hgi-star");
+
+    ratingStars.on("click", function () {
+        const clickedRating = $(this).data("rating");
+        if (selectedRating === clickedRating) {
+            selectedRating = 0;
+            ratingStars.removeClass("filled");
+        } else {
+            selectedRating = clickedRating;
+            ratingStars.removeClass("filled");
+            $(this).prevAll().addBack().addClass("filled");
+        }
+    });
+
+    // Add hover effects
+    ratingStars.hover(
+        function () {
+            const hoverRating = $(this).data("rating");
+            ratingStars.removeClass("filled");
+            $(this).prevAll().addBack().addClass("filled");
+        },
+        function () {
+            ratingStars.removeClass("filled");
+            if (selectedRating > 0) {
+                ratingStars.slice(0, selectedRating).addClass("filled");
+            }
+        }
+    );
+
+    // Submit review
+    $("#reviewForm").on("submit", function (e) {
+        e.preventDefault();
+        if (!selectedRating) {
+            showAlert("danger", "Please select a rating.");
+            return;
+        }
+
+        const reviewDTO = {
+            rating: selectedRating,
+            comment: $("#reviewText").val()
+        };
+
+        $.ajax({
+            url: `http://localhost:8080/api/v1/course/${courseId}/reviews`,
+            type: "POST",
+            headers: { "Authorization": "Bearer " + token },
+            contentType: "application/json",
+            data: JSON.stringify(reviewDTO),
+            success: function (response) {
+                if (response.status === 200) {
+                    showAlert("success", "Review submitted successfully!");
+                    $("#reviewForm")[0].reset();
+                    selectedRating = 0;
+                    $(".rating-input .hgi-star").removeClass("filled");
+                    fetchReviewsAndStats();
+                } else {
+                    showAlert("danger", response.message || "Failed to submit review.");
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error submitting review.");
+            }
+        });
+    });
+
+    fetchReviewsAndStats();
+
+// ------------------------------------------------------------------------
+
+    // Student question submission (for student-side FAQ tab)
+    $("#faqForm").on("submit", function (e) {
+        e.preventDefault();
+        const $btn = $(this).find("button[type='submit']");
+        $btn.prop("disabled", true);
+
+        const faqDTO = {
+            question: $("#questionText").val()
+        };
+
+        $.ajax({
+            url: `http://localhost:8080/api/v1/course/${courseId}/faqs/questions`,
+            type: "POST",
+            headers: { "Authorization": "Bearer " + token },
+            contentType: "application/json",
+            data: JSON.stringify(faqDTO),
+            success: function (response) {
+                if (response.status === 200) {
+                    showAlert("success", "Question submitted successfully! We'll get back to you soon.");
+                    $("#faqForm")[0].reset();
+                } else {
+                    showAlert("danger", response.message || "Failed to submit question.");
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error submitting question.");
+            },
+            complete: function () {
+                $btn.prop("disabled", false);
+            }
+        });
+    });
 });

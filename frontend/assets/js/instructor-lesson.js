@@ -399,7 +399,7 @@ $(document).ready(function() {
                 $item.on("dragstart.drag", function (e) {
                     console.log(`Drag started on item: ${$item.data("video-id") || $item.data("lesson-id")}`);
                     $(this).addClass("dragging");
-                    e.originalEvent.dataTransfer.setData("text/plain", "dragging"); // Optional for better compatibility
+                    e.originalEvent.dataTransfer.setData("text/plain", "dragging");
                 }).on("dragend.drag", function () {
                     console.log(`Drag ended on item: ${$item.data("video-id") || $item.data("lesson-id")}`);
                     $(this).removeClass("dragging");
@@ -681,7 +681,7 @@ $(document).ready(function() {
         resources.forEach(resource => {
             const iconClass = getResourceIcon(resource.type);
             const resourceHtml = `
-                <div class="resource-item d-flex align-items-center p-3 border rounded mb-3" data-resource-id="${resource.resourceId}">
+                <div class="resource-item d-flex align-items-center p-3 border rounded" data-resource-id="${resource.resourceId}">
                     <i class="hgi hgi-stroke ${iconClass} fs-4 me-3"></i>
                     <div class="flex-grow-1">
                         <h6 class="mb-1">${resource.title}</h6>
@@ -885,6 +885,362 @@ $(document).ready(function() {
     });
 
     fetchResources();
+
+/* ----------------------------------------------- Announcement Codes ----------------------------------------------- */
+
+    let announcementsData = [];
+
+    // Fetch Announcements
+    function fetchAnnouncements() {
+        $.ajax({
+            url: `http://localhost:8080/api/v1/course/${courseId}/announcements`,
+            type: "GET",
+            headers: { "Authorization": "Bearer " + token },
+            success: function (response) {
+                if (response.status === 200) {
+                    announcementsData = response.data;
+                    renderAnnouncements(response.data);
+                } else {
+                    showAlert("danger", response.message || "Failed to load announcements.");
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error loading announcements.");
+            }
+        });
+    }
+
+    // Render Announcements
+    function renderAnnouncements(announcements) {
+        const $list = $("#announcementsList").empty();
+        if (announcements.length === 0) {
+            $list.html('<p class="text-center text-muted p-3">No announcements available. Add an announcement to get started.</p>');
+            return;
+        }
+        announcements.forEach(announcement => {
+            const dateFormatted = new Date(announcement.date).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+
+            const announcementHtml = `
+                <div class="announcement-item d-flex align-items-center p-3 border rounded" data-announcement-id="${announcement.announcementId}">
+                    <i class="hgi hgi-stroke hgi-megaphone-02 fs-4 me-3 text-primary align-self-start"></i>
+                    <div class="flex-grow-1 me-3">
+                        <h6 class="mb-1">${announcement.title}</h6>
+                        <small class="text-muted">Posted on ${dateFormatted}</small>
+                        <p class="mb-0 mt-1">${announcement.description}</p>
+                    </div>
+                    <button class="btn text-warning btn-sm me-2 btn-edit-announcement text-nowrap">
+                        <i class="hgi hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i> Edit
+                    </button>
+                    <button class="btn text-danger btn-sm btn-delete-announcement text-nowrap">
+                        <i class="hgi hgi-stroke hgi-delete-01 fs-5 align-middle"></i> Delete
+                    </button>
+                </div>`;
+            $list.append(announcementHtml);
+        });
+    }
+
+    // Add Announcement
+    $("#saveAnnouncementBtn").click(function () {
+        const $btn = $(this);
+        $btn.find("span").removeClass("d-none");
+        $btn.prop("disabled", true);
+
+        const announcementDTO = {
+            title: $("#addAnnouncementForm input[name='title']").val(),
+            description: $("#addAnnouncementForm textarea[name='description']").val()
+        };
+
+        $.ajax({
+            url: `http://localhost:8080/api/v1/course/${courseId}/announcements`,
+            type: "POST",
+            headers: { "Authorization": "Bearer " + token },
+            contentType: "application/json",
+            data: JSON.stringify(announcementDTO),
+            success: function (response) {
+                if (response.status === 200) {
+                    showAlert("success", "Announcement added successfully!");
+                    $("#addAnnouncementModal").modal("hide");
+                    $("#addAnnouncementForm")[0].reset();
+                    fetchAnnouncements();
+                } else {
+                    showAlert("danger", response.message || "Failed to add announcement.");
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error adding announcement.");
+            },
+            complete: function () {
+                $btn.find("span").addClass("d-none");
+                $btn.prop("disabled", false);
+            }
+        });
+    });
+
+    // Edit Announcement
+    $(document).on("click", ".btn-edit-announcement", function () {
+        const announcementId = $(this).closest(".announcement-item").data("announcement-id");
+        const announcement = announcementsData.find(a => a.announcementId === announcementId);
+        if (announcement) {
+            $("#editAnnouncementForm input[name='announcementId']").val(announcement.announcementId);
+            $("#editAnnouncementForm input[name='title']").val(announcement.title);
+            $("#editAnnouncementForm textarea[name='description']").val(announcement.description);
+            $("#editAnnouncementModal").modal("show");
+        } else {
+            showAlert("danger", "Announcement not found.");
+        }
+    });
+
+    // Update Announcement
+    $("#updateAnnouncementBtn").click(function () {
+        const $btn = $(this);
+        $btn.find("span").removeClass("d-none");
+        $btn.prop("disabled", true);
+
+        const announcementId = $("#editAnnouncementForm input[name='announcementId']").val();
+        const announcementDTO = {
+            title: $("#editAnnouncementForm input[name='title']").val(),
+            description: $("#editAnnouncementForm textarea[name='description']").val()
+        };
+
+        $.ajax({
+            url: `http://localhost:8080/api/v1/course/${courseId}/announcements/${announcementId}`,
+            type: "PUT",
+            headers: { "Authorization": "Bearer " + token },
+            contentType: "application/json",
+            data: JSON.stringify(announcementDTO),
+            success: function (response) {
+                if (response.status === 200) {
+                    showAlert("success", "Announcement updated successfully!");
+                    $("#editAnnouncementModal").modal("hide");
+                    $("#editAnnouncementForm")[0].reset();
+                    fetchAnnouncements();
+                } else {
+                    showAlert("danger", response.message || "Failed to update announcement.");
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error updating announcement.");
+            },
+            complete: function () {
+                $btn.find("span").addClass("d-none");
+                $btn.prop("disabled", false);
+            }
+        });
+    });
+
+    // Delete Announcement
+    $(document).on("click", ".btn-delete-announcement", function () {
+        const announcementId = $(this).closest(".announcement-item").data("announcement-id");
+        const announcementTitle = $(this).closest(".announcement-item").find("h6").text();
+        $("#deleteAnnouncementName").text(announcementTitle).addClass("text-danger");
+        $("#deleteAnnouncementModal").modal("show");
+
+        $("#confirmAnnouncementDelete").off("click").on("click", function () {
+            $.ajax({
+                url: `http://localhost:8080/api/v1/course/${courseId}/announcements/${announcementId}`,
+                type: "DELETE",
+                headers: { "Authorization": "Bearer " + token },
+                success: function (response) {
+                    if (response.status === 200) {
+                        showAlert("success", "Announcement deleted successfully!");
+                        $("#deleteAnnouncementModal").modal("hide");
+                        fetchAnnouncements();
+                    } else {
+                        showAlert("danger", response.message || "Failed to delete announcement.");
+                    }
+                },
+                error: function (xhr) {
+                    showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error deleting announcement.");
+                }
+            });
+        });
+    });
+
+    fetchAnnouncements();
+
+/* --------------------------------------------------- FAQ Codes ---------------------------------------------------- */
+
+    let faqsData = [];
+
+    // Fetch FAQs
+    function fetchFAQs() {
+        $.ajax({
+            url: `http://localhost:8080/api/v1/course/${courseId}/faqs`,
+            type: "GET",
+            headers: { "Authorization": "Bearer " + token },
+            success: function (response) {
+                if (response.status === 200) {
+                    faqsData = response.data;
+                    renderFAQs(response.data);
+                } else {
+                    showAlert("danger", response.message || "Failed to load FAQs.");
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error loading FAQs.");
+            }
+        });
+    }
+
+    // Render FAQs
+    function renderFAQs(faqs) {
+        const $accordion = $("#faqAccordion").empty();
+        if (faqs.length === 0) {
+            $accordion.append('<p class="text-muted text-center p-3">No FAQs available. Add an FAQ to get started.</p>');
+            return;
+        }
+        faqs.forEach((faq, index) => {
+            const isFirst = index === 0 ? "show" : "";
+            const collapsed = index === 0 ? "" : "collapsed";
+            const faqHtml = `
+                <div class="accordion-item" data-faq-id="${faq.faqId}">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button ${collapsed}" type="button" data-bs-toggle="collapse" data-bs-target="#faq${faq.faqId}">
+                            ${faq.question}
+                        </button>
+                    </h2>
+                    <div id="faq${faq.faqId}" class="accordion-collapse collapse ${isFirst}" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            ${faq.isAnswered ? faq.answer : '<em>Waiting for instructor response...</em>'}
+                            <div class="d-flex justify-content-end align-items-center mt-2">
+                                <button class="btn text-primary btn-sm btn-edit-faq me-2">
+                                    <i class="hgi hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i> Edit
+                                </button>
+                                <button class="btn text-danger btn-sm btn-delete-faq">
+                                    <i class="hgi hgi-stroke hgi-delete-01 fs-5 align-middle"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            $accordion.append(faqHtml);
+        });
+    }
+
+    // Add FAQ
+    $("#saveFAQBtn").click(function () {
+        const $btn = $(this);
+        $btn.find("span").removeClass("d-none");
+        $btn.prop("disabled", true);
+
+        const faqDTO = {
+            question: $("#addFAQForm input[name='question']").val(),
+            answer: $("#addFAQForm textarea[name='answer']").val()
+        };
+
+        $.ajax({
+            url: `http://localhost:8080/api/v1/course/${courseId}/faqs`,
+            type: "POST",
+            headers: { "Authorization": "Bearer " + token },
+            contentType: "application/json",
+            data: JSON.stringify(faqDTO),
+            success: function (response) {
+                if (response.status === 200) {
+                    showAlert("success", "FAQ added successfully!");
+                    $("#addFAQModal").modal("hide");
+                    $("#addFAQForm")[0].reset();
+                    fetchFAQs();
+                } else {
+                    showAlert("danger", response.message || "Failed to add FAQ.");
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error adding FAQ.");
+            },
+            complete: function () {
+                $btn.find("span").addClass("d-none");
+                $btn.prop("disabled", false);
+            }
+        });
+    });
+
+    // Edit FAQ
+    $(document).on("click", ".btn-edit-faq", function () {
+        const faqId = $(this).closest(".accordion-item").data("faq-id");
+        const faq = faqsData.find(f => f.faqId === faqId);
+        if (faq) {
+            $("#editFAQForm input[name='faqId']").val(faq.faqId);
+            $("#editFAQForm input[name='question']").val(faq.question);
+            $("#editFAQForm textarea[name='answer']").val(faq.answer || "");
+            $("#editFAQModal").modal("show");
+        } else {
+            showAlert("danger", "FAQ not found.");
+        }
+    });
+
+    // Update FAQ
+    $("#updateFAQBtn").click(function () {
+        const $btn = $(this);
+        $btn.find("span").removeClass("d-none");
+        $btn.prop("disabled", true);
+
+        const faqId = $("#editFAQForm input[name='faqId']").val();
+        const faqDTO = {
+            question: $("#editFAQForm input[name='question']").val(),
+            answer: $("#editFAQForm textarea[name='answer']").val()
+        };
+
+        $.ajax({
+            url: `http://localhost:8080/api/v1/course/${courseId}/faqs/${faqId}`,
+            type: "PUT",
+            headers: { "Authorization": "Bearer " + token },
+            contentType: "application/json",
+            data: JSON.stringify(faqDTO),
+            success: function (response) {
+                if (response.status === 200) {
+                    showAlert("success", "FAQ updated successfully!");
+                    $("#editFAQModal").modal("hide");
+                    $("#editFAQForm")[0].reset();
+                    fetchFAQs();
+                } else {
+                    showAlert("danger", response.message || "Failed to update FAQ.");
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error updating FAQ.");
+            },
+            complete: function () {
+                $btn.find("span").addClass("d-none");
+                $btn.prop("disabled", false);
+            }
+        });
+    });
+
+    // Delete FAQ
+    $(document).on("click", ".btn-delete-faq", function () {
+        const faqId = $(this).closest(".accordion-item").data("faq-id");
+        const faqQuestion = $(this).closest(".accordion-item").find(".accordion-button").text().trim();
+        $("#deleteFAQName").text(faqQuestion).addClass("text-danger");
+        $("#deleteFAQModal").modal("show");
+
+        $("#confirmFAQDelete").off("click").on("click", function () {
+            $.ajax({
+                url: `http://localhost:8080/api/v1/course/${courseId}/faqs/${faqId}`,
+                type: "DELETE",
+                headers: { "Authorization": "Bearer " + token },
+                success: function (response) {
+                    if (response.status === 200) {
+                        showAlert("success", "FAQ deleted successfully!");
+                        $("#deleteFAQModal").modal("hide");
+                        fetchFAQs();
+                    } else {
+                        showAlert("danger", response.message || "Failed to delete FAQ.");
+                    }
+                },
+                error: function (xhr) {
+                    showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error deleting FAQ.");
+                }
+            });
+        });
+    });
+
+    fetchFAQs();
 
 /* -------------------------------------------------- Admin Codes --------------------------------------------------- */
 
