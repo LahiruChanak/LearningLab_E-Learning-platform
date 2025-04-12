@@ -38,37 +38,6 @@ $(document).ready(function () {
         }, 2000);
     });
 
-    // Track section progress
-    // function updateSectionProgress() {
-    //   const $accordion = $(".accordion");
-    //   const totalLessons = $accordion.find(".lesson-item").length;
-    //   const completedLessons = $accordion.find(".hgi-check").length;
-    //   const progress = Math.round((completedLessons / totalLessons) * 100);
-    //
-    //   // Update the main progress info
-    //   $("#progress").text(progress);
-    //
-    //   // Update individual section progress
-    //   $accordion.each(function () {
-    //     const sectionTotalLessons = $(this).find(".lesson-item").length;
-    //     const sectionCompletedLessons = $(this).find(".hgi-check").length;
-    //     const sectionProgress = Math.round(
-    //       (sectionCompletedLessons / sectionTotalLessons) * 100
-    //     );
-    //   });
-    // }
-
-    // Update progress when lessons are completed
-    // $(".lesson-item").on("click", function () {
-    //   if ($(this).hasClass("locked") || !isEnrolled) {
-    //     return;
-    //   }
-    //   if (!$(this).find(".hgi-check").length) {
-    //     $(this).append('<i class="hgi-stroke hgi-check"></i>');
-    //     updateSectionProgress();
-    //   }
-    // });
-
     // Initialize Bootstrap tabs and set initial state
     $(".tab-pane").hide();
     $("#overview").show();
@@ -391,13 +360,34 @@ $(document).ready(function () {
         });
     }
 
+    function fetchInstructorDetails(courseId) {
+        if (!token) {
+            showAlert("danger", "Please login to the system to view instructor details.");
+            return;
+        }
+
+        $.ajax({
+            url: `http://localhost:8080/api/v1/course/${courseId}/instructor`,
+            method: "GET",
+            headers: { "Authorization": `Bearer ${token}` },
+            success: function (response) {
+                $("#authorName").text(response.fullName);
+                $("#authorBio").text(response.bio || "No bio available");
+                $("#authorImage").attr("src", response.profilePicture || "../assets/images/icons/placeholder.svg");
+                $("#authorAvailability").text(response.availability || "Not specified");
+                $("#authorExperience").text(`${response.yearsOfExperience + " years of experience" || "Not specified"}`);
+            },
+            error: function (xhr) {
+                showAlert("danger", "Failed to load instructor details: " + (xhr.responseJSON?.message || "Unknown error"));
+            }
+        });
+    }
+
     function updateCourseDetails(course) {
         $('#courseTitle').text(course.title);
         $('#courseLevel').text(course.level.charAt(0).toUpperCase() + course.level.slice(1).toLowerCase());
         $('#courseDescription').text(course.description);
-        $('#authorName').text(course.instructorId);
-        $('#authorTitle').text(course.title + " Specialist");
-        $('#authorBio').text(course.instructorId);
+        $('#learningObjectives').html(course.headingTitles.map(obj => `<li>${obj}</li>`).join(''));
 
         // Update course metadata
         $('.course-meta').html(`
@@ -628,4 +618,6 @@ $(document).ready(function () {
             }
         });
     }
+
+    fetchInstructorDetails(courseId);
 });

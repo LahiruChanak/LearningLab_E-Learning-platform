@@ -22,10 +22,6 @@ public class CourseResource {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lesson_id")
-    private Lesson lesson;
-
     @Column(name = "title", nullable = false, length = 255)
     private String title;
 

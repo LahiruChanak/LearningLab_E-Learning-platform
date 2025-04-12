@@ -647,6 +647,245 @@ $(document).ready(function() {
         }
     });
 
+/* --------------------------------------------- Course Resources Codes --------------------------------------------- */
+
+    let resourcesData = [];
+
+    // ----------- fetch resources -----------
+    function fetchResources() {
+        $.ajax({
+            url: `http://localhost:8080/api/v1/course/${courseId}/resources`,
+            type: "GET",
+            headers: { "Authorization": "Bearer " + token },
+            success: function (response) {
+                if (response.status === 200) {
+                    resourcesData = response.data;
+                    renderResources(response.data);
+                } else {
+                    showAlert("danger", response.message || "Failed to load resources.");
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error loading resources.");
+            }
+        });
+    }
+
+    // ----------- render resources -----------
+    function renderResources(resources) {
+        const $list = $("#resourcesList").empty();
+        if (resources.length === 0) {
+            $list.html('<p class="text-center text-muted p-3">No resources available. Add a resource to get started.</p>');
+            return;
+        }
+        resources.forEach(resource => {
+            const iconClass = getResourceIcon(resource.type);
+            const resourceHtml = `
+                <div class="resource-item d-flex align-items-center p-3 border rounded mb-3" data-resource-id="${resource.resourceId}">
+                    <i class="hgi hgi-stroke ${iconClass} fs-4 me-3"></i>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">${resource.title}</h6>
+                        <small class="text-muted">${resource.type}${resource.type !== 'LINK' ? ', Uploaded' : ''}</small>
+                    </div>
+                    <button class="btn text-warning btn-sm me-2 btn-edit-resource">
+                        <i class="hgi hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i> Edit
+                    </button>
+                    <button class="btn text-danger btn-sm btn-delete-resource">
+                        <i class="hgi hgi-stroke hgi-delete-01 fs-5 align-middle"></i> Delete
+                    </button>
+                </div>`;
+            $list.append(resourceHtml);
+        });
+    }
+
+    // ----------- get resource icon -----------
+    function getResourceIcon(type) {
+        switch (type.toUpperCase()) {
+            case 'DOCUMENT': return 'hgi-book-edit text-danger';
+            case 'IMAGE': return 'hgi-image-02 text-primary';
+            case 'VIDEO': return 'hgi-video-02 text-success';
+            case 'ARCHIVE': return 'hgi-file-zip text-warning';
+            case 'LINK': return 'hgi-link-02 text-info';
+            default: return 'hgi-file-01';
+        }
+    }
+
+    // Dynamic input toggle for add modal
+    $("#resourceType").change(function () {
+        const type = $(this).val();
+        if (type === 'LINK') {
+            $("#fileInputContainer").addClass("d-none");
+            $("#urlInputContainer").removeClass("d-none");
+            $("#resourceFile").prop("required", false);
+            $("#resourceUrl").prop("required", true);
+        } else {
+            $("#fileInputContainer").removeClass("d-none");
+            $("#urlInputContainer").addClass("d-none");
+            $("#resourceFile").prop("required", true);
+            $("#resourceUrl").prop("required", false);
+        }
+    });
+
+    // Dynamic input toggle for edit modal
+    $("#editResourceType").change(function () {
+        const type = $(this).val();
+        if (type === 'LINK') {
+            $("#editFileInputContainer").addClass("d-none");
+            $("#editUrlInputContainer").removeClass("d-none");
+            $("#editResourceFile").prop("required", false);
+            $("#editResourceUrl").prop("required", true);
+        } else {
+            $("#editFileInputContainer").removeClass("d-none");
+            $("#editUrlInputContainer").addClass("d-none");
+            $("#editResourceFile").prop("required", false);
+            $("#editResourceUrl").prop("required", false);
+        }
+    });
+
+    // Save resource
+    $("#saveResourceBtn").click(function () {
+        const $btn = $(this);
+        $btn.find("span").removeClass("d-none");
+        $btn.prop("disabled", true);
+
+        const formData = new FormData();
+        const resourceDTO = {
+            title: $("#addResourceForm input[name='title']").val(),
+            type: $("#addResourceForm select[name='type']").val(),
+            lessonId: $("#addResourceForm select[name='lessonId']").val() || null,
+            url: $("#addResourceForm input[name='url']").val()
+        };
+
+        formData.append("resourceDTO", new Blob([JSON.stringify(resourceDTO)], { type: "application/json" }));
+        const file = $("#resourceFile")[0].files[0];
+        if (file) {
+            formData.append("file", file);
+        }
+
+        $.ajax({
+            url: `http://localhost:8080/api/v1/course/${courseId}/resources`,
+            type: "POST",
+            headers: { "Authorization": "Bearer " + token },
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.status === 200) {
+                    showAlert("success", "Resource added successfully!");
+                    $("#addResourceModal").modal("hide");
+                    $("#addResourceForm")[0].reset();
+                    fetchResources();
+                } else {
+                    showAlert("danger", response.message || "Failed to add resource.");
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error adding resource.");
+            },
+            complete: function () {
+                $btn.find("span").addClass("d-none");
+                $btn.prop("disabled", false);
+            }
+        });
+    });
+
+    // Edit resource
+    $(document).on("click", ".btn-edit-resource", function () {
+        const resourceId = $(this).closest(".resource-item").data("resource-id");
+        const resource = resourcesData.find(r => r.resourceId === resourceId);
+
+        if (resource) {
+            $("#editResourceForm input[name='resourceId']").val(resource.resourceId);
+            $("#editResourceForm input[name='title']").val(resource.title);
+            $("#editResourceForm select[name='type']").val(resource.type);
+            $("#editResourceForm select[name='lessonId']").val(resource.lessonId || "");
+            $("#editResourceForm input[name='url']").val(resource.type === 'LINK' ? resource.url : '');
+            $("#editResourceType").trigger("change");
+            $("#resourceUploadDate").text(new Date(resource.uploadDate).toLocaleString("en-CA", { hour12: false }));
+            $("#editResourceModal").modal("show");
+        } else {
+            showAlert("danger", "Resource not found.");
+        }
+    });
+
+    // Update resource
+    $("#updateResourceBtn").click(function () {
+        const $btn = $(this);
+        $btn.find("span").removeClass("d-none");
+        $btn.prop("disabled", true);
+
+        const resourceId = $("#editResourceForm input[name='resourceId']").val();
+        const formData = new FormData();
+        const resourceDTO = {
+            title: $("#editResourceForm input[name='title']").val(),
+            type: $("#editResourceForm select[name='type']").val(),
+            lessonId: $("#editResourceForm select[name='lessonId']").val() || null,
+            url: $("#editResourceForm input[name='url']").val()
+        };
+
+        formData.append("resourceDTO", new Blob([JSON.stringify(resourceDTO)], { type: "application/json" }));
+        const file = $("#editResourceFile")[0].files[0];
+        if (file) {
+            formData.append("file", file);
+        }
+
+        $.ajax({
+            url: `http://localhost:8080/api/v1/course/${courseId}/resources/${resourceId}`,
+            type: "PUT",
+            headers: { "Authorization": "Bearer " + token },
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.status === 200) {
+                    showAlert("success", "Resource updated successfully!");
+                    $("#editResourceModal").modal("hide");
+                    $("#editResourceForm")[0].reset();
+                    fetchResources();
+                } else {
+                    showAlert("danger", response.message || "Failed to update resource.");
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error updating resource.");
+            },
+            complete: function () {
+                $btn.find("span").addClass("d-none");
+                $btn.prop("disabled", false);
+            }
+        });
+    });
+
+    // Delete resource
+    $(document).on("click", ".btn-delete-resource", function () {
+        const resourceId = $(this).closest(".resource-item").data("resource-id");
+        const resourceTitle = $(this).closest(".resource-item").find("h6").text();
+        $("#deleteResourceName").text(resourceTitle).addClass("text-danger");
+        $("#deleteResourceModal").modal("show");
+
+        $("#confirmResourceDelete").off("click").on("click", function () {
+            $.ajax({
+                url: `http://localhost:8080/api/v1/course/${courseId}/resources/${resourceId}`,
+                type: "DELETE",
+                headers: { "Authorization": "Bearer " + token },
+                success: function (response) {
+                    if (response.status === 200) {
+                        showAlert("success", "Resource deleted successfully!");
+                        $("#deleteResourceModal").modal("hide");
+                        fetchResources();
+                    } else {
+                        showAlert("danger", response.message || "Failed to delete resource.");
+                    }
+                },
+                error: function (xhr) {
+                    showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error deleting resource.");
+                }
+            });
+        });
+    });
+
+    fetchResources();
+
 /* -------------------------------------------------- Admin Codes --------------------------------------------------- */
 
     // check the user role and show admin-only features

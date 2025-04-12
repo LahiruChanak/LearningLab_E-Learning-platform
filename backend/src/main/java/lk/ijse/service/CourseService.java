@@ -1,6 +1,7 @@
 package lk.ijse.service;
 
 import lk.ijse.dto.CourseDTO;
+import lk.ijse.dto.InstructorDetailsDTO;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,5 +22,7 @@ public interface CourseService {
     List<CourseDTO> getAllCourses();
 
     List<CourseDTO> getPublishedCourses();
+
+    InstructorDetailsDTO getInstructorDetailsByCourseId(Long courseId);
 
 }

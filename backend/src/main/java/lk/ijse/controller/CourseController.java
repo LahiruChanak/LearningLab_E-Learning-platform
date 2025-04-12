@@ -1,6 +1,7 @@
 package lk.ijse.controller;
 
 import lk.ijse.dto.CourseDTO;
+import lk.ijse.dto.InstructorDetailsDTO;
 import lk.ijse.dto.ResponseDTO;
 import lk.ijse.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -143,4 +145,18 @@ public class CourseController {
                     .body(new ResponseDTO(404, e.getMessage(), null));
         }
     }
+
+    @GetMapping("/course/{courseId}/instructor")
+    public ResponseEntity<InstructorDetailsDTO> getInstructorDetailsByCourseId(
+            @PathVariable Long courseId,
+            Authentication authentication) {
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        InstructorDetailsDTO instructorDetails = courseService.getInstructorDetailsByCourseId(courseId);
+        return ResponseEntity.ok(instructorDetails);
+    }
+
 }

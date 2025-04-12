@@ -3,9 +3,11 @@ package lk.ijse.service.impl;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import lk.ijse.dto.CourseDTO;
+import lk.ijse.dto.InstructorDetailsDTO;
 import lk.ijse.entity.Category;
 import lk.ijse.entity.Course;
 import lk.ijse.entity.Instructor;
+import lk.ijse.entity.User;
 import lk.ijse.repository.CategoryRepo;
 import lk.ijse.repository.CourseRepo;
 import lk.ijse.repository.InstructorRepo;
@@ -19,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -67,6 +70,7 @@ public class CourseServiceImpl implements CourseService {
         course.setCategory(category);
         course.setPrice(courseDTO.getPrice());
         course.setLevel(Course.Level.valueOf(courseDTO.getLevel().toUpperCase()));
+        course.setHeadingTitles(courseDTO.getHeadingTitles() != null ? courseDTO.getHeadingTitles() : new ArrayList<>());
         course.setCreatedAt(LocalDateTime.now());
         course.setIsPublished(courseDTO.getIsPublished() != null ? courseDTO.getIsPublished() : false);
 
@@ -90,7 +94,6 @@ public class CourseServiceImpl implements CourseService {
     @Transactional
     @Override
     public CourseDTO updateCourse(Long courseId, CourseDTO courseDTO, MultipartFile thumbnail, UserDetails userDetails) {
-
         boolean isAdmin = userDetails.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
 
@@ -112,6 +115,11 @@ public class CourseServiceImpl implements CourseService {
         }
         if (courseDTO.getPrice() != null) course.setPrice(courseDTO.getPrice());
         if (courseDTO.getLevel() != null) course.setLevel(Course.Level.valueOf(courseDTO.getLevel().toUpperCase()));
+        if (courseDTO.getHeadingTitles() != null) {
+            course.setHeadingTitles(courseDTO.getHeadingTitles());
+        } else {
+            course.setHeadingTitles(new ArrayList<>());
+        }
         if (courseDTO.getIsPublished() != null) course.setIsPublished(courseDTO.getIsPublished());
 
         if (thumbnail != null && !thumbnail.isEmpty()) {
@@ -164,4 +172,26 @@ public class CourseServiceImpl implements CourseService {
                 .map(course -> modelMapper.map(course, CourseDTO.class))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public InstructorDetailsDTO getInstructorDetailsByCourseId(Long courseId) {
+
+        Course course = courseRepo.findById(courseId)
+                .orElseThrow(() -> new RuntimeException("Course not found with ID: " + courseId));
+
+        Instructor instructor = course.getInstructor();
+        User user = instructor.getUser();
+
+        return new InstructorDetailsDTO(
+                instructor.getInstructorId(),
+                user.getFullName(),
+                user.getBio(),
+                user.getProfilePicture(),
+                instructor.getAvailability(),
+                instructor.getYearsOfExperience(),
+                user.getEmail()
+        );
+    }
+
 }

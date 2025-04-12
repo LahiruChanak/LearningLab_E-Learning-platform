@@ -168,7 +168,7 @@
                       <th>Price ($)</th>
                       <th>Level</th>
                       <th>Status</th>
-                      <th>Actions</th>
+                      <th class="action-column">Actions</th>
                     </tr>
                   </thead>
                   <tbody id="courseTableBody">
@@ -197,7 +197,7 @@
             <h5 class="modal-title">Add New Course</h5>
             <button type="button" class="btn-close shadow-none small" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body px-4">
             <form id="addCourseForm" enctype="multipart/form-data">
               <div class="mb-4">
                 <div class="image-upload">
@@ -243,6 +243,22 @@
                 <textarea class="form-control rounded" name="description" rows="3" required></textarea>
               </div>
               <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-center me-3 mb-1">
+                  <label class="form-label">Heading Titles <span class="text-danger">*</span></label>
+                  <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn btn-sm border-0 text-primary small" id="addHeadingBtn">
+                      <i class="hgi hgi-stroke hgi-add-01 align-middle"></i> Add
+                    </button>
+                    <button type="button" class="btn btn-sm border-0 text-warning" id="manageHeadingBtnAdd">
+                      <i class="hgi hgi-stroke hgi-pencil-edit-02 align-middle"></i> Manage
+                    </button>
+                  </div>
+                </div>
+                <div class="headingTitlesContainer">
+                  <!-- Dynamic heading inputs will be added here -->
+                </div>
+              </div>
+              <div class="mb-3">
                 <label class="form-label">Publish Course</label>
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" name="isPublished" id="isPublished" value="true">
@@ -281,7 +297,7 @@
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body px-4">
             <form id="editCourseForm" enctype="multipart/form-data">
               <input type="hidden" name="courseId">
               <div class="mb-4">
@@ -325,6 +341,22 @@
               <div class="mb-3">
                 <label class="form-label">Description <span class="text-danger">*</span></label>
                 <textarea class="form-control rounded" name="description" rows="3" required></textarea>
+              </div>
+              <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-center me-3 mb-1">
+                  <label class="form-label">Heading Titles <span class="text-danger">*</span></label>
+                  <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn btn-sm border-0 text-primary small" id="updateHeadingBtn">
+                      <i class="hgi hgi-stroke hgi-add-01 align-middle"></i> Add
+                    </button>
+                    <button type="button" class="btn btn-sm border-0 text-warning" id="manageHeadingBtnUpdate">
+                      <i class="hgi hgi-stroke hgi-pencil-edit-02 align-middle"></i> Manage
+                    </button>
+                  </div>
+                </div>
+                <div class="headingTitlesContainer">
+                  <!-- Dynamic heading inputs will be added here -->
+                </div>
               </div>
               <div class="mb-3">
                 <label class="form-label">Publish Course</label>
