@@ -4,14 +4,30 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="871ac622-ec0f-4cda-944a-f4037773dc1b" name="Changes" comment="courses and its lessons crud operations">
-      <change beforePath="$PROJECT_DIR$/.idea/LMS - LearningLab.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/LMS - LearningLab.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
+    <list default="true" id="871ac622-ec0f-4cda-944a-f4037773dc1b" name="Changes" comment="video completion implement to view previous completed videos and its percentage">
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/controller/CourseResourceController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/dto/CourseResourceDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/dto/InstructorDetailsDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/repository/CourseResourceRepo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/service/CourseResourceService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/service/impl/CourseResourceServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/controller/LessonController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/controller/LessonController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/service/impl/LessonServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/service/impl/LessonServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/controller/CourseController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/controller/CourseController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/dto/CourseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/dto/CourseDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Course.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Course.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/CourseResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/CourseResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Lesson.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/entity/Lesson.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/service/CourseService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/service/CourseService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/service/impl/CourseServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/lk/ijse/service/impl/CourseServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/logback-spring.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/css/admin-course.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/css/admin-course.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/css/course-content.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/css/course-content.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/assets/css/instructor-lesson.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/css/instructor-lesson.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/js/admin-course.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/js/admin-course.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/js/course-content.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/js/course-content.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/assets/js/instructor-lesson.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/js/instructor-lesson.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/admin-course.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/admin-course.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/course-content.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/course-content.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/pages/instructor-lesson.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/instructor-lesson.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -68,7 +84,7 @@
     &quot;com.codeium.enabled&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Lenovo/IdeaProjects/LMS - LearningLab/frontend/assets/js&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Lenovo/IdeaProjects/LMS - LearningLab/frontend/assets/images/icons&quot;,
     &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -79,7 +95,7 @@
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.43333334&quot;,
     &quot;service.view.auto.scroll.to.source&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;settings.sync&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
   &quot;keyToStringList&quot;: {
@@ -90,15 +106,15 @@
 }</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
-      <recent name="lk.ijse.service" />
       <recent name="lk.ijse.repository" />
+      <recent name="lk.ijse.service" />
       <recent name="lk.ijse.entity" />
       <recent name="lk.ijse.dto" />
       <recent name="lk.ijse.service.impl" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\js" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\images\icons" />
+      <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\frontend\assets\js" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\backend\src\main\java\lk\ijse\config" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\backend\src\main\java\lk\ijse\entity" />
       <recent name="C:\Users\Lenovo\IdeaProjects\LMS - LearningLab\backend\src\main\java\lk\ijse" />
@@ -188,127 +204,20 @@
       <workItem from="1743517118951" duration="4876000" />
       <workItem from="1743587824207" duration="27819000" />
       <workItem from="1743670575895" duration="29053000" />
-      <workItem from="1743747624646" duration="3618000" />
-    </task>
-    <task id="LOCAL-00024" summary="implement authentication functions with JWT.">
-      <option name="closed" value="true" />
-      <created>1742316796461</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1742316796461</updated>
-    </task>
-    <task id="LOCAL-00025" summary=".idea file">
-      <option name="closed" value="true" />
-      <created>1742316822001</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1742316822001</updated>
-    </task>
-    <task id="LOCAL-00026" summary="load profile details into the header section">
-      <option name="closed" value="true" />
-      <created>1742331135717</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1742331135717</updated>
-    </task>
-    <task id="LOCAL-00027" summary=".idea file">
-      <option name="closed" value="true" />
-      <created>1742331159311</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1742331159311</updated>
-    </task>
-    <task id="LOCAL-00028" summary="load profile details into the header section">
-      <option name="closed" value="true" />
-      <created>1742331191667</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1742331191667</updated>
-    </task>
-    <task id="LOCAL-00029" summary="convert normal JS into jQuery and some fixes in other files">
-      <option name="closed" value="true" />
-      <created>1742392673112</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1742392673112</updated>
-    </task>
-    <task id="LOCAL-00030" summary="connect with backend and add modify &amp; retrieve profile details feature">
-      <option name="closed" value="true" />
-      <created>1742412986343</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1742412986344</updated>
-    </task>
-    <task id="LOCAL-00031" summary=".idea changes">
-      <option name="closed" value="true" />
-      <created>1742413015905</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1742413015905</updated>
-    </task>
-    <task id="LOCAL-00032" summary="connect with backend and add modify &amp; retrieve profile details feature">
-      <option name="closed" value="true" />
-      <created>1742416864563</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1742416864563</updated>
-    </task>
-    <task id="LOCAL-00033" summary=".idea changes">
-      <option name="closed" value="true" />
-      <created>1742416875240</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1742416875240</updated>
-    </task>
-    <task id="LOCAL-00034" summary="update password toggle logic from both auth &amp; profile pages">
-      <option name="closed" value="true" />
-      <created>1742479175040</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
-      <option name="project" value="LOCAL" />
-      <updated>1742479175040</updated>
-    </task>
-    <task id="LOCAL-00035" summary=" simplify endpoints to improve readability and maintainability">
-      <option name="closed" value="true" />
-      <created>1742479326832</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1742479326832</updated>
-    </task>
-    <task id="LOCAL-00036" summary="update password toggle logic from both auth &amp; profile pages">
-      <option name="closed" value="true" />
-      <created>1742479521025</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1742479521025</updated>
-    </task>
-    <task id="LOCAL-00037" summary="update password toggle logic from both auth &amp; profile pages">
-      <option name="closed" value="true" />
-      <created>1742480105773</created>
-      <option name="number" value="00037" />
-      <option name="presentableId" value="LOCAL-00037" />
-      <option name="project" value="LOCAL" />
-      <updated>1742480105773</updated>
-    </task>
-    <task id="LOCAL-00038" summary="fix profile picture issues and some other pages issues">
-      <option name="closed" value="true" />
-      <created>1742483886097</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1742483886097</updated>
+      <workItem from="1743747624646" duration="12585000" />
+      <workItem from="1743760885500" duration="29296000" />
+      <workItem from="1743833840596" duration="32470000" />
+      <workItem from="1743941372560" duration="10304000" />
+      <workItem from="1743993858451" duration="5329000" />
+      <workItem from="1744121740678" duration="16798000" />
+      <workItem from="1744167991108" duration="9980000" />
+      <workItem from="1744201246434" duration="17605000" />
+      <workItem from="1744271006740" duration="3750000" />
+      <workItem from="1744274795477" duration="3711000" />
+      <workItem from="1744288709329" duration="22630000" />
+      <workItem from="1744350934726" duration="3434000" />
+      <workItem from="1744370331918" duration="25008000" />
+      <workItem from="1744430124256" duration="25491000" />
     </task>
     <task id="LOCAL-00039" summary="fix profile picture issues and some other pages issues">
       <option name="closed" value="true" />
@@ -582,7 +491,127 @@
       <option name="project" value="LOCAL" />
       <updated>1743700423874</updated>
     </task>
-    <option name="localTasksCounter" value="73" />
+    <task id="LOCAL-00073" summary="lesson and its video crud operations">
+      <option name="closed" value="true" />
+      <created>1743751480273</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1743751480274</updated>
+    </task>
+    <task id="LOCAL-00074" summary=".idea files">
+      <option name="closed" value="true" />
+      <created>1743751510587</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1743751510587</updated>
+    </task>
+    <task id="LOCAL-00075" summary="lesson and its video crud operations">
+      <option name="closed" value="true" />
+      <created>1743756666354</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1743756666354</updated>
+    </task>
+    <task id="LOCAL-00076" summary="lesson and its video crud operations">
+      <option name="closed" value="true" />
+      <created>1743763089234</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1743763089234</updated>
+    </task>
+    <task id="LOCAL-00077" summary="lesson and its video crud operations">
+      <option name="closed" value="true" />
+      <created>1743779999836</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1743779999836</updated>
+    </task>
+    <task id="LOCAL-00078" summary="lesson and its video crud operations">
+      <option name="closed" value="true" />
+      <created>1743785197620</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1743785197620</updated>
+    </task>
+    <task id="LOCAL-00079" summary="course, lesson and video pages some changes and fixes to improve UI/UX">
+      <option name="closed" value="true" />
+      <created>1743855398438</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1743855398439</updated>
+    </task>
+    <task id="LOCAL-00080" summary="extend the JWT expiration time">
+      <option name="closed" value="true" />
+      <created>1743855544077</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1743855544077</updated>
+    </task>
+    <task id="LOCAL-00081" summary="course, lesson and video pages some changes and fixes to improve UI/UX">
+      <option name="closed" value="true" />
+      <created>1743856110021</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1743856110021</updated>
+    </task>
+    <task id="LOCAL-00082" summary="admin side management fixed">
+      <option name="closed" value="true" />
+      <created>1744128307341</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1744128307341</updated>
+    </task>
+    <task id="LOCAL-00083" summary="admin pending instructor request codes">
+      <option name="closed" value="true" />
+      <created>1744136434523</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1744136434523</updated>
+    </task>
+    <task id="LOCAL-00084" summary="admin pending instructor request codes">
+      <option name="closed" value="true" />
+      <created>1744138626558</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1744138626558</updated>
+    </task>
+    <task id="LOCAL-00085" summary="working codes">
+      <option name="closed" value="true" />
+      <created>1744314102339</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1744314102339</updated>
+    </task>
+    <task id="LOCAL-00086" summary="working codes">
+      <option name="closed" value="true" />
+      <created>1744380728806</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1744380728807</updated>
+    </task>
+    <task id="LOCAL-00087" summary="video completion implement to view previous completed videos and its percentage">
+      <option name="closed" value="true" />
+      <created>1744386618229</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1744386618229</updated>
+    </task>
+    <option name="localTasksCounter" value="88" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -600,14 +629,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="implement log function to manage every log in date wise." />
-    <MESSAGE value="implement skill function to manage user skills for each user" />
-    <MESSAGE value="remove unwanted codes" />
-    <MESSAGE value="fix skill managing part to duplicate skills entry" />
-    <MESSAGE value="implement skill hint suggestions to improve UX" />
-    <MESSAGE value="implement password update option for login users" />
-    <MESSAGE value="implement email update option for login users" />
-    <MESSAGE value="implement 2FA to get enhanced security to the user profile" />
     <MESSAGE value="implement logout function with token removing, to improve the system security" />
     <MESSAGE value="implement instructor request function to send request and other code fixes to better stability" />
     <MESSAGE value="implement admin auth functions to get different authorization access" />
@@ -625,7 +646,15 @@
     <MESSAGE value="auth js code issues fixed" />
     <MESSAGE value=".idea file" />
     <MESSAGE value="courses and its lessons crud operations" />
-    <option name="LAST_COMMIT_MESSAGE" value="courses and its lessons crud operations" />
+    <MESSAGE value=".idea files" />
+    <MESSAGE value="lesson and its video crud operations" />
+    <MESSAGE value="extend the JWT expiration time" />
+    <MESSAGE value="course, lesson and video pages some changes and fixes to improve UI/UX" />
+    <MESSAGE value="admin side management fixed" />
+    <MESSAGE value="admin pending instructor request codes" />
+    <MESSAGE value="working codes" />
+    <MESSAGE value="video completion implement to view previous completed videos and its percentage" />
+    <option name="LAST_COMMIT_MESSAGE" value="video completion implement to view previous completed videos and its percentage" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
