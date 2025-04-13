@@ -262,6 +262,9 @@ $(document).ready(function () {
 
     // Function to render lessons
     function renderLessons(lessons) {
+        // Sort lessons by lessonSequence in ascending order
+        lessons.sort((a, b) => a.lessonSequence - b.lessonSequence);
+
         let html = '';
         lessons.forEach((lesson, lessonIndex) => {
             let totalDuration = 0;
@@ -769,6 +772,52 @@ $(document).ready(function () {
 
 // ------------------------------------------------------------------------
 
+    // Fetch FAQs
+    function fetchFAQs() {
+        $.ajax({
+            url: `http://localhost:8080/api/v1/course/${courseId}/faqs`,
+            type: "GET",
+            headers: { "Authorization": "Bearer " + token },
+            success: function (response) {
+                if (response.status === 200) {
+                    renderFAQs(response.data);
+                } else {
+                    showAlert("danger", response.message || "Failed to load FAQs.");
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error loading FAQs.");
+            }
+        });
+    }
+
+    // Render FAQs
+    function renderFAQs(faqs) {
+        const $accordion = $("#faqAccordion").empty();
+        if (faqs.length === 0) {
+            $accordion.append('<p class="text-muted text-center p-3">No FAQs available. Add an FAQ to get started.</p>');
+            return;
+        }
+        faqs.forEach((faq, index) => {
+            const isFirst = index === 0 ? "show" : "";
+            const collapsed = index === 0 ? "" : "collapsed";
+            const faqHtml = `
+                <div class="accordion-item shadow-none p-0 mb-2" data-faq-id="${faq.faqId}">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button ${collapsed}" type="button" data-bs-toggle="collapse" data-bs-target="#faq${faq.faqId}">
+                            ${faq.question}
+                        </button>
+                    </h2>
+                    <div id="faq${faq.faqId}" class="accordion-collapse collapse ${isFirst}" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            ${faq.answer ? faq.answer : '<em>Waiting for instructor response...</em>'}
+                        </div>
+                    </div>
+                </div>`;
+            $accordion.append(faqHtml);
+        });
+    }
+
     // Student question submission (for student-side FAQ tab)
     $("#faqForm").on("submit", function (e) {
         e.preventDefault();
@@ -801,4 +850,6 @@ $(document).ready(function () {
             }
         });
     });
+
+    fetchFAQs();
 });

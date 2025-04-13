@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface FAQRepo extends JpaRepository<FAQ, Long> {
 
-    List<FAQ> findByCourseCourseId(Long courseId);
+    List<FAQ> findByCourseCourseIdOrderByCreatedAtDesc(Long courseId);
 
     Optional<FAQ> findByFaqIdAndCourseCourseId(Long faqId, Long courseId);
 

@@ -1106,8 +1106,8 @@ $(document).ready(function() {
                         </button>
                     </h2>
                     <div id="faq${faq.faqId}" class="accordion-collapse collapse ${isFirst}" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            ${faq.isAnswered ? faq.answer : '<em>Waiting for instructor response...</em>'}
+                        <div class="accordion-body pb-1">
+                            ${faq.answer ? faq.answer : '<em>Waiting for instructor response...</em>'}
                             <div class="d-flex justify-content-end align-items-center mt-2">
                                 <button class="btn text-primary btn-sm btn-edit-faq me-2">
                                     <i class="hgi hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i> Edit

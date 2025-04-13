@@ -32,7 +32,6 @@ public class FAQServiceImpl implements FAQService {
     @Autowired
     private ModelMapper modelMapper;
 
-
     @Override
     @Transactional
     public FAQDTO addFAQ(Long courseId, FAQDTO faqDTO, String instructorEmail) {
@@ -62,9 +61,8 @@ public class FAQServiceImpl implements FAQService {
         if (faqDTO.getQuestion() != null && !faqDTO.getQuestion().isEmpty()) {
             faq.setQuestion(faqDTO.getQuestion());
         }
-        if (faqDTO.getAnswer() != null) {
-            faq.setAnswer(faqDTO.getAnswer());
-        }
+
+        faq.setAnswer(faqDTO.getAnswer());
 
         faqRepo.save(faq);
         return modelMapper.map(faq, FAQDTO.class);
@@ -86,7 +84,7 @@ public class FAQServiceImpl implements FAQService {
     @Override
     @Transactional(readOnly = true)
     public List<FAQDTO> getFAQsByCourseId(Long courseId) {
-        List<FAQ> faqs = faqRepo.findByCourseCourseId(courseId);
+        List<FAQ> faqs = faqRepo.findByCourseCourseIdOrderByCreatedAtDesc(courseId);
         return faqs.stream()
                 .map(faq -> modelMapper.map(faq, FAQDTO.class))
                 .collect(Collectors.toList());

@@ -292,10 +292,9 @@ i.hgi-star.half-filled {
 
 #faqAccordion .accordion-body {
   background-color: var(--secondary-color) !important;
-  width: calc(100% - 10px);
   border: 1px solid #e0e0e0;
   border-radius: 10px;
-  margin: 10px auto 0;
+  margin: 10px 10px 0;
 }
 
 .hgi-tick-01 {
