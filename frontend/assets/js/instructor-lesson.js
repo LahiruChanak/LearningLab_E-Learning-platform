@@ -1318,18 +1318,18 @@ $(document).ready(function() {
                         <small class="text-muted">Created on ${createdAt}</small>
                         <p class="mb-0 mt-1">${quiz.description || 'No description'}</p>
                         <small class="text-muted">Total Marks: ${quiz.totalMarks} | Passing Marks: ${quiz.passingMarks}</small>
-                        <p class="mt-1">Status: <span class="${quiz.isPublished ? 'text-success' : 'text-warning'}">
-                            ${quiz.isPublished ? 'Published' : 'Draft'}</span></p>
+                        <p class="mt-1">Status: <span class="${quiz.published ? 'text-success' : 'text-warning'}">
+                            ${quiz.published ? 'Published' : 'Draft'}</span></p>
                     </div>
-                    <button class="btn text-primary btn-sm me-2 btn-toggle-publish">
-                        <i class="hgi hgi-stroke hgi-${quiz.isPublished ? 'eye-off' : 'eye-on'} fs-5"></i>
-                        ${quiz.isPublished ? 'Unpublish' : 'Publish'}
+                    <button class="btn text-success btn-sm me-2 btn-toggle-publish">
+                        <i class="hgi hgi-stroke ${quiz.published ? 'hgi-toggle-on' : 'hgi-toggle-off'} fs-5 align-middle"></i>
+                        ${quiz.published ? 'Publish' : 'Unpublish'}
                     </button>
-                    <button class="btn text-primary btn-sm me-2 btn-edit-quiz">
-                        <i class="hgi hgi-stroke hgi-pencil-edit-02 fs-5"></i> Edit
+                    <button class="btn text-warning btn-sm me-2 btn-edit-quiz">
+                        <i class="hgi hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i> Edit
                     </button>
                     <button class="btn text-danger btn-sm btn-delete-quiz">
-                        <i class="hgi hgi-stroke hgi-delete-01 fs-5"></i> Delete
+                        <i class="hgi hgi-stroke hgi-delete-01 fs-5 align-middle"></i> Delete
                     </button>
                 </div>`;
             $list.append(quizHtml);
@@ -1443,7 +1443,7 @@ $(document).ready(function() {
             headers: { "Authorization": "Bearer " + token },
             success: function (response) {
                 if (response.status === 200) {
-                    showAlert("success", response.data.isPublished ? "Quiz published!" : "Quiz unpublished!");
+                    showAlert("success", response.data.published ? "Quiz published!" : "Quiz unpublished!");
                     fetchQuizzes();
                 } else {
                     showAlert("danger", response.message || "Failed to toggle quiz publication.");
