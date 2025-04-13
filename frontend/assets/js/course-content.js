@@ -246,18 +246,6 @@ $(document).ready(function () {
         $('#courseLevel').text(course.level.charAt(0).toUpperCase() + course.level.slice(1).toLowerCase());
         $('#courseDescription').text(course.description);
         $('#learningObjectives').html(course.headingTitles.map(obj => `<li>${obj}</li>`).join(''));
-
-        // Update course metadata
-        $('.course-meta').html(`
-            <span><i class="hgi-stroke hgi-user-circle-02 me-1"></i>${course.enrollments ? course.enrollments.length : 0} Enrollments</span>
-            <span class="ms-3"><i class="hgi-stroke hgi-comment-01 me-1"></i>${course.comments || 0} Comments</span>
-            <span class="ms-3"><i class="hgi-stroke hgi-favourite me-1"></i>${course.likes || 0} Likes</span>
-        `);
-
-        $('.d-flex.align-items-center.gap-2').html(`
-            <span class="badge rounded-pill bg-primary-subtle text-primary"></span>
-            <span class="badge rounded-pill bg-success-subtle text-success" id="progress-badge"></span>
-        `);
     }
 
     // Function to render lessons
@@ -306,7 +294,7 @@ $(document).ready(function () {
         });
 
         $("#courseAccordion").html(html);
-        $('.badge.bg-primary-subtle').text(`${lessons.length} Lessons`);
+        $('#chapter-count-badge').text(`${lessons.length} Lessons`);
         updateSectionProgress();
     }
 

@@ -1242,6 +1242,298 @@ $(document).ready(function() {
 
     fetchFAQs();
 
+/* --------------------------------------------------- Quiz Codes --------------------------------------------------- */
+
+    let quizzesData = [];
+
+    // Dynamic question and answer fields
+    $(document).on("click", "#addQuestionBtn", function () {
+        const questionHtml = `
+        <div class="question-group mb-3">
+            <div class="mb-2">
+                <label class="form-label">Question</label>
+                <textarea class="form-control question-text" rows="2"></textarea>
+            </div>
+            <div class="answers-container mb-2">
+                <div class="answer-group mb-2 d-flex align-items-center">
+                    <input type="text" class="form-control answer-text me-2" placeholder="Answer">
+                    <input type="checkbox" class="answer-correct me-2">
+                    <label>Correct</label>
+                </div>
+            </div>
+            <button type="button" class="btn btn-outline-secondary btn-sm add-answer-btn">Add Answer</button>
+        </div>`;
+        $(this).siblings(".questions-container").append(questionHtml);
+    });
+
+    // Add answer field
+    $(document).on("click", ".add-answer-btn", function () {
+        const answerHtml = `
+        <div class="answer-group mb-2 d-flex align-items-center">
+            <input type="text" class="form-control answer-text me-2" placeholder="Answer">
+            <input type="checkbox" class="answer-correct me-2">
+            <label>Correct</label>
+        </div>`;
+        $(this).siblings(".answers-container").append(answerHtml);
+    });
+
+    // Fetch Quizzes
+    function fetchQuizzes() {
+        $.ajax({
+            url: `http://localhost:8080/api/v1/course/${courseId}/quizzes`,
+            type: "GET",
+            headers: { "Authorization": "Bearer " + token },
+            success: function (response) {
+                if (response.status === 200) {
+                    quizzesData = response.data;
+                    renderQuizzes(response.data);
+                } else {
+                    showAlert("danger", response.message || "Failed to load quizzes.");
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error loading quizzes.");
+            }
+        });
+    }
+
+    // Render Quizzes
+    function renderQuizzes(quizzes) {
+        const $list = $("#quizList").empty();
+        if (quizzes.length === 0) {
+            $list.html('<p class="text-center text-muted p-3">No quizzes available. Add a quiz to get started.</p>');
+            return;
+        }
+        quizzes.forEach(quiz => {
+            const createdAt = new Date(quiz.createdAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric"
+            });
+            const quizHtml = `
+                <div class="quiz-item d-flex align-items-start p-3 border rounded mb-3" data-quiz-id="${quiz.quizId}">
+                    <i class="hgi hgi-stroke hgi-quiz fs-4 me-3 text-primary"></i>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">${quiz.title}</h6>
+                        <small class="text-muted">Created on ${createdAt}</small>
+                        <p class="mb-0 mt-1">${quiz.description || 'No description'}</p>
+                        <small class="text-muted">Total Marks: ${quiz.totalMarks} | Passing Marks: ${quiz.passingMarks}</small>
+                        <p class="mt-1">Status: <span class="${quiz.isPublished ? 'text-success' : 'text-warning'}">
+                            ${quiz.isPublished ? 'Published' : 'Draft'}</span></p>
+                    </div>
+                    <button class="btn text-primary btn-sm me-2 btn-toggle-publish">
+                        <i class="hgi hgi-stroke hgi-${quiz.isPublished ? 'eye-off' : 'eye-on'} fs-5"></i>
+                        ${quiz.isPublished ? 'Unpublish' : 'Publish'}
+                    </button>
+                    <button class="btn text-primary btn-sm me-2 btn-edit-quiz">
+                        <i class="hgi hgi-stroke hgi-pencil-edit-02 fs-5"></i> Edit
+                    </button>
+                    <button class="btn text-danger btn-sm btn-delete-quiz">
+                        <i class="hgi hgi-stroke hgi-delete-01 fs-5"></i> Delete
+                    </button>
+                </div>`;
+            $list.append(quizHtml);
+        });
+    }
+
+    // Add Quiz
+    $("#saveQuizBtn").click(function () {
+        const $btn = $(this);
+        $btn.find("span").removeClass("d-none");
+        $btn.prop("disabled", true);
+
+        const quizDTO = {
+            title: $("#addQuizForm input[name='title']").val(),
+            description: $("#addQuizForm textarea[name='description']").val(),
+            totalMarks: parseInt($("#addQuizForm input[name='totalMarks']").val()) || 0,
+            passingMarks: parseInt($("#addQuizForm input[name='passingMarks']").val()) || 0,
+            questions: collectQuestions("#addQuizForm")
+        };
+
+        $.ajax({
+            url: `http://localhost:8080/api/v1/course/${courseId}/quizzes`,
+            type: "POST",
+            headers: { "Authorization": "Bearer " + token },
+            contentType: "application/json",
+            data: JSON.stringify(quizDTO),
+            success: function (response) {
+                if (response.status === 200) {
+                    showAlert("success", "Quiz added successfully!");
+                    $("#addQuizModal").modal("hide");
+                    $("#addQuizForm")[0].reset();
+                    fetchQuizzes();
+                } else {
+                    showAlert("danger", response.message || "Failed to add quiz.");
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error adding quiz.");
+            },
+            complete: function () {
+                $btn.find("span").addClass("d-none");
+                $btn.prop("disabled", false);
+            }
+        });
+    });
+
+    // Edit Quiz
+    $(document).on("click", ".btn-edit-quiz", function () {
+        const quizId = $(this).closest(".quiz-item").data("quiz-id");
+        const quiz = quizzesData.find(q => q.quizId === quizId);
+        if (quiz) {
+            $("#editQuizForm input[name='quizId']").val(quiz.quizId);
+            $("#editQuizForm input[name='title']").val(quiz.title);
+            $("#editQuizForm textarea[name='description']").val(quiz.description);
+            $("#editQuizForm input[name='totalMarks']").val(quiz.totalMarks);
+            $("#editQuizForm input[name='passingMarks']").val(quiz.passingMarks);
+            populateQuestions("#editQuizForm", quiz.questions);
+            $("#editQuizModal").modal("show");
+        } else {
+            showAlert("danger", "Quiz not found.");
+        }
+    });
+
+    // Update Quiz
+    $("#updateQuizBtn").click(function () {
+        const $btn = $(this);
+        $btn.find("span").removeClass("d-none");
+        $btn.prop("disabled", true);
+
+        const quizId = $("#editQuizForm input[name='quizId']").val();
+        const quizDTO = {
+            title: $("#editQuizForm input[name='title']").val(),
+            description: $("#editQuizForm textarea[name='description']").val(),
+            totalMarks: parseInt($("#editQuizForm input[name='totalMarks']").val()) || 0,
+            passingMarks: parseInt($("#editQuizForm input[name='passingMarks']").val()) || 0,
+            questions: collectQuestions("#editQuizForm")
+        };
+
+        $.ajax({
+            url: `http://localhost:8080/api/v1/course/${courseId}/quizzes/${quizId}`,
+            type: "PUT",
+            headers: { "Authorization": "Bearer " + token },
+            contentType: "application/json",
+            data: JSON.stringify(quizDTO),
+            success: function (response) {
+                if (response.status === 200) {
+                    showAlert("success", "Quiz updated successfully!");
+                    $("#editQuizModal").modal("hide");
+                    $("#editQuizForm")[0].reset();
+                    fetchQuizzes();
+                } else {
+                    showAlert("danger", response.message || "Failed to update quiz.");
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error updating quiz.");
+            },
+            complete: function () {
+                $btn.find("span").addClass("d-none");
+                $btn.prop("disabled", false);
+            }
+        });
+    });
+
+    // Toggle Quiz Publication
+    $(document).on("click", ".btn-toggle-publish", function () {
+        const quizId = $(this).closest(".quiz-item").data("quiz-id");
+        $.ajax({
+            url: `http://localhost:8080/api/v1/course/${courseId}/quizzes/${quizId}/publish`,
+            type: "PATCH",
+            headers: { "Authorization": "Bearer " + token },
+            success: function (response) {
+                if (response.status === 200) {
+                    showAlert("success", response.data.isPublished ? "Quiz published!" : "Quiz unpublished!");
+                    fetchQuizzes();
+                } else {
+                    showAlert("danger", response.message || "Failed to toggle quiz publication.");
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error toggling quiz publication.");
+            }
+        });
+    });
+
+    // Delete Quiz
+    $(document).on("click", ".btn-delete-quiz", function () {
+        const quizId = $(this).closest(".quiz-item").data("quiz-id");
+        const quizTitle = $(this).closest(".quiz-item").find("h6").text();
+        $("#deleteQuizName").text(quizTitle);
+        $("#deleteQuizModal").modal("show");
+
+        $("#confirmQuizDelete").off("click").on("click", function () {
+            $.ajax({
+                url: `http://localhost:8080/api/v1/course/${courseId}/quizzes/${quizId}`,
+                type: "DELETE",
+                headers: { "Authorization": "Bearer " + token },
+                success: function (response) {
+                    if (response.status === 200) {
+                        showAlert("success", "Quiz deleted successfully!");
+                        $("#deleteQuizModal").modal("hide");
+                        fetchQuizzes();
+                    } else {
+                        showAlert("danger", response.message || "Failed to delete quiz.");
+                    }
+                },
+                error: function (xhr) {
+                    showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error deleting quiz.");
+                }
+            });
+        });
+    });
+
+    // Helper to collect questions and answers from form
+    function collectQuestions(formSelector) {
+        const questions = [];
+        $(`${formSelector} .question-group`).each(function () {
+            const question = {
+                questionId: $(this).data("question-id") ? parseInt($(this).data("question-id")) : null,
+                questionText: $(this).find(".question-text").val(),
+                answers: []
+            };
+            $(this).find(".answer-group").each(function () {
+                question.answers.push({
+                    answerId: $(this).data("answer-id") ? parseInt($(this).data("answer-id")) : null,
+                    answerText: $(this).find(".answer-text").val(),
+                    isCorrect: $(this).find(".answer-correct").is(":checked")
+                });
+            });
+            if (question.questionText) {
+                questions.push(question);
+            }
+        });
+        return questions;
+    }
+
+    // Helper to populate questions and answers in edit form
+    function populateQuestions(formSelector, questions) {
+        const $questionContainer = $(`${formSelector} .questions-container`).empty();
+        if (questions && questions.length > 0) {
+            questions.forEach(q => {
+                const questionHtml = `
+                <div class="question-group mb-3" data-question-id="${q.questionId || ''}">
+                    <div class="mb-2">
+                        <label class="form-label">Question</label>
+                        <textarea class="form-control question-text" rows="2">${q.questionText}</textarea>
+                    </div>
+                    <div class="answers-container">
+                        ${q.answers.map(a => `
+                            <div class="answer-group mb-2 d-flex align-items-center" data-answer-id="${a.answerId || ''}">
+                                <input type="text" class="form-control answer-text me-2" value="${a.answerText}">
+                                <input type="checkbox" class="answer-correct me-2" ${a.isCorrect ? 'checked' : ''}>
+                                <label>Correct</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
+                $questionContainer.append(questionHtml);
+            });
+        }
+    }
+
+    fetchQuizzes();
+
 /* -------------------------------------------------- Admin Codes --------------------------------------------------- */
 
     // check the user role and show admin-only features
@@ -1251,6 +1543,5 @@ $(document).ready(function() {
         $("#newLessonModal, #lessonModal").find(".form-control, .form-select").prop("disabled", true);
         $("#videoList, #newVideoList").addClass("disabled");
     }
-
 
 });

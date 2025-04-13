@@ -32,7 +32,4 @@ public class Lesson {
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<LessonVideo> videos;
-
-    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Quiz> quizzes;
 }

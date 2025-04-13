@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -21,10 +23,6 @@ public class Quiz {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lesson_id")
-    private Lesson lesson;
-
     @Column(name = "title", nullable = false, length = 255)
     private String title;
 
@@ -37,6 +35,15 @@ public class Quiz {
     @Column(name = "passing_marks", nullable = false)
     private Integer passingMarks;
 
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @Column(name = "is_published", nullable = false)
+    private boolean isPublished = false;
+
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<QuizAttempt> attempts;
+    private List<Question> questions;
 }
