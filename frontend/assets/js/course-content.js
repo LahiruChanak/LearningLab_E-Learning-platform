@@ -455,11 +455,11 @@ $(document).ready(function () {
                             checked = "checked";
                             classes = submittedAnswer.correct ? "text-success fw-bold" : "text-danger";
                             icon = submittedAnswer.correct
-                                ? `<i class="hgi-stroke hgi-tick-01 fs-5 ms-2"></i>`
-                                : `<i class="hgi-stroke hgi-close fs-5 ms-2"></i>`;
+                                ? `<i class="hgi-stroke hgi-tick-01 fs-5 ms-2 align-middle"></i>`
+                                : `<i class="hgi-stroke hgi-close fs-5 ms-2 align-middle"></i>`;
                         } else if (submittedAnswers && a.correct) {
                             classes = "text-success";
-                            icon = `<i class="hgi-stroke hgi-tick-01 fs-5 ms-2"></i>`;
+                            icon = `<i class="hgi-stroke hgi-tick-01 fs-5 ms-2 align-middle"></i>`;
                         }
                         return `
                                     <div class="answer-group mb-2 d-flex align-items-center gap-2" data-answer-id="${a.answerId || ''}">
