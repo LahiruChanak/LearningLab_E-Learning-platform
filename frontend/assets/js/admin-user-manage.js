@@ -33,10 +33,7 @@ $(document).ready(function () {
             success: function(response) {
                 if (response.status === 200) {
                     allUsers = response.data;
-                    populateStudentsTable(allUsers);
-                    populateInstructorsTable(allUsers);
-
-                    console.log(allUsers);
+                    applyFiltersAndUpdateTables();
                 }
             },
             error: function(xhr) {
@@ -46,7 +43,6 @@ $(document).ready(function () {
     }
 
     function populateStudentsTable(users) {
-
         const $tbody = $("#studentsTableBody");
         $tbody.empty();
 
@@ -57,38 +53,37 @@ $(document).ready(function () {
         }
 
         students.forEach((student, index) => {
-
             const row = $(`
-                <tr data-user-id="${student.userId}">
-                    <td>
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="me-1">
-                                <img src="${student.profilePicture || '../assets/images/icons/placeholder.svg'}" alt="profile picture" class="profile-picture">
-                            </div>
-                            <div>${student.fullName}</div>
+            <tr data-user-id="${student.userId}">
+                <td>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="me-1">
+                            <img src="${student.profilePicture || '../assets/images/icons/placeholder.svg'}" alt="profile picture" class="profile-picture">
                         </div>
-                    </td>
-                    <td>${student.email}</td>
-                    <td>${student.contact || 'N/A'}</td>
-                    <td>${student.address || 'N/A'}</td>
-                    <td>${new Date(student.createdAt).toLocaleString()}</td>
-                    <td><span class="badge rounded-pill ${student.isActive ? 'bg-danger-subtle text-danger' : 'bg-success-subtle text-success'}">${student.isActive ? 'Inactive' : 'Active'}</span></td>
-                    <td>
-                        <div class="d-flex justify-content-center align-items-center gap-2">
-                            <button class="btn btn-action btn-view" data-bs-toggle="modal" data-bs-target="#studentViewModal">
-                                <i class="hgi hgi-stroke hgi-property-view fs-5"></i>
-                            </button>
-                            <button class="btn btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#studentStatusModal">
-                                <i class="hgi-stroke hgi-user-edit-01 fs-5"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `);
+                        <div>${student.fullName || 'N/A'}</div>
+                    </div>
+                </td>
+                <td>${student.email || 'N/A'}</td>
+                <td>${student.contact || 'N/A'}</td>
+                <td>${student.address || 'N/A'}</td>
+                <td>${student.createdAt ? new Date(student.createdAt).toLocaleString() : 'N/A'}</td>
+                <td><span class="badge rounded-pill ${student.active ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}">${student.active ? 'Active' : 'Inactive'}</span></td>
+                <td>
+                    <div class="d-flex justify-content-center align-items-center gap-2">
+                        <button class="btn btn-action btn-view" data-bs-toggle="modal" data-bs-target="#studentViewModal">
+                            <i class="hgi hgi-stroke hgi-property-view fs-5"></i>
+                        </button>
+                        <button class="btn btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#studentStatusModal">
+                            <i class="hgi-stroke hgi-user-edit-01 fs-5"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `);
 
             row.find(".btn-view").on("click", () => populateStudentModal(student));
             row.find(".btn-edit").on("click", () => {
-                $("#userStatus").val(student.isActive ? "Active" : "Inactive");
+                $("#userStatus").val(student.active ? "Active" : "Inactive");
                 $("#studentStatusModal").data("userId", student.userId);
             });
 
@@ -96,6 +91,7 @@ $(document).ready(function () {
         });
     }
 
+// In populateInstructorsTable
     function populateInstructorsTable(users) {
         const $tbody = $("#instructorsTableBody");
         $tbody.empty();
@@ -108,42 +104,90 @@ $(document).ready(function () {
 
         instructors.forEach((instructor, index) => {
             const row = $(`
-                <tr data-user-id="${instructor.userId}">
-                    <td>
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="me-1">
-                                <img src="${instructor.profilePicture || '../assets/images/icons/placeholder.svg'}" alt="profile picture" class="profile-picture">
-                            </div>
-                            <div>${instructor.fullName}</div>
+            <tr data-user-id="${instructor.userId}">
+                <td>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="me-1">
+                            <img src="${instructor.profilePicture || '../assets/images/icons/placeholder.svg'}" alt="profile picture" class="profile-picture">
                         </div>
-                    </td>
-                    <td>${instructor.email}</td>
-                    <td>${instructor.contact || 'N/A'}</td>
-                    <td>${instructor.address || 'N/A'}</td>
-                    <td>${new Date(instructor.createdAt).toLocaleString() || 'N/A'}</td>
-                    <td>${instructor.courseCount || 0}</td>
-                    <td><span class="badge rounded-pill ${instructor.isActive ? 'bg-danger-subtle text-danger' : 'bg-success-subtle text-success'}">${instructor.isActive ? 'Inactive' : 'Active'}</span></td>
-                    <td>
-                        <div class="d-flex justify-content-center align-items-center gap-2">
-                            <button class="btn btn-action btn-view" data-bs-toggle="modal" data-bs-target="#instructorViewModal">
-                                <i class="hgi hgi-stroke hgi-property-view fs-5"></i>
-                            </button>
-                            <button class="btn btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#instructorStatusModal">
-                                <i class="hgi-stroke hgi-user-edit-01 fs-5"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `);
+                        <div>${instructor.fullName || 'N/A'}</div>
+                    </div>
+                </td>
+                <td>${instructor.email || 'N/A'}</td>
+                <td>${instructor.contact || 'N/A'}</td>
+                <td>${instructor.address || 'N/A'}</td>
+                <td>${instructor.createdAt ? new Date(instructor.createdAt).toLocaleString() : 'N/A'}</td>
+                <td>${instructor.courseCount || 0}</td>
+                <td><span class="badge rounded-pill ${instructor.active ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}">${instructor.active ? 'Active' : 'Inactive'}</span></td>
+                <td>
+                    <div class="d-flex justify-content-center align-items-center gap-2">
+                        <button class="btn btn-action btn-view" data-bs-toggle="modal" data-bs-target="#instructorViewModal">
+                            <i class="hgi hgi-stroke hgi-property-view fs-5"></i>
+                        </button>
+                        <button class="btn btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#instructorStatusModal">
+                            <i class="hgi-stroke hgi-user-edit-01 fs-5"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `);
 
             row.find(".btn-view").on("click", () => populateInstructorModal(instructor));
             row.find(".btn-edit").on("click", () => {
-                $("#instructor-status").val(instructor.isActive ? "Active" : "Inactive");
+                $("#instructor-status").val(instructor.active ? "Active" : "Inactive");
                 $("#instructorStatusModal").data("userId", instructor.userId);
             });
 
             $tbody.append(row);
         });
+    }
+
+    // Initialize filter listeners
+    function initializeFilters() {
+        // Search input
+        $('#searchInput').on('input', debounce(applyFiltersAndUpdateTables, 300));
+
+        // Status filter
+        $('#filterActive').on('change', applyFiltersAndUpdateTables);
+    }
+
+    // Debounce function
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // Apply filters and update tables
+    function applyFiltersAndUpdateTables() {
+        let filteredUsers = [...allUsers];
+
+        // Search filter
+        const searchTerm = $('#searchInput').val().toLowerCase();
+        if (searchTerm) {
+            filteredUsers = filteredUsers.filter(user =>
+                user.userId?.toString().includes(searchTerm) ||
+                user.fullName?.toLowerCase().includes(searchTerm) ||
+                user.email?.toLowerCase().includes(searchTerm)
+            );
+        }
+
+        // Status filter
+        const activeStatus = $('#filterActive').val();
+        if (activeStatus) {
+            const active = activeStatus === 'true';
+            filteredUsers = filteredUsers.filter(user => user.active === active);
+        }
+
+        // Update tables
+        populateStudentsTable(filteredUsers);
+        populateInstructorsTable(filteredUsers);
     }
 
     // Populate Student Modal (Quick and Full Views)
@@ -152,7 +196,7 @@ $(document).ready(function () {
         $('#studentNameQuick').text(student.fullName || '-');
         $('#studentEmailQuick').text(student.email || '-');
         $('#studentContactQuick').text(student.contact || '-');
-        $('#studentStatusQuick').text(student.isActive ? 'Inactive' : 'Active');
+        $('#studentStatusQuick').text(student.active ? 'Active' : 'Inactive');
         $('#studentCreatedAtQuick').text(student.createdAt ? new Date(student.createdAt).toLocaleString() : '-');
         $('#studentEnrollmentsQuick').text(student.enrollments?.length ? student.enrollments.map(e => e.course?.title).join(', ') : '-');
 
@@ -164,7 +208,7 @@ $(document).ready(function () {
         $('#studentProfilePictureFull').attr('src', student.profilePicture || '../assets/images/icons/placeholder.svg');
         $('#studentBioFull').text(student.bio || '-');
         $('#studentRoleFull').text(student.role || '-');
-        $('#studentStatusFull').text(student.isActive ? 'Inactive' : 'Active');
+        $('#studentStatusFull').text(student.active ? 'Active' : 'Inactive');
         $('#studentCreatedAtFull').text(student.createdAt ? new Date(student.createdAt).toLocaleString() : '-');
         $('#studentDeactivatedAtFull').text(student.deactivatedAt ? new Date(student.deactivatedAt).toLocaleString() : '-');
         $('#studentPasswordUpdatedAtFull').text(student.passwordUpdatedAt ? new Date(student.passwordUpdatedAt).toLocaleString() : '-');
@@ -188,7 +232,7 @@ $(document).ready(function () {
         $('#instructorNameQuick').text(instructor.fullName || '-');
         $('#instructorEmailQuick').text(instructor.email || '-');
         $('#instructorContactQuick').text(instructor.contact || '-');
-        $('#instructorStatusQuick').text(instructor.isActive ? 'Inactive' : 'Active');
+        $('#instructorStatusQuick').text(instructor.active ? 'Active' : 'Inactive');
         $('#instructorCreatedAtQuick').text(instructor.createdAt ? new Date(instructor.createdAt).toLocaleString() : '-');
         $('#instructorCoursesQuick').text(instructor.enrollments?.length ? instructor.enrollments.map(e => e.course?.title).join(', ') : '-');
 
@@ -200,7 +244,7 @@ $(document).ready(function () {
         $('#instructorProfilePictureFull').attr('src', instructor.profilePicture || '../assets/images/icons/placeholder.svg');
         $('#instructorBioFull').text(instructor.bio || '-');
         $('#instructorRoleFull').text(instructor.role || '-');
-        $('#instructorStatusFull').text(instructor.isActive ? 'Inactive' : 'Active');
+        $('#instructorStatusFull').text(instructor.active ? 'Active' : 'Inactive');
         $('#instructorCreatedAtFull').text(instructor.createdAt ? new Date(instructor.createdAt).toLocaleString() : '-');
         $('#instructorDeactivatedAtFull').text(instructor.deactivatedAt ? new Date(instructor.deactivatedAt).toLocaleString() : '-');
         $('#instructorPasswordUpdatedAtFull').text(instructor.passwordUpdatedAt ? new Date(instructor.passwordUpdatedAt).toLocaleString() : '-');
@@ -279,7 +323,7 @@ $(document).ready(function () {
         const user = allUsers.find(u => u.userId === selectedUserId);
         if (user) {
             // Set current status in the modal
-            $('#userStatus').val(user.isActive ? 'Active' : 'Inactive');
+            $('#userStatus').val(user.active ? 'Active' : 'Inactive');
             $('#studentStatusModal').modal('show');
         } else {
             showAlert("danger", "User not found.");
@@ -287,31 +331,37 @@ $(document).ready(function () {
     });
 
     // Handle "Update Status" button in the Student Status Modal
-    $('#updateUserStatus').on('click', function() {
-        const newStatus = $('#userStatus').val(); // Get selected status
-        const user = allUsers.find(u => u.userId === selectedUserId);
+    $('#updateUserStatus').on('click', function () {
+        const userId = $('#studentStatusModal').data('userId');
+        const newStatus = $('#userStatus').val();
+        const user = allUsers.find(u => u.userId === userId);
 
         if (!user) {
             showAlert("danger", "User not found.");
             return;
         }
 
-        // If status hasn't changed, no need to proceed
-        if ((newStatus === 'Active' && user.isActive) || (newStatus === 'Inactive' && !user.isActive)) {
+        // If the status hasn't changed, no need to proceed
+        if ((newStatus === 'Active' && user.active) || (newStatus === 'Inactive' && !user.active)) {
             $('#studentStatusModal').modal('hide');
             return;
         }
 
         // Update confirmation modal content
-        $('#statusUpdateTitle').text('Confirm Status Update');
-        $('#statusUpdateAction').text(newStatus === 'Active' ? 'activate' : 'deactivate');
+        $('#statusUpdateTitle').text(newStatus === 'Active' ? 'Activate User' : 'Deactivate User');
+        $('#statusUpdateAction')
+            .text(newStatus === 'Active' ? 'activate' : 'deactivate')
+            .toggleClass('text-danger', newStatus === 'Inactive');
         $('#statusUpdateName').text(user.fullName || 'this user');
         $('#statusUpdateIcon')
             .removeClass('hgi-toggle-on text-success hgi-toggle-off text-danger')
             .addClass(newStatus === 'Active' ? 'hgi-toggle-on text-success' : 'hgi-toggle-off text-danger');
         $('#confirmStatusUpdate')
-            .removeClass('btn-success btn-danger')
-            .addClass(newStatus === 'Active' ? 'btn-success' : 'btn-danger');
+            .removeClass('btn-success btn-danger status-btn-on status-btn-off')
+            .addClass(newStatus === 'Active' ? 'btn-success status-btn-on' : 'btn-danger status-btn-off');
+
+        // Store userId in confirmation modal
+        $('#statusUpdateModal').data('userId', userId);
 
         // Show confirmation modal
         $('#studentStatusModal').modal('hide');
@@ -319,9 +369,16 @@ $(document).ready(function () {
     });
 
     // Handle "Confirm" button in the Status Confirmation Modal
-    $('#confirmStatusUpdate').on('click', function() {
+    $('#confirmStatusUpdate').on('click', function () {
         if (!token) {
             showAlert("danger", "Please login to update status.");
+            $('#statusUpdateModal').modal('hide');
+            return;
+        }
+
+        const userId = $('#statusUpdateModal').data('userId');
+        if (!userId) {
+            showAlert("danger", "User ID is missing.");
             $('#statusUpdateModal').modal('hide');
             return;
         }
@@ -331,28 +388,25 @@ $(document).ready(function () {
             isActive: newStatus === 'Active'
         };
 
-        // Send update request to backend
         $.ajax({
-            url: `http://localhost:8080/api/v1/user/${selectedUserId}/status`,
+            url: `http://localhost:8080/api/v1/user/${userId}/status`,
             type: 'PUT',
             headers: { "Authorization": "Bearer " + token },
             contentType: 'application/json',
             data: JSON.stringify(statusData),
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200) {
-                    // Update local data
-                    const user = allUsers.find(u => u.userId === selectedUserId);
+                    const user = allUsers.find(u => u.userId === userId);
                     if (user) {
-                        user.isActive = statusData.isActive;
+                        user.active = statusData.isActive;
                         user.deactivatedAt = statusData.isActive ? null : new Date().toISOString();
-                        populateStudentsTable(allUsers); // Refresh table
-                        populateInstructorsTable(allUsers);
+                        applyFiltersAndUpdateTables();
                     }
                     showAlert("success", `User status updated to ${newStatus} successfully.`);
                 }
                 $('#statusUpdateModal').modal('hide');
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 showAlert("danger", "Error updating status: " + (xhr.responseJSON?.message || xhr.statusText));
                 $('#statusUpdateModal').modal('hide');
             }
@@ -360,9 +414,10 @@ $(document).ready(function () {
     });
 
     // Reset variables when modals are closed
-    $('#studentStatusModal, #statusUpdateModal').on('hidden.bs.modal', function() {
-        selectedUserId = null;
-    });
+    // $('#studentStatusModal, #statusUpdateModal').on('hidden.bs.modal', function() {
+    //     selectedUserId = null;
+    // });
 
     fetchUsers();
+    initializeFilters();
 });

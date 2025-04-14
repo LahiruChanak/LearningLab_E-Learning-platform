@@ -8,6 +8,16 @@ $(document).ready(function () {
     );
 
     const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
+    if (role !== "ADMIN" && role !== "INSTRUCTOR") {
+        showAlert("danger", "Unauthorized access! Redirecting to login page...");
+
+        setTimeout(() => {
+            window.location.href = "../index.html";
+        }, 2000);
+    }
+
     let allCourses = [];
     fetchCategories();
     fetchCourses();
@@ -470,7 +480,6 @@ $(document).ready(function () {
 /* -------------------------------------------------- Admin Codes --------------------------------------------------- */
 
     // check the user role and show admin-only features
-    const role = localStorage.getItem("role");
     if (role === "ADMIN") {
         $("#addNewCourse").hide();
         $(".btn-view").attr("data-bs-title", "View")

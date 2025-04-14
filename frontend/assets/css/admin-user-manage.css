@@ -163,6 +163,8 @@ body {
     border: 3px solid var(--primary-color);
 }
 
-.form-control {
+.form-control,
+.form-select {
     word-break: break-word;
+    box-shadow: none !important;
 }

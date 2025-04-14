@@ -125,7 +125,7 @@
               <h3 class="mb-1">Dashboard</h3>
               <p class="text-muted mb-0 small">
                 Welcome back,
-                <span id="name" class="fw-bold">Esther Howard</span> Every
+                <span class="fw-bold header-name">Esther Howard</span> Every
                 lesson you create opens new doors for learners. Let's make an
                 impact!
               </p>
@@ -148,18 +148,11 @@
                 </button>
               </div>
               <!-- Profile -->
-              <a
-                href="user-profile.html"
-                class="text-decoration-none text-dark d-flex align-items-center"
-              >
-                <img
-                  src="../assets/images/user.jpg"
-                  alt="Profile"
-                  class="rounded-circle me-2 header-image"
-                />
+              <a href="user-profile.html" class="text-decoration-none text-dark d-flex align-items-center">
+                <img src="" alt="Profile" class="rounded-circle me-2 header-image" id="header-profile-image"/>
                 <div>
-                  <h6 class="mb-0 text-nowrap">Esther Howard</h6>
-                  <small class="text-muted">Elementary</small>
+                  <h6 class="mb-0" id="header-name"></h6>
+                  <small class="text-muted" id="header-role"></small>
                 </div>
               </a>
             </div>
@@ -425,5 +418,7 @@
     <script src="../assets/js/instructor-dashboard.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../assets/js/sidebar.js"></script>
+    <script src="../assets/js/alert.js"></script>
+    <script src="../assets/js/header.js"></script>
   </body>
 </html>

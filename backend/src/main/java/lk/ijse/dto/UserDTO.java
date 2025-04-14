@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class UserDTO {
+    private Long userId;
     private String fullName;
     private String email;
     private String password;
@@ -28,5 +29,6 @@ public class UserDTO {
     private String emailUpdatedAt;
     private boolean twoFactorEnabled;
     private LocalDateTime createdAt;
+    private boolean isActive;
     private Integer courseCount;    // for instructor
 }

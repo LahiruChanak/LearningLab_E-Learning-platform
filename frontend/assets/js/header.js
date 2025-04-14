@@ -27,7 +27,7 @@ $(document).ready(function () {
                 if (response.status === 200) {
                     const userData = response.data;
 
-                    $("#header-name").text(userData.fullName);
+                    $("#header-name, .header-name").text(userData.fullName);
                     $("#header-role").text(
                         userData.role ? userData.role.charAt(0).toUpperCase() + userData.role.slice(1).toLowerCase() : "-"
                     );
