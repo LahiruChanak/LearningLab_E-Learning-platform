@@ -1109,7 +1109,7 @@ $(document).ready(function() {
                         <div class="accordion-body pb-1">
                             ${faq.answer ? faq.answer : '<em>Waiting for instructor response...</em>'}
                             <div class="d-flex justify-content-end align-items-center mt-2">
-                                <button class="btn text-primary btn-sm btn-edit-faq me-2">
+                                <button class="btn text-warning btn-sm btn-edit-faq me-2">
                                     <i class="hgi hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i> Edit
                                 </button>
                                 <button class="btn text-danger btn-sm btn-delete-faq">
@@ -1245,37 +1245,41 @@ $(document).ready(function() {
 /* --------------------------------------------------- Quiz Codes --------------------------------------------------- */
 
     let quizzesData = [];
+    let questionCounter = 0;
+    let modalQuestionCount = 0;
 
     // Dynamic question and answer fields
-    $(document).on("click", "#addQuestionBtn", function () {
+    $(document).on("click", "#addQuestionBtn, #addNewQuestionBtn", function () {
+        const questionIndex = questionCounter++;
+        const questionNumber = ++modalQuestionCount;
         const questionHtml = `
-        <div class="question-group mb-3">
-            <div class="mb-2">
-                <label class="form-label">Question</label>
+        <div class="question-group mb-3" data-question-id="">
+            <div class="d-flex align-items-baseline gap-2 mb-2">
+                <span class="form-label">${questionNumber})</span>
                 <textarea class="form-control question-text" rows="2"></textarea>
             </div>
-            <div class="answers-container mb-2">
-                <div class="answer-group mb-2 d-flex align-items-center">
-                    <input type="text" class="form-control answer-text me-2" placeholder="Answer">
-                    <input type="checkbox" class="answer-correct me-2">
-                    <label>Correct</label>
-                </div>
+            <div class="answers-container mb-2 ms-2">
+                ${Array(4).fill("").map((_, i) => `
+                    <div class="answer-group mb-2 d-flex align-items-center gap-2" data-answer-id="">
+                        <input type="radio" class="answer-correct" name="correct-answer-${questionIndex}" ${i === 0 ? 'checked' : ''}>
+                        <input type="text" class="form-control answer-text" placeholder="Answer ${i + 1}">
+                    </div>
+                `).join('')}
             </div>
-            <button type="button" class="btn btn-outline-secondary btn-sm add-answer-btn">Add Answer</button>
         </div>`;
-        $(this).siblings(".questions-container").append(questionHtml);
+        $(this).closest(".modal-content").find(".questions-container").append(questionHtml);
     });
 
     // Add answer field
-    $(document).on("click", ".add-answer-btn", function () {
-        const answerHtml = `
-        <div class="answer-group mb-2 d-flex align-items-center">
-            <input type="text" class="form-control answer-text me-2" placeholder="Answer">
-            <input type="checkbox" class="answer-correct me-2">
-            <label>Correct</label>
-        </div>`;
-        $(this).siblings(".answers-container").append(answerHtml);
-    });
+    // $(document).on("click", ".add-answer-btn", function () {
+    //     const questionIndex = $(this).closest(".question-group").find(".answer-correct").first().attr("name").split("-").pop();
+    //     const answerHtml = `
+    //     <div class="answer-group mb-2 d-flex align-items-center">
+    //         <input type="radio" class="answer-correct me-2" name="correct-answer-${questionIndex}">
+    //         <input type="text" class="form-control answer-text me-2" placeholder="Answer">
+    //     </div>`;
+    //     $(this).siblings(".answers-container").append(answerHtml);
+    // });
 
     // Fetch Quizzes
     function fetchQuizzes() {
@@ -1310,21 +1314,34 @@ $(document).ready(function() {
                 month: "short",
                 day: "numeric"
             });
+            const updatedAt = new Date(quiz.updatedAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric"
+            })
             const quizHtml = `
                 <div class="quiz-item d-flex align-items-start p-3 border rounded mb-3" data-quiz-id="${quiz.quizId}">
                     <i class="hgi hgi-stroke hgi-quiz fs-4 me-3 text-primary"></i>
                     <div class="flex-grow-1">
-                        <h6 class="mb-1">${quiz.title}</h6>
-                        <small class="text-muted">Created on ${createdAt}</small>
-                        <p class="mb-0 mt-1">${quiz.description || 'No description'}</p>
-                        <small class="text-muted">Total Marks: ${quiz.totalMarks} | Passing Marks: ${quiz.passingMarks}</small>
-                        <p class="mt-1">Status: <span class="${quiz.published ? 'text-success' : 'text-warning'}">
-                            ${quiz.published ? 'Published' : 'Draft'}</span></p>
+                        <div class="d-flex align-items-center">
+                            <h6 class="fw-bold mb-1">${quiz.title}</h6>
+                            <span class="badge rounded-pill quiz-status 
+                                ${quiz.published ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}">
+                                ${quiz.published ? 'Published' : 'Draft'}
+                            </span>
+                        </div>
+                        <p class="my-1">${quiz.description || 'No description'}</p>
+                        <small class="text-muted"><span class="fw-bold">Created on</span> ${createdAt} &nbsp;|&nbsp;
+                            <span class="fw-bold">Updated on</span> ${updatedAt} &emsp;&emsp;
+                            <span class="fw-bold">Total Marks:</span> ${quiz.totalMarks} &nbsp;|&nbsp; 
+                            <span class="fw-bold">Passing Marks:</span> ${quiz.passingMarks}
+                        </small>
                     </div>
-                    <button class="btn text-success btn-sm me-2 btn-toggle-publish">
+                    <button class="btn btn-sm me-2 btn-toggle-publish ${quiz.published ? 'text-success' : 'text-danger'}">
                         <i class="hgi hgi-stroke ${quiz.published ? 'hgi-toggle-on' : 'hgi-toggle-off'} fs-5 align-middle"></i>
-                        ${quiz.published ? 'Publish' : 'Unpublish'}
+                        ${quiz.published ? 'Publish' : 'Draft'}
                     </button>
+
                     <button class="btn text-warning btn-sm me-2 btn-edit-quiz">
                         <i class="hgi hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i> Edit
                     </button>
@@ -1443,7 +1460,7 @@ $(document).ready(function() {
             headers: { "Authorization": "Bearer " + token },
             success: function (response) {
                 if (response.status === 200) {
-                    showAlert("success", response.data.published ? "Quiz published!" : "Quiz unpublished!");
+                    showAlert("success", response.data.published ? "Quiz Published Successfully!" : "Quiz Draft Successfully!");
                     fetchQuizzes();
                 } else {
                     showAlert("danger", response.message || "Failed to toggle quiz publication.");
@@ -1486,20 +1503,29 @@ $(document).ready(function() {
     // Helper to collect questions and answers from form
     function collectQuestions(formSelector) {
         const questions = [];
-        $(`${formSelector} .question-group`).each(function () {
+        $(formSelector + " .question-group").each(function () {
             const question = {
                 questionId: $(this).data("question-id") ? parseInt($(this).data("question-id")) : null,
-                questionText: $(this).find(".question-text").val(),
+                questionText: $(this).find(".question-text").val().trim(),
+                marks: parseInt($(this).find(".question-marks").val()) || 0,
                 answers: []
             };
+            const $correctRadio = $(this).find(".answer-correct:checked");
             $(this).find(".answer-group").each(function () {
-                question.answers.push({
-                    answerId: $(this).data("answer-id") ? parseInt($(this).data("answer-id")) : null,
-                    answerText: $(this).find(".answer-text").val(),
-                    isCorrect: $(this).find(".answer-correct").is(":checked")
-                });
+                const answerText = $(this).find(".answer-text").val().trim();
+                if (answerText) {
+                    question.answers.push({
+                        answerId: $(this).data("answer-id") ? parseInt($(this).data("answer-id")) : null,
+                        answerText: answerText,
+                        correct: $(this).find(".answer-correct").is($correctRadio)
+                    });
+                }
             });
-            if (question.questionText) {
+            if (question.questionText && question.answers.length === 4) {
+                if (question.answers.filter(a => a.correct).length !== 1) {
+                    showAlert("warning", "Each question must have exactly one correct answer.");
+                    $("updateQuizBtn").prop("disabled", false);
+                }
                 questions.push(question);
             }
         });
@@ -1508,27 +1534,41 @@ $(document).ready(function() {
 
     // Helper to populate questions and answers in edit form
     function populateQuestions(formSelector, questions) {
-        const $questionContainer = $(`${formSelector} .questions-container`).empty();
-        if (questions && questions.length > 0) {
-            questions.forEach(q => {
-                const questionHtml = `
-                <div class="question-group mb-3" data-question-id="${q.questionId || ''}">
-                    <div class="mb-2">
-                        <label class="form-label">Question</label>
-                        <textarea class="form-control question-text" rows="2">${q.questionText}</textarea>
-                    </div>
-                    <div class="answers-container">
-                        ${q.answers.map(a => `
-                            <div class="answer-group mb-2 d-flex align-items-center" data-answer-id="${a.answerId || ''}">
-                                <input type="text" class="form-control answer-text me-2" value="${a.answerText}">
-                                <input type="checkbox" class="answer-correct me-2" ${a.isCorrect ? 'checked' : ''}>
-                                <label>Correct</label>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>`;
-                $questionContainer.append(questionHtml);
-            });
+        const $questionContainer = $(formSelector + " .questions-container").empty();
+        modalQuestionCount = 0;
+        try {
+            if (questions && questions.length > 0) {
+                questions.forEach(q => {
+                    const questionIndex = questionCounter++;
+                    const questionNumber = ++modalQuestionCount;
+                    const questionText = q.questionText ? q.questionText.replace(/</g, "&lt;") : "";
+                    const answers = (q.answers || []).slice(0, 4);
+                    while (answers.length < 4) {
+                        answers.push({ answerId: null, answerText: "", correct: false });
+                    }
+                    const questionHtml = `
+                    <div class="question-group mb-3" data-question-id="${q.questionId || ''}">
+                        <div class="d-flex align-items-baseline gap-2 mb-2">
+                            <span class="form-label">${questionNumber})</span>
+                            <textarea class="form-control question-text" rows="2">${questionText}</textarea>
+                        </div>
+                        <div class="answers-container mb-2 ms-4">
+                            ${answers.map((a, i) => {
+                        const answerText = a.answerText ? a.answerText.replace(/</g, "&lt;") : "";
+                        return `
+                                <div class="answer-group mb-2 d-flex align-items-center gap-2" data-answer-id="${a.answerId || ''}">
+                                    <input type="radio" class="answer-correct" name="correct-answer-${questionIndex}" ${a.correct ? 'checked' : ''}>
+                                    <input type="text" class="form-control answer-text" value="${answerText}" placeholder="Answer ${i + 1}">
+                                </div>
+                            `;
+                    }).join('')}
+                        </div>
+                    </div>`;
+                    $questionContainer.append(questionHtml);
+                });
+            }
+        } catch (error) {
+            showAlert("danger", "Error populating questions: " + error.message);
         }
     }
 

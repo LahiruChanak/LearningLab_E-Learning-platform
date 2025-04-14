@@ -75,6 +75,7 @@ public class QuizController {
         }
     }
 
+    // @PatchMapping => update only provided properties
     @PatchMapping("/{quizId}/publish")
     public ResponseEntity<ResponseDTO> toggleQuizPublication(
             @AuthenticationPrincipal UserDetails userDetails,

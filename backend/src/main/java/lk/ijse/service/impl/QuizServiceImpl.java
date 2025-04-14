@@ -18,10 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -120,8 +117,10 @@ public class QuizServiceImpl implements QuizService {
                 .filter(q -> !incomingQuestionIds.contains(q.getQuestionId()))
                 .collect(Collectors.toList());
         questionsToDelete.forEach(q -> {
-            answerRepo.deleteAll(q.getAnswers());
-            questionRepo.delete(q);
+            if (q.getAnswers() != null) {
+                answerRepo.deleteAll(q.getAnswers()); // Delete associated answers
+            }
+            questionRepo.delete(q); // Delete question
         });
 
         // Update or add questions
@@ -138,12 +137,15 @@ public class QuizServiceImpl implements QuizService {
                     question = new Question();
                     question.setQuiz(quiz);
                     question.setQuestionText(qDTO.getQuestionText());
+                    question.setAnswers(new ArrayList<>());
                 }
 
                 // Map existing answers by ID
-                Map<Long, Answer> existingAnswers = question.getAnswers().stream()
+                Map<Long, Answer> existingAnswers = question.getAnswers() != null
+                        ? question.getAnswers().stream()
                         .filter(a -> a.getAnswerId() != null)
-                        .collect(Collectors.toMap(Answer::getAnswerId, a -> a));
+                        .collect(Collectors.toMap(Answer::getAnswerId, a -> a))
+                        : Collections.emptyMap();
 
                 // Track IDs of answers to keep
                 List<Long> incomingAnswerIds = qDTO.getAnswers() != null
@@ -157,7 +159,7 @@ public class QuizServiceImpl implements QuizService {
                 List<Answer> answersToDelete = existingAnswers.values().stream()
                         .filter(a -> !incomingAnswerIds.contains(a.getAnswerId()))
                         .collect(Collectors.toList());
-                answersToDelete.forEach(answerRepo::delete);
+                answerRepo.deleteAll(answersToDelete);
 
                 // Update or add answers
                 List<Answer> updatedAnswers = new ArrayList<>();

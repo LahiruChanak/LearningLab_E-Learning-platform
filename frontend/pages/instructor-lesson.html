@@ -494,18 +494,27 @@
                         <label class="form-label">Description</label>
                         <textarea class="form-control rounded" name="description" rows="3"></textarea>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Total Marks <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control rounded" name="totalMarks" required>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Total Marks <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control rounded" name="totalMarks" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Passing Marks <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control rounded" name="passingMarks" required>
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Passing Marks <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control rounded" name="passingMarks" required>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label class="form-label">Questions</label>
+                            <button type="button" class="btn p-0 border-0 text-primary me-2" id="addNewQuestionBtn">
+                                <i class="hgi hgi-stroke hgi-add-01 fw-bold fs-5 me-1 align-middle"></i>Add Question
+                            </button>
+                        </div>
+                        <div class="questions-container">
+                            <!-- Questions and answers dynamically populated here -->
+                        </div>
                     </div>
-                    <div class="questions-container">
-                        <!-- Questions and answers dynamically added here -->
-                    </div>
-                    <button type="button" class="btn btn-outline-primary mt-2" id="addQuestionBtn">Add Question</button>
                 </form>
             </div>
             <div class="modal-footer border-0">
@@ -538,18 +547,27 @@
                         <label class="form-label">Description</label>
                         <textarea class="form-control rounded" name="description" rows="3"></textarea>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Total Marks <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control rounded" name="totalMarks" required>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Total Marks <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control rounded" name="totalMarks" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Passing Marks <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control rounded" name="passingMarks" required>
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Passing Marks <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control rounded" name="passingMarks" required>
-                    </div>
-                    <div class="questions-container">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label class="form-label fw-bold">Questions</label>
+                            <button type="button" class="btn p-0 border-0 text-primary me-2" id="addQuestionBtn">
+                                <i class="hgi hgi-stroke hgi-add-01 fw-bold fs-5 me-1 align-middle"></i>Add Question
+                            </button>
+                        </div>
+                        <div class="questions-container">
                         <!-- Questions and answers dynamically populated here -->
+                        </div>
                     </div>
-                    <button type="button" class="btn btn-outline-primary mt-2" id="updateQuestionBtn">Add Question</button>
                 </form>
             </div>
             <div class="modal-footer border-0">
