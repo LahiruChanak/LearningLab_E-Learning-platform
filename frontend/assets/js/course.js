@@ -1,438 +1,112 @@
 $(document).ready(function () {
-  const courseSearch = $("#courseSearch");
-  const sortDropdown = $("#sortDropdown");
-  const filterDropdown = $("#filterDropdown");
-  const activeFilters = $("#activeFilters");
-  const viewToggleBtns = $("[data-view]");
-  const coursesContainer = $(".row.g-4");
-  let allCourses = [];
-  let currentCourse = null;
-  let lessons = [];
-  const token = localStorage.getItem("token");
+    let activeFilters = {};
+    let currentSort = 'name-asc';
+    let allCourses = [];
+    let allCategories = [];
+    let allInstructors = [];
+    const token = localStorage.getItem("token");
 
-// State Management
-  let currentState = {
-    searchTerm: "",
-    levels: [],
-    durations: [],
-    sortType: "date-new",
-    view: "grid",
-    rating: 0,
-    instructors: [],
-    categories: [],
-    contentType: "all",
-    minPrice: null,
-    maxPrice: null,
-  };
+    // fetch courses
+    function fetchCourses(viewType = 'grid') {
+        if (!token) {
+            showAlert("danger", "Please login to the system to view courses.");
+            return;
+        }
 
-  // fetch courses
-  function fetchCourses(viewType = 'grid') {
-    if (!token) {
-        showAlert("danger", "Please login to the system to view courses.");
-        return;
-    }
-
-    $.ajax({
-        url: "http://localhost:8080/api/v1/course",
-        type: "GET",
-        headers: { "Authorization": "Bearer " + token },
-        success: function (response) {
-            if (response.status === 200) {
-                allCourses = response.data;
-                renderCourses(response.data, viewType);
+        $.ajax({
+            url: "http://localhost:8080/api/v1/course",
+            type: "GET",
+            headers: {"Authorization": "Bearer " + token},
+            success: function (response) {
+                if (response.status === 200) {
+                    allCourses = response.data;
+                    renderCourses(response.data, viewType);
+                    applyFiltersAndSort();
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", "Error fetching courses: " + (xhr.responseJSON?.message || xhr.statusText));
             }
-        },
-        error: function (xhr) {
-            showAlert("danger", "Error fetching courses: " + (xhr.responseJSON?.message || xhr.statusText));
-        }
-    });
-  }
-
-  // Fetch course lessons
-  function fetchLessons(courseId) {
-    if (!token) {
-      showAlert("danger", "Please login to the system to load lessons.");
-      return;
+        });
     }
 
-    $.ajax({
-      url: `http://localhost:8080/api/v1/instructor/lesson/course/${courseId}`,
-      type: "GET",
-      headers: { "Authorization": "Bearer " + token },
-      success: function (response) {
-        lessons = response;
-        renderLessons(courseId);
-      },
-      error: function (xhr) {
-        showAlert("danger", "Error fetching lessons: " + (xhr.responseJSON?.message || xhr.statusText));
-      }
-    });
-  }
-
-  // Star Rating Event Listeners
-  const stars = $(".stars i.hgi-star");
-
-  // Add hover effects
-  stars.hover(
-    function () {
-      const hoverRating = $(this).data("rating");
-      stars.removeClass("filled");
-      $(this).prevAll().addBack().addClass("filled");
-    },
-    function () {
-      stars.removeClass("filled");
-      if (currentState.rating > 0) {
-        stars.slice(0, currentState.rating).addClass("filled");
-      }
-    }
-  );
-
-  // Handle click events
-  stars.on("click", function () {
-    const rating = parseInt($(this).data("rating"));
-    currentState.rating = currentState.rating === rating ? 0 : rating;
-    stars.removeClass("filled");
-    if (currentState.rating > 0) {
-      stars.slice(0, currentState.rating).addClass("filled");
-    }
-    updateUI();
-  });
-
-  // Add CSS for star rating
-  $("<style>")
-    .text(
-      `.stars i.filled { color: #ffc107; }
-    .stars i.hgi-star:hover { color: #ffd700; }
-    `
-    )
-    .appendTo("head");
-
-  // Event Listeners
-  courseSearch.on("input", debounce(function () {
-    currentState.searchTerm = courseSearch.val().toLowerCase();
-    updateUI();
-  }, 300));
-
-  $(".dropdown-item[data-sort]").on("click", function (e) {
-    e.preventDefault();
-    currentState.sortType = $(this).data("sort");
-    updateUI();
-  });
-
-  // Filter checkboxes
-  $('input[id^="level"], input[id^="duration"], input[id^="instructor"], input[id^="category"]').on("change", function () {
-    const id = this.id;
-    const value = this.value;
-    const checked = this.checked;
-
-    const type = id.startsWith("level")
-        ? "levels"
-        : id.startsWith("duration")
-            ? "durations"
-            : id.startsWith("instructor")
-                ? "instructors"
-                : "categories";
-
-    if (checked) {
-      currentState[type] = [...currentState[type], value];
-    } else {
-      currentState[type] = currentState[type].filter(val => val !== value);
+    function fetchCategories() {
+        $.ajax({
+            url: "http://localhost:8080/api/v1/category",
+            type: "GET",
+            headers: {"Authorization": "Bearer " + token},
+            success: function (response) {
+                if (response.status === 200) {
+                    allCategories = response.data;
+                    populateCategoryFilter();
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", "Error fetching categories: " + (xhr.responseJSON?.message || xhr.statusText));
+            }
+        });
     }
 
-    updateUI();
-  });
-
-  // View toggle
-  viewToggleBtns.on("click", function () {
-    currentState.view = $(this).data("view");
-    updateUI();
-  });
-
-  function updateUI() {
-    try {
-      const filteredAndSortedCourses = filterAndSortCourses();
-      updateActiveFilters();
-      setView(currentState.view);
-      renderCourses(filteredAndSortedCourses);
-    } catch (error) {
-      console.error("Error updating UI:", error);
-    }
-  }
-
-  // Price range inputs
-  const minPriceInput = $("#minPrice");
-  const maxPriceInput = $("#maxPrice");
-
-  minPriceInput.on("input", debounce(function () {
-    const value = minPriceInput.val();
-    currentState.minPrice = value === "" ? null : parseFloat(value);
-    updateUI();
-  }, 300));
-
-  maxPriceInput.on("input", debounce(function () {
-    const value = maxPriceInput.val();
-    currentState.maxPrice = value === "" ? null : parseFloat(value);
-    updateUI();
-  }, 300));
-
-  function filterAndSortCourses() {
-    // Filter courses
-    let filtered = allCourses.filter((course) => {
-      const matchesSearch = course.name
-        .toLowerCase()
-        .includes(currentState.searchTerm);
-      const matchesLevel =
-        currentState.levels.length === 0 ||
-        currentState.levels.includes(course.level);
-      const matchesDuration =
-        currentState.durations.length === 0 ||
-        currentState.durations.includes(course.duration);
-      const matchesRating =
-        currentState.rating === 0 ||
-        Math.floor(course.rating) >= currentState.rating;
-      const matchesInstructor =
-        currentState.instructors.length === 0 ||
-        currentState.instructors.includes(course.instructor);
-      const matchesCategory =
-        currentState.categories.length === 0 ||
-        currentState.categories.includes(course.category);
-      const matchesContentType =
-        currentState.contentType === "all" ||
-        (currentState.contentType === "free" && course.price === 0) ||
-        (currentState.contentType === "premium" && course.price > 0);
-      const matchesPrice =
-        (currentState.minPrice === null ||
-          course.price >= currentState.minPrice) &&
-        (currentState.maxPrice === null ||
-          course.price <= currentState.maxPrice);
-
-      return (
-        matchesSearch &&
-        matchesLevel &&
-        matchesDuration &&
-        matchesRating &&
-        matchesInstructor &&
-        matchesCategory &&
-        matchesContentType &&
-        matchesPrice
-      );
-    });
-
-    // Sort courses
-    return filtered.sort((a, b) => {
-      switch (currentState.sortType) {
-        case "name-asc":
-          return a.name.localeCompare(b.name);
-        case "name-desc":
-          return b.name.localeCompare(a.name);
-        case "date-new":
-          return new Date(b.date) - new Date(a.date);
-        case "date-old":
-          return new Date(a.date) - new Date(b.date);
-        case "enrolled-high":
-          return b.sales - a.sales;
-        case "enrolled-low":
-          return a.sales - b.sales;
-        default:
-          return 0;
-      }
-    });
-  }
-
-  function updateActiveFilters() {
-    activeFilters.innerHTML = "";
-
-    // Search filter
-    if (currentState.searchTerm) {
-      addFilterChip(`Search: ${currentState.searchTerm}`, () => {
-        courseSearch.value = "";
-        currentState.searchTerm = "";
-        updateUI();
-      });
+    // New function to fetch instructors
+    function fetchInstructors() {
+        return $.ajax({
+            url: "http://localhost:8080/api/v1/instructor",
+            type: "GET",
+            headers: { "Authorization": "Bearer " + token },
+            success: function (response) {
+                if (response.status === 200) {
+                    allInstructors = response.data;
+                    populateInstructorFilter();
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", "Error fetching instructors: " + (xhr.responseJSON?.message || xhr.statusText));
+            }
+        });
     }
 
-    // Level filters
-    currentState.levels.forEach((level) => {
-      addFilterChip(`Level: ${level}`, () => {
-        const checkbox = document.querySelector(`input[value="${level}"]`);
-        if (checkbox) checkbox.checked = false;
-        currentState.levels = currentState.levels.filter((l) => l !== level);
-        updateUI();
-      });
-    });
+    // Render Courses function
+    function renderCourses(coursesToRender, viewType = 'grid') {
+        const $coursesContainer = $("#coursesContainer");
+        $coursesContainer.empty();
 
-    // Duration filters
-    currentState.durations.forEach((duration) => {
-      addFilterChip(`Duration: ${duration} hours`, () => {
-        const checkbox = document.querySelector(`input[value="${duration}"]`);
-        if (checkbox) checkbox.checked = false;
-        currentState.durations = currentState.durations.filter(
-          (d) => d !== duration
-        );
-        updateUI();
-      });
-    });
-
-    // Rating filter
-    if (currentState.rating > 0) {
-      addFilterChip(`Rating: ${currentState.rating}+ stars`, () => {
-        currentState.rating = 0;
-        stars.removeClass("filled");
-        updateUI();
-      });
-    }
-
-    // Instructor filters
-    currentState.instructors.forEach((instructor) => {
-      addFilterChip(`Instructor: ${instructor}`, () => {
-        const checkbox = document.querySelector(`input[value="${instructor}"]`);
-        if (checkbox) checkbox.checked = false;
-        currentState.instructors = currentState.instructors.filter(
-          (i) => i !== instructor
-        );
-        updateUI();
-      });
-    });
-
-    // Category filters
-    currentState.categories.forEach((category) => {
-      addFilterChip(`Category: ${category}`, () => {
-        const checkbox = document.querySelector(`input[value="${category}"]`);
-        if (checkbox) checkbox.checked = false;
-        currentState.categories = currentState.categories.filter(
-          (c) => c !== category
-        );
-        updateUI();
-      });
-    });
-
-    // Price filter
-    currentState.contentType !== "all" &&
-      addFilterChip(
-        `Price: ${currentState.contentType === "free" ? "Free" : "Premium"}`,
-        () => {
-          currentState.contentType = "all";
-          document.getElementById("typeFree").checked = false;
-          document.getElementById("typePaid").checked = false;
-          updateUI();
-        }
-      );
-
-    // Price range filter
-    currentState.minPrice !== null &&
-      currentState.maxPrice !== null &&
-      addFilterChip(
-        `Price: (${currentState.minPrice} - ${currentState.maxPrice} $)`,
-        () => {
-          currentState.minPrice = null;
-          currentState.maxPrice = null;
-          minPriceInput.value = "";
-          maxPriceInput.value = "";
-
-          updateUI();
-        }
-      );
-
-    // Course Type filter
-    document.querySelectorAll("#typeFree, #typePaid").forEach((checkbox) => {
-      checkbox.addEventListener("change", function () {
-        if (this.id === "typeFree" && this.checked) {
-          currentState.contentType = "free";
-          document.getElementById("typePaid").checked = false;
-        } else if (this.id === "typePaid" && this.checked) {
-          currentState.contentType = "premium";
-          document.getElementById("typeFree").checked = false;
-        } else {
-          currentState.contentType = "all";
-        }
-        updateUI();
-      });
-    });
-
-    $clearFilterBtn.on("click", function () {
-      $('input[type="checkbox"]').prop("checked", false);
-      currentState.rating = 0;
-      stars.removeClass("filled");
-      $("select").prop("selectedIndex", 0);
-      currentState.levels = [];
-      currentState.durations = [];
-      currentState.contentType = "all";
-      currentState.instructors = [];
-      currentState.categories = [];
-      updateUI();
-    });
-  }
-
-  function addFilterChip(text, removeCallback) {
-    const chip = document.createElement("span");
-    chip.className =
-      "badge rounded-pill bg-light text-dark me-2 mb-2 d-inline-flex align-items-center";
-    chip.innerHTML = `${text} <i class="hgi-stroke hgi-multiplication-sign ms-2" style="cursor: pointer; font-size: 14px; opacity: 0.7;"></i>`;
-    const closeIcon = chip.querySelector("i");
-    closeIcon.addEventListener("click", removeCallback);
-    closeIcon.addEventListener(
-      "mouseover",
-      () => (closeIcon.style.opacity = "1")
-    );
-    closeIcon.addEventListener(
-      "mouseout",
-      () => (closeIcon.style.opacity = "0.7")
-    );
-    activeFilters.appendChild(chip);
-  }
-
-  function setView(view) {
-    viewToggleBtns.forEach((btn) => {
-      btn.classList.toggle("active", btn.dataset.view === view);
-    });
-    coursesContainer.classList.toggle("list-view", view === "list");
-  }
-
-  // Render Courses function
-  function renderCourses(coursesToRender, viewType = 'grid') {
-    const $coursesContainer = $("#coursesContainer");
-    $coursesContainer.empty();
-
-    if (coursesToRender.length === 0) {
-      $coursesContainer.html(`
+        if (coursesToRender.length === 0) {
+            $coursesContainer.html(`
             <div class="col-12 text-center py-5">
                 <h5 class="text-muted">No courses found matching your criteria</h5>
             </div>
         `);
-      return;
-    }
+            return;
+        }
 
-    coursesToRender.forEach(course => {
-      let displayTitle = course.title;
-      if (currentState && currentState.searchTerm) {
-        const regex = new RegExp(`(${currentState.searchTerm})`, "gi");
-        displayTitle = course.title.replace(regex, '<span class="highlight">$1</span>');
-      }
+        coursesToRender.forEach(course => {
+            let displayTitle = course.title;
 
-      const courseContent = `
+            const instructor = allInstructors.find(inst => inst.instructorId === course.instructorId);
+            const instructorName = instructor?.fullName || "Unknown Instructor";
+
+            const category = allCategories.find(cat => cat.categoryId === course.categoryId);
+            const categoryName = category?.name || "Uncategorized";
+
+            const courseContent = `
             <img src="${course.thumbnail || 'assets/images/default-thumbnail.jpg'}" alt="${course.title}" class="course-thumbnail mb-3">
             <div class="course-details">
                 <h5 class="course-title">${displayTitle}</h5>
-                <div class="course-meta d-flex align-items-center flex-wrap">
-                    <span><i class="hgi-stroke hgi-user-circle-02 me-1"></i>${course.enrollments ? course.enrollments.length : 0} Enrollments</span>
-                    <span class="ms-3"><i class="hgi-stroke hgi-comment-01 me-1"></i>${course.comments || 0} Comments</span>
-                    <span class="ms-3"><i class="hgi-stroke hgi-favourite me-1"></i>${course.likes || 0} Likes</span>
-                </div>
                 <div class="d-flex align-items-center gap-2 flex-wrap">
-                    <small class="badge rounded-pill bg-primary-subtle text-primary">${course.instructor?.fullName || course.instructor?.email || "Unknown Instructor"}</small>
-                    <small class="badge rounded-pill bg-success-subtle text-success">${course.category?.name || "Uncategorized"}</small>
+                    <small class="badge rounded-pill bg-primary-subtle text-primary">${instructorName}</small>
+                    <small class="badge rounded-pill bg-success-subtle text-success">${categoryName}</small>
                     <small class="badge rounded-pill bg-warning-subtle text-warning">${course.level.charAt(0).toUpperCase() + course.level.slice(1).toLowerCase()}</small>
                 </div>
                 <div class="course-footer mt-3">
                     <strong class="price">$${course.price.toFixed(2)}</strong>
                     <button class="btn btn-light view-course" data-id="${course.courseId}">
-                        <i class="hgi-stroke hgi-arrow-right-01"></i>
+                        <i class="hgi-stroke hgi-arrow-right-01 fs-5 align-middle"></i>
                     </button>
                 </div>
             </div>
         `;
 
-      let courseHtml = viewType === 'grid' ? `
+            let courseHtml = viewType === 'grid' ? `
             <div class="col-md-5 col-lg-3 mb-4">
                 <div class="course-card grid-view">
                     ${courseContent}
@@ -446,61 +120,373 @@ $(document).ready(function () {
             </div>
         `;
 
-      $coursesContainer.append(courseHtml);
+            $coursesContainer.append(courseHtml);
+        });
+
+        // Add click event handler for view course buttons
+        $('.view-course').on('click', function () {
+            const courseId = $(this).data('id');
+            window.location.href = `course-content.html?courseId=${courseId}`;
+        });
+    }
+
+    $('.layout-btn').on('click', function () {
+        const viewType = $(this).data('view');
+
+        $('.layout-btn').removeClass('active');
+        $(this).addClass('active');
+
+        fetchCourses(viewType);
     });
 
-    // Add click event handler for view course buttons
-    $('.view-course').on('click', function() {
-      const courseId = $(this).data('id');
-      window.location.href = `course-content.html?courseId=${courseId}`;
-    });
-  }
+    fetchCourses('grid');
+    fetchCategories();
+    fetchInstructors();
 
-  $('.layout-btn').on('click', function() {
-    const viewType = $(this).data('view');
+    /* ----------------------------------------------- Search and Filters ----------------------------------------------- */
 
-    $('.layout-btn').removeClass('active');
-    $(this).addClass('active');
+    // Initialize event listeners
+    function initializeFilterAndSort() {
+        // Search input
+        $('#courseSearch').on('input', debounce(applyFiltersAndSort, 300));
 
-    fetchCourses(viewType);
-  });
+        // Sort dropdown
+        $('.dropdown-item[data-sort]').on('click', function (e) {
+            e.preventDefault();
+            currentSort = $(this).data('sort');
+            applyFiltersAndSort();
+        });
 
-  // Debounce function for search input
-  function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-      const later = () => {
-        clearTimeout(timeout);
-        func(...args);
-      };
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-    };
-  }
+        // Filter checkboxes
+        $('.filter-options .form-check-input').on('change', function () {
+            updateActiveFilters();
+            applyFiltersAndSort();
+        });
 
-  const $applyFilterBtn = $("#applyFilters");
-  const $clearFilterBtn = $("#clearFilters");
+        const $stars = $('.rating-input .hgi-star');
 
-  $applyFilterBtn.on("click", function () {
-    const $dropdownToggle = $("#filterDropdown");
-    bootstrap.Dropdown.getInstance($dropdownToggle[0]).hide();
-    updateUI();
-  });
+        // Star click effect
+        $stars.on('click', function () {
+            const rating = $(this).data('rating');
+            activeFilters.rating = rating;
+            $stars.removeClass('active hover');
+            $stars.each(function () {
+                if ($(this).data('rating') <= rating) {
+                    $(this).addClass('active');
+                }
+            });
+            updateActiveFilters();
+            applyFiltersAndSort();
+        });
 
-  $clearFilterBtn.on("click", function () {
-    $("input[type='checkbox']").prop("checked", false);
+        // Price inputs
+        $('#minPrice, #maxPrice').on('input', debounce(function () {
+            updateActiveFilters();
+            applyFiltersAndSort();
+        }, 300));
 
-    currentState.rating = 0;
-    stars.removeClass("filled");
+        // Apply filters button
+        $('#applyFilters').on('click', applyFiltersAndSort);
 
-    $("select").prop("selectedIndex", 0);
+        // Clear filters button
+        $('#clearFilters').on('click', function () {
+            resetFilters();
+            applyFiltersAndSort();
+        });
 
-    currentState.levels = [];
-    currentState.durations = [];
+        // View toggle
+        $('.layout-btn').on('click', function () {
+            const viewType = $(this).data('view');
+            $('.layout-btn').removeClass('active');
+            $(this).addClass('active');
+            renderCourses(allCourses, viewType);
+        });
+    }
 
-    updateUI();
-  });
+    // Debounce function to limit frequent calls
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
 
-  fetchCourses('grid');
-  updateUI();
+    function populateCategoryFilter() {
+        const $categorySection = $('.filter-section').filter(function () {
+            return $(this).find('.filter-heading').text() === 'Course Category';
+        });
+        const $categoryOptions = $categorySection.find('.filter-options');
+        $categoryOptions.empty();
+
+        allCategories.forEach(category => {
+            const categoryHtml = `
+            <div class="form-check">
+                <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value="${category.name}"
+                    id="category${category.categoryId}"
+                    data-category-id="${category.categoryId}"
+                />
+                <label class="form-check-label" for="category${category.categoryId}">
+                    ${category.name}
+                </label>
+            </div>
+        `;
+            $categoryOptions.append(categoryHtml);
+        });
+
+        // Re-bind change event for category checkboxes
+        $categoryOptions.find('.form-check-input').on('change', function () {
+            updateActiveFilters();
+            applyFiltersAndSort();
+        });
+    }
+
+    // New function to populate instructor filter options
+    function populateInstructorFilter() {
+        const $instructorSection = $('.filter-section').filter(function() {
+            return $(this).find('.filter-heading').text() === 'Instructor';
+        });
+        const $instructorOptions = $instructorSection.find('.filter-options');
+        $instructorOptions.empty();
+
+        allInstructors.forEach(instructor => {
+            const instructorHtml = `
+            <div class="form-check">
+                <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value="${instructor.fullName}"
+                    id="instructor${instructor.instructorId}"
+                    data-instructor-id="${instructor.instructorId}"
+                />
+                <label class="form-check-label" for="instructor${instructor.instructorId}">
+                    ${instructor.fullName}
+                </label>
+            </div>
+        `;
+            $instructorOptions.append(instructorHtml);
+        });
+
+        // Bind change event for new instructor checkboxes
+        $instructorOptions.find('.form-check-input').on('change', function() {
+            updateActiveFilters();
+            applyFiltersAndSort();
+        });
+    }
+
+    // Update active filters display
+    function updateActiveFilters() {
+        const $activeFilters = $('#activeFilters');
+        $activeFilters.empty();
+        activeFilters = {};
+
+        // Course Level
+        const levels = [];
+        $('#levelBeginner:checked, #levelIntermediate:checked, #levelAdvanced:checked').each(function () {
+            levels.push($(this).val());
+            addFilterChip($activeFilters, 'level', $(this).val(), $(this).siblings('label').text());
+        });
+        if (levels.length) activeFilters.level = levels;
+
+        // Course Type
+        const types = [];
+        $('#typeFree:checked, #typePaid:checked').each(function () {
+            types.push($(this).val());
+            addFilterChip($activeFilters, 'type', $(this).val(), $(this).siblings('label').text());
+        });
+        if (types.length) activeFilters.type = types;
+
+        // Duration
+        const durations = [];
+        $('#duration1:checked, #duration2:checked, #duration3:checked').each(function () {
+            durations.push($(this).val());
+            addFilterChip($activeFilters, 'duration', $(this).val(), $(this).siblings('label').text());
+        });
+        if (durations.length) activeFilters.duration = durations;
+
+        // Rating
+        if (activeFilters.rating) {
+            addFilterChip($activeFilters, 'rating', activeFilters.rating, `${activeFilters.rating} Star${activeFilters.rating > 1 ? 's' : ''}`);
+        }
+
+        // Price
+        const minPrice = $('#minPrice').val();
+        const maxPrice = $('#maxPrice').val();
+        if (minPrice || maxPrice) {
+            activeFilters.price = {min: parseFloat(minPrice) || 0, max: parseFloat(maxPrice) || Infinity};
+            addFilterChip($activeFilters, 'price', `${minPrice}-${maxPrice}`, `$${minPrice || 0} - $${maxPrice || '∞'}`);
+        }
+
+        // Instructor
+        const instructors = [];
+        $('.filter-section').filter(function() {
+            return $(this).find('.filter-heading').text() === 'Instructor';
+        }).find('.form-check-input:checked').each(function() {
+            instructors.push($(this).val()); // Collect fullName
+            addFilterChip($activeFilters, 'instructor', $(this).val(), $(this).siblings('label').text());
+        });
+        if (instructors.length) activeFilters.instructor = instructors;
+
+        // Category
+        const categories = [];
+        $('.filter-section').filter(function () {
+            return $(this).find('.filter-heading').text() === 'Course Category';
+        }).find('.form-check-input:checked').each(function () {
+            categories.push($(this).val());  // Collect category names
+            addFilterChip($activeFilters, 'category', $(this).val(), $(this).siblings('label').text());
+        });
+        if (categories.length) activeFilters.category = categories;
+    }
+
+    // Add filter chip to active filters display
+    function addFilterChip($container, filterType, filterValue, displayText) {
+        const chip = `
+        <span class="badge rounded-pill bg-light text-dark me-2 mb-2 d-inline-flex align-items-center">
+            ${displayText}
+            <i class="hgi-stroke hgi-multiplication-sign ms-2 remove-chip" style="cursor: pointer; font-size: 14px; opacity: 0.7;"
+               data-filter-type="${filterType}" 
+               data-filter-value="${filterValue}"></i>
+        </span>
+    `;
+        $container.append(chip);
+
+        // Remove filter chip
+        $container.find('.remove-chip').last().on('click', function () {
+            const type = $(this).data('filter-type');
+            const value = $(this).data('filter-value');
+
+            if (type === 'rating') {
+                delete activeFilters.rating;
+                $('.rating-input .hgi-star').removeClass('active');
+            } else if (type === 'price') {
+                $('#minPrice, #maxPrice').val('');
+                delete activeFilters.price;
+            } else {
+                $(`#${type}${value.replace(/[^a-zA-Z0-9]/g, '')}`).prop('checked', false);
+            }
+
+            updateActiveFilters();
+            applyFiltersAndSort();
+        });
+    }
+
+    // Reset all filters
+    function resetFilters() {
+        $('.filter-options .form-check-input').prop('checked', false);
+        $('#minPrice, #maxPrice').val('');
+        $('.rating-input .hgi-star').removeClass('active');
+        $('#courseSearch').val('');
+        activeFilters = {};
+        currentSort = 'name-asc';
+        $('#activeFilters').empty();
+    }
+
+    // Main filter and sort function
+    function applyFiltersAndSort() {
+        let filteredCourses = [...allCourses];
+
+        // Search filter
+        const searchTerm = $('#courseSearch').val().toLowerCase();
+        if (searchTerm) {
+            filteredCourses = filteredCourses.filter(course =>
+                course.title.toLowerCase().includes(searchTerm) ||
+                course.description.toLowerCase().includes(searchTerm)
+            );
+        }
+
+        // Level filter
+        if (activeFilters.level) {
+            filteredCourses = filteredCourses.filter(course =>
+                activeFilters.level.includes(course.level.toLowerCase())
+            );
+        }
+
+        // Type filter
+        if (activeFilters.type) {
+            filteredCourses = filteredCourses.filter(course => {
+                if (activeFilters.type.includes('free') && course.price === 0) return true;
+                if (activeFilters.type.includes('paid') && course.price > 0) return true;
+                return false;
+            });
+        }
+
+        // Duration filter
+        if (activeFilters.duration) {
+            filteredCourses = filteredCourses.filter(course => {
+                // Note: duration is not in provided data structure
+                // Assuming course.duration exists in hours
+                const duration = course.duration || 0;
+                return activeFilters.duration.some(range => {
+                    if (range === '0-2') return duration <= 2;
+                    if (range === '2-5') return duration > 2 && duration <= 5;
+                    if (range === '5+') return duration > 5;
+                    return false;
+                });
+            });
+        }
+
+        // Rating filter
+        if (activeFilters.rating) {
+            filteredCourses = filteredCourses.filter(course =>
+                course.rating >= activeFilters.rating
+            );
+        }
+
+        // Price filter
+        if (activeFilters.price) {
+            filteredCourses = filteredCourses.filter(course =>
+                course.price >= activeFilters.price.min &&
+                course.price <= activeFilters.price.max
+            );
+        }
+
+        // Instructor filter
+        if (activeFilters.instructor) {
+            filteredCourses = filteredCourses.filter(course => {
+                const courseInstructor = allInstructors.find(inst => inst.instructorId === course.instructorId);
+                return courseInstructor && activeFilters.instructor.includes(courseInstructor.fullName);
+            });
+        }
+
+        // Category filter
+        if (activeFilters.category) {
+            filteredCourses = filteredCourses.filter(course => {
+                const courseCategory = allCategories.find(cat => cat.categoryId === course.categoryId);
+                return courseCategory && activeFilters.category.includes(courseCategory.name);
+            });
+        }
+
+        // Sort courses
+        filteredCourses.sort((a, b) => {
+            switch (currentSort) {
+                case 'name-asc':
+                    return a.title.localeCompare(b.title);
+                case 'name-desc':
+                    return b.title.localeCompare(a.title);
+                case 'date-new':
+                    return new Date(b.createdAt) - new Date(a.createdAt);
+                case 'date-old':
+                    return new Date(a.createdAt) - new Date(b.createdAt);
+                case 'enrolled-high':
+                    return (b.enrollments?.length || 0) - (a.enrollments?.length || 0);
+                case 'enrolled-low':
+                    return (a.enrollments?.length || 0) - (b.enrollments?.length || 0);
+                default:
+                    return 0;
+            }
+        });
+
+        // Render filtered and sorted courses
+        renderCourses(filteredCourses, $('.layout-btn.active').data('view') || 'grid');
+    }
+
+    initializeFilterAndSort();
+
 });
