@@ -357,8 +357,8 @@ $(document).ready(function () {
             .removeClass('hgi-toggle-on text-success hgi-toggle-off text-danger')
             .addClass(newStatus === 'Active' ? 'hgi-toggle-on text-success' : 'hgi-toggle-off text-danger');
         $('#confirmStatusUpdate')
-            .removeClass('btn-success btn-danger status-btn-on status-btn-off')
-            .addClass(newStatus === 'Active' ? 'btn-success status-btn-on' : 'btn-danger status-btn-off');
+            .removeClass('btn-success btn-danger status-btn-active status-btn-deactive')
+            .addClass(newStatus === 'Active' ? 'status-btn-active' : 'status-btn-deactive');
 
         // Store userId in confirmation modal
         $('#statusUpdateModal').data('userId', userId);
@@ -414,9 +414,9 @@ $(document).ready(function () {
     });
 
     // Reset variables when modals are closed
-    // $('#studentStatusModal, #statusUpdateModal').on('hidden.bs.modal', function() {
-    //     selectedUserId = null;
-    // });
+    $('#studentStatusModal, #statusUpdateModal').on('hidden.bs.modal', function() {
+        selectedUserId = null;
+    });
 
     fetchUsers();
     initializeFilters();

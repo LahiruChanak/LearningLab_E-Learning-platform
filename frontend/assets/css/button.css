@@ -44,18 +44,22 @@
   transition: all 0.5s ease;
 }
 
-.status-btn-on .svgIcon {
+.status-btn-on .svgIcon,
+.status-btn-active .svgIcon {
   transform: rotate(0deg);
 }
 
-.status-btn-off .svgIcon {
+.status-btn-off .svgIcon,
+.status-btn-deactive .svgIcon {
   transform: rotate(180deg);
 }
 
-.status-btn-on:hover {
+.status-btn-on:hover,
+.status-btn-active:hover {
   background-color: #279f52 !important;
 }
-.status-btn-off:hover {
+.status-btn-off:hover,
+.status-btn-deactive:hover {
   background-color: #ef4444 !important;
 }
 
@@ -70,7 +74,8 @@
   transform: translateY(40%);
 }
 
-.status-btn-off:hover .svgIcon {
+.status-btn-off:hover .svgIcon,
+.status-btn-deactive:hover .svgIcon {
   transform: rotate(180deg) translateY(-35%);
 }
 
@@ -89,9 +94,19 @@
   content: "Yes, Publish";
 }
 
+.status-btn-active::before {
+  top: -25px;
+  content: "Yes, Activate";
+}
+
 .status-btn-off::before {
   top: -25px;
   content: "Yes, Draft";
+}
+
+.status-btn-deactive::before {
+  top: -25px;
+  content: "Yes, Deactivate";
 }
 
 .delete-btn:hover::before,
