@@ -1099,7 +1099,7 @@ $(document).ready(function() {
             const isFirst = index === 0 ? "show" : "";
             const collapsed = index === 0 ? "" : "collapsed";
             const faqHtml = `
-                <div class="accordion-item" data-faq-id="${faq.faqId}">
+                <div class="accordion-item pb-1" data-faq-id="${faq.faqId}">
                     <h2 class="accordion-header">
                         <button class="accordion-button ${collapsed}" type="button" data-bs-toggle="collapse" data-bs-target="#faq${faq.faqId}">
                             ${faq.question}
@@ -1320,7 +1320,7 @@ $(document).ready(function() {
                 day: "numeric"
             })
             const quizHtml = `
-                <div class="quiz-item d-flex align-items-start p-3 border rounded mb-3" data-quiz-id="${quiz.quizId}">
+                <div class="quiz-item d-flex align-items-start p-3 border rounded" data-quiz-id="${quiz.quizId}">
                     <i class="hgi hgi-stroke hgi-quiz fs-4 me-3 text-primary"></i>
                     <div class="flex-grow-1">
                         <div class="d-flex align-items-center">

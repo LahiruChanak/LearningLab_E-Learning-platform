@@ -206,7 +206,8 @@ textarea:focus {
 }
 
 /* Lesson Items */
-.lesson-item {
+.lesson-item,
+.quiz-item {
   padding: 12px 18px;
   border-radius: 15px;
   transition: all 0.4s ease;
@@ -215,15 +216,18 @@ textarea:focus {
   border: 1px solid var(--secondary-color);
 }
 
-.lesson-item:hover {
+.lesson-item:hover,
+.quiz-item:hover {
   background: var(--secondary-color);
 }
 
-.lesson-item small {
+.lesson-item small,
+.quiz-item small {
   font-size: 0.8rem;
 }
 
-.lesson-item p {
+.lesson-item p,
+.quiz-item p {
   font-weight: 500;
   font-size: 0.95rem;
 }

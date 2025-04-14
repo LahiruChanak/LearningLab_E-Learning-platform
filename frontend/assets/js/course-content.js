@@ -10,6 +10,7 @@ $(document).ready(function () {
     let courseId = getCourseIdFromUrl();
     let isEnrolled = false;
     let allCourses = [];
+    let publishedQuiz = null;
     let studentId = localStorage.getItem("userId");
     const token = localStorage.getItem("token");
 
@@ -54,18 +55,6 @@ $(document).ready(function () {
         $(targetId).show();
         $(this).addClass("active");
     });
-
-    // Quiz functionality
-    const quizAnswers = {
-        q1: "a",
-        q2: "b",
-        q3: "c",
-        q4: "a",
-        q5: "b",
-    };
-
-    // Handle quiz submission
-    let isQuizSubmitted = false;
 
     $("#quizForm").on("submit", function (e) {
         e.preventDefault();
@@ -248,6 +237,25 @@ $(document).ready(function () {
         $('#learningObjectives').html(course.headingTitles.map(obj => `<li>${obj}</li>`).join(''));
     }
 
+    function fetchPublishedQuiz() {
+        return $.ajax({
+            url: `http://localhost:8080/api/v1/course/${courseId}/quizzes`,
+            type: "GET",
+            headers: { "Authorization": "Bearer " + token },
+            success: function (response) {
+                if (response.status === 200 && response.data) {
+                    publishedQuiz = response.data.find(quiz => quiz.published) || null;
+                } else {
+                    publishedQuiz = null;
+                }
+            },
+            error: function (xhr) {
+                console.error("Error fetching quizzes:", xhr.responseJSON?.message || "Unknown error");
+                publishedQuiz = null;
+            }
+        });
+    }
+
     // Function to render lessons
     function renderLessons(lessons) {
         // Sort lessons by lessonSequence in ascending order
@@ -296,6 +304,38 @@ $(document).ready(function () {
         $("#courseAccordion").html(html);
         $('#chapter-count-badge').text(`${lessons.length} Lessons`);
         updateSectionProgress();
+
+        // Fetch published quiz and render quiz accordion
+        fetchPublishedQuiz().done(function () {
+            if (publishedQuiz) {
+                // Append Quiz Accordion Item
+                const quizHtml = `
+            <div class="accordion-item quiz-accordion-item locked" data-quiz-id="${publishedQuiz.quizId}">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseQuiz">
+                        <div class="d-flex flex-column gap-2 w-100 me-3">
+                            <span class="course-topic">Quiz: Course Assessment</span>
+                            <span class="duration">Test your knowledge</span>
+                        </div>
+                    </button>
+                </h2>
+                <div id="collapseQuiz" class="accordion-collapse collapse" data-bs-parent="#courseAccordion">
+                    <div class="accordion-body d-flex flex-column gap-3 pb-1 quiz-body">
+                        <div class="quiz-item d-flex align-items-center justify-content-between">
+                            <i class="hgi hgi-stroke hgi-quiz-02 fs-5 align-middle me-3"></i>
+                            <div class="flex-grow-1 d-flex flex-column gap-1">
+                                <span>${publishedQuiz.title}</span>
+                                <small class="text-muted unlock-text">Complete all lessons to unlock</small>
+                            </div>
+                            <i class="hgi-stroke hgi-square-lock-02 fs-5 align-middle text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+                $("#courseAccordion").append(quizHtml);
+                checkQuizUnlock();
+            }
+        });
     }
 
     // Function to initialize lessons after enrollment
@@ -349,6 +389,19 @@ $(document).ready(function () {
         const completedLessons = $(".lesson-item .hgi-tick-01.d-block").length;
         const progress = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
         $("#progress-badge").text(`${progress}% Completed`);
+        checkQuizUnlock();
+    }
+
+    function checkQuizUnlock() {
+        const totalLessons = $(".lesson-item").length;
+        const completedLessons = $(".lesson-item .hgi-tick-01.d-block").length;
+        const quizItem = $(".quiz-accordion-item");
+        if (publishedQuiz && quizItem.length && totalLessons > 0 && completedLessons === totalLessons) {
+            quizItem.removeClass("locked");
+            quizItem.find(".hgi-square-lock-02").addClass("d-none");
+            quizItem.find(".quiz-body").css("pointer-events", "auto");
+            $(".unlock-text").addClass("d-none");
+        }
     }
 
     // Handle lesson item clicks
@@ -386,6 +439,89 @@ $(document).ready(function () {
                 }
             });
         }
+    });
+
+    $("#courseAccordion").on("click", ".quiz-body .quiz-item", function (e) {
+        const quizItem = $(this).closest(".quiz-accordion-item");
+        if (quizItem.hasClass("locked")) {
+            showAlert("warning", "Please complete all lessons to unlock the quiz!");
+            e.preventDefault();
+            return;
+        }
+
+        if (publishedQuiz) {
+            $("#quizModalLabel").text(`Quiz: ${publishedQuiz.title}`);
+            populateQuestions("#quizForm", publishedQuiz.questions || []);
+            $("#quizModal").modal("show");
+        } else {
+            showAlert("danger", "No published quiz available.");
+        }
+    });
+
+    function populateQuestions(formSelector, questions) {
+        const $questionContainer = $(formSelector + " .questions-container").empty();
+        let modalQuestionCount = 0;
+        try {
+            if (questions && questions.length > 0) {
+                questions.forEach(q => {
+                    const questionNumber = ++modalQuestionCount;
+                    const questionText = q.questionText ? q.questionText.replace(/</g, "<") : "";
+                    const answers = (q.answers || []).slice(0, 4);
+                    const questionHtml = `
+                <div class="question-group mb-3" data-question-id="${q.questionId || ''}">
+                    <div class="d-flex align-items-baseline gap-2 mb-2">
+                        <span class="form-label">${questionNumber})</span>
+                        <span class="question-text">${questionText}</span>
+                    </div>
+                    <div class="answers-container mb-2 ms-4">
+                        ${answers.map((a, i) => {
+                        const answerText = a.answerText ? a.answerText.replace(/</g, "<") : "";
+                        return `
+                            <div class="answer-group mb-2 d-flex align-items-center gap-2" data-answer-id="${a.answerId || ''}">
+                                <input type="radio" name="answer-${q.questionId}" value="${a.answerId}" required>
+                                <span class="answer-text">${answerText}</span>
+                            </div>
+                            `;
+                    }).join('')}
+                    </div>
+                </div>`;
+                    $questionContainer.append(questionHtml);
+                });
+            } else {
+                $questionContainer.html('<p class="text-center text-muted">No questions available.</p>');
+            }
+        } catch (error) {
+            showAlert("danger", "Error populating questions: " + error.message);
+        }
+    }
+
+    $("#quizForm").on("submit", function (e) {
+        e.preventDefault();
+        const answers = [];
+        $(this).find(".question-group").each(function () {
+            const questionId = $(this).data("question-id");
+            const selectedAnswerId = $(this).find(`input[name="answer-${questionId}"]:checked`).val();
+            answers.push({ questionId, answerId: selectedAnswerId });
+        });
+
+        $.ajax({
+            url: `http://localhost:8080/api/v1/course/${courseId}/quiz/submit`,
+            type: "POST",
+            headers: { "Authorization": "Bearer " + token },
+            data: JSON.stringify({ answers }),
+            contentType: "application/json",
+            success: function (response) {
+                if (response.status === 200) {
+                    showAlert("success", `Quiz submitted! Score: ${response.data.score}/${response.data.totalMarks}`);
+                    $("#quizModal").modal("hide");
+                } else {
+                    showAlert("danger", response.message || "Failed to submit quiz.");
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error submitting quiz.");
+            }
+        });
     });
 
     // Check enrollment status and update UI

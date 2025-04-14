@@ -65,6 +65,7 @@ public class QuizController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('INSTRUCTOR', 'ADMIN', 'STUDENT')")
     public ResponseEntity<ResponseDTO> getQuizzes(@PathVariable Long courseId) {
         try {
             List<QuizDTO> quizzes = quizService.getQuizzesByCourseId(courseId);
