@@ -1,16 +1,8 @@
 package lk.ijse.service.impl;
 
-import lk.ijse.dto.AnswerDTO;
-import lk.ijse.dto.QuestionDTO;
-import lk.ijse.dto.QuizDTO;
-import lk.ijse.entity.Answer;
-import lk.ijse.entity.Course;
-import lk.ijse.entity.Question;
-import lk.ijse.entity.Quiz;
-import lk.ijse.repository.AnswerRepo;
-import lk.ijse.repository.CourseRepo;
-import lk.ijse.repository.QuestionRepo;
-import lk.ijse.repository.QuizRepo;
+import lk.ijse.dto.*;
+import lk.ijse.entity.*;
+import lk.ijse.repository.*;
 import lk.ijse.service.QuizService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +27,15 @@ public class QuizServiceImpl implements QuizService {
 
     @Autowired
     private CourseRepo courseRepo;
+
+    @Autowired
+    private UserRepo userRepo;
+
+    @Autowired
+    private QuizResultRepo quizResultRepo;
+
+    @Autowired
+    private StudentAnswerRepo studentAnswerRepo;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -233,5 +234,109 @@ public class QuizServiceImpl implements QuizService {
         quiz.setUpdatedAt(LocalDateTime.now());
         quizRepo.save(quiz);
         return modelMapper.map(quiz, QuizDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public QuizResultDTO submitQuiz(Long courseId, QuizSubmissionDTO submission) {
+        Quiz quiz = quizRepo.findById(submission.getQuizId())
+                .orElseThrow(() -> new RuntimeException("Quiz not found"));
+
+        if (!quiz.getCourse().getCourseId().equals(courseId)) {
+            throw new RuntimeException("Quiz does not belong to this course");
+        }
+
+        if (!quiz.isPublished()) {
+            throw new RuntimeException("Quiz is not published");
+        }
+
+        User user = userRepo.findById(submission.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        if (!user.getRole().equals(User.Role.STUDENT)) {
+            throw new RuntimeException("Only students can submit quizzes");
+        }
+
+        // Calculate score
+        int score = 0;
+        int totalMarks = quiz.getTotalMarks();
+        int marksPerQuestion = totalMarks / quiz.getQuestions().size();
+
+        for (AnswerSubmissionDTO answerSubmission : submission.getAnswers()) {
+            Answer answer = answerRepo.findById(answerSubmission.getAnswerId())
+                    .orElseThrow(() -> new RuntimeException("Answer not found for question ID: " + answerSubmission.getQuestionId()));
+            if (answer.isCorrect()) {
+                score += marksPerQuestion;
+            }
+        }
+
+        // Determine retake eligibility (score < 60%)
+        double scorePercentage = ((double) score / totalMarks) * 100;
+        boolean passed = scorePercentage >= 60;
+        boolean canRetake = !passed;
+
+        // Save results and answers if not previously saved
+        if (!quizResultRepo.existsByQuizQuizIdAndUserUserId(quiz.getQuizId(), submission.getUserId())) {
+            QuizResult quizResult = new QuizResult();
+            quizResult.setQuiz(quiz);
+            quizResult.setUser(user);
+            quizResult.setScore(score);
+            quizResult.setTotalMarks(totalMarks);
+            quizResult.setPassed(passed);
+            quizResult.setCompletedAt(LocalDateTime.now());
+            quizResultRepo.save(quizResult);
+
+            // Save each selected answer
+            for (AnswerSubmissionDTO answerSubmission : submission.getAnswers()) {
+                Question question = questionRepo.findById(answerSubmission.getQuestionId())
+                        .orElseThrow(() -> new RuntimeException("Question not found"));
+                Answer answer = answerRepo.findById(answerSubmission.getAnswerId())
+                        .orElseThrow(() -> new RuntimeException("Answer not found"));
+                StudentAnswer studentAnswer = new StudentAnswer();
+                studentAnswer.setQuizResult(quizResult);
+                studentAnswer.setQuestion(question);
+                studentAnswer.setSelectedAnswer(answer);
+                studentAnswerRepo.save(studentAnswer);
+            }
+        }
+
+        // Build result
+        QuizResultDTO result = new QuizResultDTO();
+        result.setQuizId(quiz.getQuizId());
+        result.setScore(score);
+        result.setTotalMarks(totalMarks);
+        result.setCanRetake(canRetake);
+
+        return result;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<StudentAnswerDTO> getStudentAnswers(Long courseId, Long quizId, Long userId) {
+        Quiz quiz = quizRepo.findById(quizId)
+                .orElseThrow(() -> new RuntimeException("Quiz not found"));
+
+        if (!quiz.getCourse().getCourseId().equals(courseId)) {
+            throw new RuntimeException("Quiz does not belong to this course");
+        }
+
+        userRepo.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<StudentAnswer> studentAnswers = studentAnswerRepo.findByQuizResultQuizQuizIdAndQuizResultUserUserId(quizId, userId);
+
+        // Remove the condition that checks for pass status
+        if (studentAnswers.isEmpty()) {
+            return List.of(); // No answers submitted yet
+        }
+
+        return studentAnswers.stream().map(sa -> {
+            StudentAnswerDTO dto = new StudentAnswerDTO();
+            dto.setQuestionId(sa.getQuestion().getQuestionId());
+            dto.setQuestionText(sa.getQuestion().getQuestionText());
+            dto.setSelectedAnswerId(sa.getSelectedAnswer().getAnswerId());
+            dto.setSelectedAnswerText(sa.getSelectedAnswer().getAnswerText());
+            dto.setCorrect(sa.getSelectedAnswer().isCorrect());
+            return dto;
+        }).collect(Collectors.toList());
     }
 }

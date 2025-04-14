@@ -11,6 +11,8 @@ $(document).ready(function () {
     let isEnrolled = false;
     let allCourses = [];
     let publishedQuiz = null;
+    let currentQuizResult = null;
+    let allQuizzes = null;
     let studentId = localStorage.getItem("userId");
     const token = localStorage.getItem("token");
 
@@ -55,95 +57,6 @@ $(document).ready(function () {
         $(targetId).show();
         $(this).addClass("active");
     });
-
-    $("#quizForm").on("submit", function (e) {
-        e.preventDefault();
-
-        let score = 0;
-        let totalQuestions = Object.keys(quizAnswers).length;
-        let unansweredQuestions = [];
-
-        for (let question in quizAnswers) {
-            if ($(`input[name=${question}]:checked`).length === 0) {
-                unansweredQuestions.push(question);
-            }
-        }
-
-        if (unansweredQuestions.length > 0) {
-            showAlert("warning", "Please answer all questions before submitting.");
-            return;
-        }
-
-        // Calculate score
-        for (let question in quizAnswers) {
-            if (
-                $(`input[name=${question}]:checked`).val() === quizAnswers[question]
-            ) {
-                score++;
-            }
-        }
-
-        // Calculate percentage
-        const percentage = Math.round((score / totalQuestions) * 100);
-        $("#quizScore").text(percentage);
-
-        // Hide the quiz modal
-        const $quizModal = $("#quizModal");
-        if ($quizModal.length) {
-            $quizModal.modal("hide");
-        }
-
-        // Show results in modal
-        const $quizResultModal = $("#quizResultModal");
-        const quizResultModal = new bootstrap.Modal($quizResultModal[0]);
-        const $passedImg = $quizResultModal.find("#passed-img");
-        const $failedImg = $quizResultModal.find("#failed-img");
-
-        if (percentage >= 60) {
-            $passedImg.removeClass("d-none");
-            $failedImg.addClass("d-none");
-
-            $("#retakeQuiz").addClass("d-none");
-            $("#quizForm button[type=submit]").prop("disabled", true);
-            $(".result-status").text("Congratulations...!");
-            $(".result-message").text("You got " + percentage + "% score. Good job!");
-        } else {
-            $passedImg.addClass("d-none");
-            $failedImg.removeClass("d-none");
-
-            $("#retakeQuiz").removeClass("d-none");
-            $("#quizForm button[type=submit]").prop("disabled", true);
-            $(".result-status").text("Try Again...!");
-            $(".result-message").text(
-                "You got " + percentage + "% score. Better luck next time!"
-            );
-        }
-
-        // Mark quiz as submitted and show "View Results" button
-        isQuizSubmitted = true;
-        $(".btn-outline-success[data-bs-target='#quizResultModal']").removeClass(
-            "d-none"
-        );
-
-        quizResultModal.show();
-    });
-
-    // Handle quiz retake
-    $("#retakeQuiz").on("click", function () {
-        $("#quizForm")[0].reset();
-        $("#quizResults").addClass("d-none");
-        $(this).addClass("d-none");
-        $("#quizForm button[type=submit]").prop("disabled", false);
-        $(".btn-outline-success[data-bs-target='#quizResultModal']").addClass(
-            "d-none"
-        );
-        isQuizSubmitted = false;
-    });
-
-    // Initially hide the "View Results" button
-    $(".btn-outline-success[data-bs-target='#quizResultModal']").addClass(
-        "d-none"
-    );
 
 ///////////////////////////////////////////////////////////////
     function getCourseIdFromUrl() {
@@ -239,12 +152,13 @@ $(document).ready(function () {
 
     function fetchPublishedQuiz() {
         return $.ajax({
-            url: `http://localhost:8080/api/v1/course/${courseId}/quizzes`,
+            url: `http://localhost:8080/api/v1/course/${courseId}/quiz`,
             type: "GET",
             headers: { "Authorization": "Bearer " + token },
             success: function (response) {
                 if (response.status === 200 && response.data) {
                     publishedQuiz = response.data.find(quiz => quiz.published) || null;
+                    console.log("Published Quiz:", publishedQuiz);
                 } else {
                     publishedQuiz = null;
                 }
@@ -449,42 +363,114 @@ $(document).ready(function () {
             return;
         }
 
+        const quizId = quizItem.data("quiz-id");
+
         if (publishedQuiz) {
             $("#quizModalLabel").text(`Quiz: ${publishedQuiz.title}`);
-            populateQuestions("#quizForm", publishedQuiz.questions || []);
-            $("#quizModal").modal("show");
+
+            // Fetch previous answers and result
+            $.ajax({
+                url: `http://localhost:8080/api/v1/course/${courseId}/quiz/${quizId}/answers?userId=${studentId}`,
+                type: "GET",
+                headers: { "Authorization": "Bearer " + token },
+                success: function (response) {
+                    if (response.status === 200) {
+                        // Check if answers exist
+                        if (response.data.length > 0) {
+                            // Fetch quiz result to determine pass/fail and retake eligibility
+                            $.ajax({
+                                url: `http://localhost:8080/api/v1/course/${courseId}/quiz/${quizId}/results?userId=${studentId}`,
+                                type: "GET",
+                                headers: { "Authorization": "Bearer " + token },
+                                success: function (resultResponse) {
+                                    if (resultResponse.status === 200) {
+                                        currentQuizResult = resultResponse.data;
+                                        populateQuestions("#quizForm", publishedQuiz.questions, response.data);
+                                        $("#quizForm").find("input").prop("disabled", true); // Disable inputs
+                                        $("#quizForm").find("button[type=submit]").hide();
+                                        $("#quizForm").find("[data-bs-target='#quizResultModal']").show();
+                                        if (currentQuizResult.canRetake) {
+                                            $("#quizForm").find("#retakeQuiz").show();
+                                        } else {
+                                            $("#quizForm").find("#retakeQuiz").hide();
+                                        }
+                                        $("#quizModal").modal("show");
+                                    } else {
+                                        showAlert("danger", resultResponse.message || "Failed to fetch quiz result.");
+                                    }
+                                },
+                                error: function (xhr) {
+                                    showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error fetching quiz result.");
+                                }
+                            });
+                        } else {
+                            // No previous submission
+                            populateQuestions("#quizForm", publishedQuiz.questions);
+                            $("#quizForm").find("input").prop("disabled", false);
+                            $("#quizForm").find("button[type=submit]").show();
+                            $("#quizForm").find("[data-bs-target='#quizResultModal']").hide();
+                            $("#quizForm").find("#retakeQuiz").hide();
+                            $("#quizModal").modal("show");
+                        }
+                    } else {
+                        showAlert("danger", response.message || "Failed to fetch answers.");
+                    }
+                },
+                error: function (xhr) {
+                    showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error fetching answers.");
+                }
+            });
         } else {
             showAlert("danger", "No published quiz available.");
         }
     });
 
-    function populateQuestions(formSelector, questions) {
+    function populateQuestions(formSelector, questions, submittedAnswers = null) {
         const $questionContainer = $(formSelector + " .questions-container").empty();
         let modalQuestionCount = 0;
         try {
             if (questions && questions.length > 0) {
                 questions.forEach(q => {
                     const questionNumber = ++modalQuestionCount;
-                    const questionText = q.questionText ? q.questionText.replace(/</g, "<") : "";
+                    const questionText = q.questionText ? q.questionText.replace(/</g, "&lt;") : "No question text";
                     const answers = (q.answers || []).slice(0, 4);
+                    let submittedAnswer = null;
+                    if (submittedAnswers) {
+                        submittedAnswer = submittedAnswers.find(sa => sa.questionId === q.questionId);
+                    }
+
                     const questionHtml = `
-                <div class="question-group mb-3" data-question-id="${q.questionId || ''}">
-                    <div class="d-flex align-items-baseline gap-2 mb-2">
-                        <span class="form-label">${questionNumber})</span>
-                        <span class="question-text">${questionText}</span>
-                    </div>
-                    <div class="answers-container mb-2 ms-4">
-                        ${answers.map((a, i) => {
-                        const answerText = a.answerText ? a.answerText.replace(/</g, "<") : "";
+                    <div class="question-group mb-3" data-question-id="${q.questionId || ''}">
+                        <div class="d-flex align-items-baseline gap-2 mb-2">
+                            <span class="form-label">${questionNumber})</span>
+                            <span class="question-text">${questionText}</span>
+                        </div>
+                        <div class="answers-container mb-2 ms-4">
+                            ${answers.map((a, i) => {
+                        const answerText = a.answerText ? a.answerText.replace(/</g, "&lt;") : "No answer text";
+                        let classes = "";
+                        let icon = "";
+                        let checked = "";
+                        if (submittedAnswers && submittedAnswer && a.answerId === submittedAnswer.selectedAnswerId) {
+                            checked = "checked";
+                            classes = submittedAnswer.correct ? "text-success fw-bold" : "text-danger";
+                            icon = submittedAnswer.correct
+                                ? `<i class="hgi-stroke hgi-tick-01 fs-5 ms-2"></i>`
+                                : `<i class="hgi-stroke hgi-close fs-5 ms-2"></i>`;
+                        } else if (submittedAnswers && a.correct) {
+                            classes = "text-success";
+                            icon = `<i class="hgi-stroke hgi-tick-01 fs-5 ms-2"></i>`;
+                        }
                         return `
-                            <div class="answer-group mb-2 d-flex align-items-center gap-2" data-answer-id="${a.answerId || ''}">
-                                <input type="radio" name="answer-${q.questionId}" value="${a.answerId}" required>
-                                <span class="answer-text">${answerText}</span>
-                            </div>
-                            `;
+                                    <div class="answer-group mb-2 d-flex align-items-center gap-2" data-answer-id="${a.answerId || ''}">
+                                        <input type="radio" name="answer-${q.questionId}" value="${a.answerId}" 
+                                            ${checked} ${submittedAnswers ? "disabled" : "required"}>
+                                        <span class="answer-text ${classes}">${answerText}${icon}</span>
+                                    </div>
+                                `;
                     }).join('')}
-                    </div>
-                </div>`;
+                        </div>
+                    </div>`;
                     $questionContainer.append(questionHtml);
                 });
             } else {
@@ -497,23 +483,39 @@ $(document).ready(function () {
 
     $("#quizForm").on("submit", function (e) {
         e.preventDefault();
+        const quizId = $(".quiz-accordion-item").data("quiz-id");
         const answers = [];
         $(this).find(".question-group").each(function () {
             const questionId = $(this).data("question-id");
             const selectedAnswerId = $(this).find(`input[name="answer-${questionId}"]:checked`).val();
-            answers.push({ questionId, answerId: selectedAnswerId });
+            if (selectedAnswerId) {
+                answers.push({ questionId: parseInt(questionId), answerId: parseInt(selectedAnswerId) });
+            }
         });
+
+        if (answers.length !== $("#quizForm .question-group").length) {
+            showAlert("warning", "Please answer all questions before submitting.");
+            return;
+        }
+
+        const submission = {
+            quizId: parseInt(quizId),
+            userId: parseInt(studentId),
+            answers: answers
+        };
 
         $.ajax({
             url: `http://localhost:8080/api/v1/course/${courseId}/quiz/submit`,
             type: "POST",
             headers: { "Authorization": "Bearer " + token },
-            data: JSON.stringify({ answers }),
+            data: JSON.stringify(submission),
             contentType: "application/json",
             success: function (response) {
                 if (response.status === 200) {
-                    showAlert("success", `Quiz submitted! Score: ${response.data.score}/${response.data.totalMarks}`);
+                    currentQuizResult = response.data;
+                    showQuizResultModal(currentQuizResult);
                     $("#quizModal").modal("hide");
+                    $("#quizForm").find("[data-bs-target='#quizResultModal']").show();
                 } else {
                     showAlert("danger", response.message || "Failed to submit quiz.");
                 }
@@ -522,6 +524,67 @@ $(document).ready(function () {
                 showAlert("danger", xhr.responseJSON ? xhr.responseJSON.message : "Error submitting quiz.");
             }
         });
+    });
+
+    function showQuizResultModal(result) {
+        const $modal = $("#quizResultModal");
+        const $status = $modal.find(".result-status");
+        const $message = $modal.find(".result-message");
+        const $passedImg = $modal.find("#passed-img");
+        const $failedImg = $modal.find("#failed-img");
+        const $actions = $modal.find(".result-actions");
+
+        $actions.empty();
+
+        const percentage = ((result.score / result.totalMarks) * 100).toFixed(1);
+        if (!result.canRetake) {
+            $status.text("Congratulations!");
+            $message.text(`You passed with a score of ${result.score}/${result.totalMarks} (${percentage}%)!`);
+            $passedImg.removeClass("d-none");
+            $failedImg.addClass("d-none");
+            $actions.append(`
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Continue</button>
+        `);
+        } else {
+            $status.text("Try Again!");
+            $message.text(`Your score is ${result.score}/${result.totalMarks} (${percentage}%). Retake the quiz to score 60% or higher!`);
+            $failedImg.removeClass("d-none");
+            $passedImg.addClass("d-none");
+            $actions.append(`
+            <button type="button" class="btn btn-primary retake-quiz" data-bs-dismiss="modal">Retake Quiz</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continue</button>
+        `);
+        }
+
+        $modal.modal("show");
+    }
+
+    $("#quizForm").on("click", "[data-bs-target='#quizResultModal']", function () {
+        if (currentQuizResult) {
+            showQuizResultModal(currentQuizResult);
+            $("#quizModal").modal("hide");
+        } else {
+            showAlert("warning", "No quiz results available. Please submit the quiz first.");
+        }
+    });
+
+    // Retake Quiz from Quiz Modal
+    $("#retakeQuiz").on("click", function () {
+        $("#quizForm")[0].reset();
+        $("#quizForm .questions-container").empty();
+        if (publishedQuiz) {
+            populateQuestions("#quizForm", publishedQuiz.questions);
+            $("#quizForm").find("input").prop("disabled", false);
+            $("#quizForm").find("#submitQuiz").show();
+            $("#quizForm").find("#retakeQuiz").hide();
+            $("#quizForm").find("#viewResults").hide();
+        }
+    });
+
+    // Retake Quiz from Result Modal
+    $(document).on("click", ".retake-quiz", function () {
+        $("#quizModal").modal("show");
+        $("#retakeQuiz").trigger("click");
     });
 
     // Check enrollment status and update UI

@@ -101,9 +101,6 @@ public class User {
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Certificate> certificates;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<QuizAttempt> quizAttempts;
-
     public enum Role {
         ADMIN, STUDENT, INSTRUCTOR
     }

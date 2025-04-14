@@ -1284,7 +1284,7 @@ $(document).ready(function() {
     // Fetch Quizzes
     function fetchQuizzes() {
         $.ajax({
-            url: `http://localhost:8080/api/v1/course/${courseId}/quizzes`,
+            url: `http://localhost:8080/api/v1/course/${courseId}/quiz`,
             type: "GET",
             headers: { "Authorization": "Bearer " + token },
             success: function (response) {
@@ -1368,7 +1368,7 @@ $(document).ready(function() {
         };
 
         $.ajax({
-            url: `http://localhost:8080/api/v1/course/${courseId}/quizzes`,
+            url: `http://localhost:8080/api/v1/course/${courseId}/quiz`,
             type: "POST",
             headers: { "Authorization": "Bearer " + token },
             contentType: "application/json",
@@ -1426,7 +1426,7 @@ $(document).ready(function() {
         };
 
         $.ajax({
-            url: `http://localhost:8080/api/v1/course/${courseId}/quizzes/${quizId}`,
+            url: `http://localhost:8080/api/v1/course/${courseId}/quiz/${quizId}`,
             type: "PUT",
             headers: { "Authorization": "Bearer " + token },
             contentType: "application/json",
@@ -1455,7 +1455,7 @@ $(document).ready(function() {
     $(document).on("click", ".btn-toggle-publish", function () {
         const quizId = $(this).closest(".quiz-item").data("quiz-id");
         $.ajax({
-            url: `http://localhost:8080/api/v1/course/${courseId}/quizzes/${quizId}/publish`,
+            url: `http://localhost:8080/api/v1/course/${courseId}/quiz/${quizId}/publish`,
             type: "PATCH",
             headers: { "Authorization": "Bearer " + token },
             success: function (response) {
@@ -1481,7 +1481,7 @@ $(document).ready(function() {
 
         $("#confirmQuizDelete").off("click").on("click", function () {
             $.ajax({
-                url: `http://localhost:8080/api/v1/course/${courseId}/quizzes/${quizId}`,
+                url: `http://localhost:8080/api/v1/course/${courseId}/quiz/${quizId}`,
                 type: "DELETE",
                 headers: { "Authorization": "Bearer " + token },
                 success: function (response) {
