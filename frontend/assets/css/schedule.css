@@ -146,7 +146,6 @@ body {
   align-items: center;
   width: 400px;
   gap: 10px;
-  align-items: center;
 }
 
 .calendar-header .month-nav button {
@@ -392,14 +391,13 @@ body {
   padding: 4px 8px 4px 15px;
   border-radius: 10px;
   font-size: 0.8rem;
-  /* color: #fff; */
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: fit-content;
   height: fit-content;
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
   z-index: 3;
 }
 
@@ -420,7 +418,6 @@ body {
 }
 
 .event .delete-btn {
-  /* color: #fff; */
   font-size: 1rem;
   margin-left: 5px;
   cursor: pointer;
@@ -447,10 +444,10 @@ body {
   background: #c62828;
 }
 
-.event-workshop {
+.event-custom {
   background: #80ffa8;
 }
-.event-workshop.event::after {
+.event-custom.event::after {
   background: #00b93b;
 }
 

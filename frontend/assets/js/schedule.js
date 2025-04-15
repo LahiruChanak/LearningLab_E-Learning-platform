@@ -25,7 +25,7 @@ $(document).ready(function () {
             headers: {"Authorization": "Bearer " + token},
             success: function (response) {
                 const courseSelect = $('#eventCourse');
-                courseSelect.empty();
+                courseSelect.empty().append('<option value="">-- Select Course --</option>');
                 response.data.forEach(course => {
                     courseSelect.append(`<option value="${course.courseId}">${course.courseId} - ${course.title}</option>`);
                 });
