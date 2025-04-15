@@ -42,13 +42,43 @@ $(document).ready(function () {
         });
     }
 
+    function fetchSkills(userId, selector) {
+        $(selector).html('<span class="text-muted">Loading skills...</span>');
+
+        $.ajax({
+            url: `http://localhost:8080/api/v1/user/${userId}/skills`,
+            type: "GET",
+            headers: { "Authorization": "Bearer " + token },
+            success: function (skillsResponse) {
+                if (skillsResponse.status === 200) {
+                    const skills = skillsResponse.data || [];
+                    if (skills.length) {
+                        const badges = skills.map(skill =>
+                            `<span class="badge rounded-pill bg-primary-subtle text-primary">${skill}</span>`
+                        ).join('');
+                        $(selector).html(badges);
+                    } else {
+                        $(selector).html('<span class="text-muted">-</span>');
+                    }
+                } else {
+                    $(selector).html('<span class="text-muted">-</span>');
+                    console.warn('Skills fetch warning:', skillsResponse.message);
+                }
+            },
+            error: function (xhr) {
+                $(selector).html('<span class="text-muted">-</span>');
+                console.error('Skills fetch error:', xhr.responseJSON?.message || xhr.statusText);
+            }
+        });
+    }
+
     function populateStudentsTable(users) {
         const $tbody = $("#studentsTableBody");
         $tbody.empty();
 
         const students = users.filter(user => user.role === "STUDENT");
         if (students.length === 0) {
-            $tbody.append('<tr><td colspan="7" class="text-center text-muted">No students found</td></tr>');
+            $tbody.append('<tr><td colspan="7" class="text-center text-muted p-3">No students found</td></tr>');
             return;
         }
 
@@ -91,14 +121,14 @@ $(document).ready(function () {
         });
     }
 
-// In populateInstructorsTable
+    // In populateInstructorsTable
     function populateInstructorsTable(users) {
         const $tbody = $("#instructorsTableBody");
         $tbody.empty();
 
         const instructors = users.filter(user => user.role === "INSTRUCTOR");
         if (instructors.length === 0) {
-            $tbody.append('<tr><td colspan="8" class="text-center text-muted">No instructors found</td></tr>');
+            $tbody.append('<tr><td colspan="8" class="text-center text-muted py-4">No instructors found</td></tr>');
             return;
         }
 
@@ -219,11 +249,8 @@ $(document).ready(function () {
         $('#studentLinkedinLinkFull').text(student.linkedinLink || '-');
         $('#studentStackOverflowLinkFull').text(student.stackOverflowLink || '-');
         $('#studentWebsiteLinkFull').text(student.websiteLink || '-');
-        $('#studentSkillsFull').text(student.skills?.length ? student.skills.join(', ') : '-');
+        fetchSkills(student.userId, '#studentSkillsFull');
         $('#studentEnrollmentsFull').text(student.enrollments?.length ? student.enrollments.map(e => e.course?.title).join(', ') : '-');
-        $('#studentCertificatesFull').text(student.certificates?.length ? student.certificates.map(c => c.title).join(', ') : '-');
-        $('#studentQuizAttemptsFull').text(student.quizAttempts?.length ? student.quizAttempts.map(q => `${q.quiz?.title}: ${q.score}`).join(', ') : '-');
-        $('#studentOrdersFull').text(student.orders?.length ? student.orders.map(o => `Order #${o.orderId}`).join(', ') : '-');
     }
 
     // Populate Instructor Modal (Quick and Full Views)
@@ -255,8 +282,7 @@ $(document).ready(function () {
         $('#instructorLinkedinLinkFull').text(instructor.linkedinLink || '-');
         $('#instructorStackOverflowLinkFull').text(instructor.stackOverflowLink || '-');
         $('#instructorWebsiteLinkFull').text(instructor.websiteLink || '-');
-        $('#instructorSkillsFull').text(instructor.skills?.length ? instructor.skills.join(', ') : '-');
-        $('#instructorCoursesFull').text(instructor.enrollments?.length ? instructor.enrollments.map(e => e.course?.title).join(', ') : '-');
+        fetchSkills(instructor.userId, '#instructorSkillsFull');
     }
 
     // View Student Details

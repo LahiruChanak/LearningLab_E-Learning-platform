@@ -8,6 +8,7 @@ import lk.ijse.dto.UserDTO;
 import lk.ijse.entity.InstructorRequest;
 import lk.ijse.entity.User;
 import lk.ijse.repository.InstructorRequestRepo;
+import lk.ijse.repository.UserSkillRepo;
 import lk.ijse.service.UserService;
 import lk.ijse.util.VarList;
 import org.modelmapper.ModelMapper;
@@ -27,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/v1/user")
@@ -35,6 +37,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserSkillRepo userSkillRepo;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -372,6 +377,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/status")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO> updateUserStatus(
             @PathVariable("userId") Long userId,
             @RequestBody Map<String, Boolean> requestBody,
@@ -408,6 +414,26 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDTO(500, "Error updating status: " + e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/{userId}/skills")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> getUserSkills(@PathVariable Long userId, @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            if (userDetails == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new ResponseDTO(401, "Unauthorized", null));
+            }
+            List<String> skills = userSkillRepo.findByUserUserId(userId)
+                    .stream()
+                    .map(userSkill -> userSkill.getSkill().getSkillName())
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(new ResponseDTO(200, "Skills retrieved successfully", skills));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(500, "Error fetching skills: " + e.getMessage(), null));
         }
     }
 

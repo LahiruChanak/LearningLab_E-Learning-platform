@@ -1,181 +1,256 @@
 $(document).ready(function () {
-  // Initialize tooltips
-  const tooltipTriggerList = document.querySelectorAll(
-    '[data-bs-toggle="tooltip"]'
-  );
-  const tooltipList = [...tooltipTriggerList].map(
-    (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
-  );
+    // Initialize tooltips
+    const tooltipTriggerList = document.querySelectorAll(
+        '[data-bs-toggle="tooltip"]'
+    );
+    const tooltipList = [...tooltipTriggerList].map(
+        (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
+    );
 
-  const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
-  if (role !== "ADMIN") {
-    showAlert("danger", "Unauthorized access! Redirecting to login page...");
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
 
-    setTimeout(() => {
-      window.location.href = "../index.html";
-    }, 2000);
-  }
+    if (role !== "ADMIN" && !token) {
+        showAlert("danger", "Unauthorized access! Redirecting to login page...");
 
+        setTimeout(() => {
+            window.location.href = "../index.html";
+        }, 2000);
+    }
 
-  // Attendance Chart
-  const attendanceChartOptions = {
-    series: [
-      {
-        name: "Attendance",
-        data: [],
-      },
-    ],
-    chart: {
-      type: "area",
-      height: 285,
-      toolbar: {
-        show: false,
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      curve: "smooth",
-      width: 2,
-    },
-    xaxis: {
-      categories: [],
-    },
-    colors: ["#7269ef"],
-    fill: {
-      type: "gradient",
-      gradient: {
-        shadeIntensity: 1,
-        opacityFrom: 0.7,
-        opacityTo: 0.2,
-        stops: [0, 90, 100],
-      },
-    },
-    tooltip: {
-      y: {
-        formatter: function (val) {
-          return val + "%";
-        },
-      },
-    },
-  };
+    function fetchNewStudentsData(period) {
+        if (!token) {
+            showAlert("danger", "Please login to the system to view data.");
+            return;
+        }
 
-  const attendanceChart = new ApexCharts(
-    document.querySelector("#salesChart"),
-    attendanceChartOptions
-  );
-  attendanceChart.render();
+        $.ajax({
+            url: "http://localhost:8080/api/v1/user/all",
+            type: "GET",
+            headers: {"Authorization": "Bearer " + token},
+            success: function (response) {
+                if (response.status === 200) {
+                    const students = response.data.filter(user => user.role === "STUDENT");
+                    const instructors = response.data.filter(user => user.role === "INSTRUCTOR");
+                    let categories = [];
+                    let studentData = [];
+                    let instructorData = [];
 
-  // Function to fetch attendance data
-  function fetchAttendanceData(period) {
-    // Show loading state
-    attendanceChart.updateOptions({
-      chart: {
-        animations: {
-          enabled: true,
-        },
-      },
+                    const today = new Date();
+
+                    if (period === "weekly") {
+                        categories = ["Week-3", "Week-2", "Week-1", "This Week"];
+                        studentData = [0, 0, 0, 0];
+                        instructorData = [0, 0, 0, 0];
+
+                        students.forEach(user => {
+                            const createdAt = new Date(user.createdAt);
+                            const weeksDiff = Math.floor((today - createdAt) / (7 * 24 * 60 * 60 * 1000));
+                            if (weeksDiff >= 0 && weeksDiff < 4) {
+                                studentData[3 - weeksDiff]++;
+                            }
+                        });
+
+                        instructors.forEach(user => {
+                            const createdAt = new Date(user.createdAt);
+                            const weeksDiff = Math.floor((today - createdAt) / (7 * 24 * 60 * 60 * 1000));
+                            if (weeksDiff >= 0 && weeksDiff < 4) {
+                                instructorData[3 - weeksDiff]++;
+                            }
+                        });
+                    } else if (period === "monthly") {
+                        // Last 6 months
+                        categories = [];
+                        studentData = [];
+                        instructorData = [];
+                        for (let i = 5; i >= 0; i--) {
+                            const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
+                            categories.push(date.toLocaleString("default", {month: "short"}));
+                            studentData.push(0);
+                            instructorData.push(0);
+                        }
+
+                        students.forEach(user => {
+                            const createdAt = new Date(user.createdAt);
+                            const monthDiff =
+                                (today.getFullYear() - createdAt.getFullYear()) * 12 +
+                                today.getMonth() - createdAt.getMonth();
+                            if (monthDiff >= 0 && monthDiff < 6) {
+                                studentData[5 - monthDiff]++;
+                            }
+                        });
+
+                        instructors.forEach(user => {
+                            const createdAt = new Date(user.createdAt);
+                            const monthDiff =
+                                (today.getFullYear() - createdAt.getFullYear()) * 12 +
+                                today.getMonth() - createdAt.getMonth();
+                            if (monthDiff >= 0 && monthDiff < 6) {
+                                instructorData[5 - monthDiff]++;
+                            }
+                        });
+                    } else if (period === "yearly") {
+                        // Last 3 years
+                        categories = [];
+                        studentData = [];
+                        instructorData = [];
+                        for (let i = 2; i >= 0; i--) {
+                            const year = today.getFullYear() - i;
+                            categories.push(year.toString());
+                            studentData.push(0);
+                            instructorData.push(0);
+                        }
+
+                        students.forEach(user => {
+                            const createdAt = new Date(user.createdAt);
+                            const yearDiff = today.getFullYear() - createdAt.getFullYear();
+                            if (yearDiff >= 0 && yearDiff < 3) {
+                                studentData[2 - yearDiff]++;
+                            }
+                        });
+
+                        instructors.forEach(user => {
+                            const createdAt = new Date(user.createdAt);
+                            const yearDiff = today.getFullYear() - createdAt.getFullYear();
+                            if (yearDiff >= 0 && yearDiff < 3) {
+                                instructorData[2 - yearDiff]++;
+                            }
+                        });
+                    }
+
+                    // ApexCharts options
+                    const options = {
+                        chart: {
+                            type: "bar",
+                            height: 300,
+                            toolbar: {show: false}
+                        },
+                        series: [
+                            {
+                                name: "Students",
+                                data: studentData
+                            },
+                            {
+                                name: "Instructors",
+                                data: instructorData
+                            }
+                        ],
+                        xaxis: {
+                            categories: categories,
+                            title: {
+                                text: period.charAt(0).toUpperCase() + period.slice(1)
+                            }
+                        },
+                        yaxis: {
+                            title: {
+                                text: "Number of Users"
+                            },
+                            min: 0,
+                            forceNiceScale: true
+                        },
+                        colors: ["#007bff", "#28a745"],
+                        dataLabels: {
+                            enabled: true,
+                            formatter: val => val.toString().padStart(2, "0")
+                        },
+                        plotOptions: {
+                            bar: {
+                                columnWidth: "50%",
+                                borderRadius: 5,
+                                borderRadiusApplication: 'end',
+                                distributed: false
+                            }
+                        },
+                        grid: {
+                            borderColor: "#e9ecef"
+                        }
+                    };
+
+                    // Render or update chart
+                    const chart = new ApexCharts(document.querySelector("#newStudentsChart"), options);
+                    chart.render();
+
+                    // Clean up previous chart (ApexCharts handles this internally, but ensure no overlap)
+                    $("#newStudentsChart").data("chart", chart);
+                }
+            },
+            error: function (xhr) {
+                showAlert("danger", "Error fetching users: " + (xhr.responseJSON?.message || xhr.statusText));
+            }
+        });
+    }
+
+    $(".btn-group .btn").click(function () {
+        $(".btn-group .btn").removeClass("active");
+        $(this).addClass("active");
+
+        const period = $(this).data("period");
+
+        // Destroy previous chart if exists
+        const prevChart = $("#newStudentsChart").data("chart");
+        if (prevChart) {
+            prevChart.destroy();
+        }
+
+        fetchNewStudentsData(period);
     });
 
-    // API endpoints for different periods
-    const endpoints = {
-      weekly: "/api/attendance/weekly",
-      monthly: "/api/attendance/monthly",
-      yearly: "/api/attendance/yearly",
-    };
+    fetchNewStudentsData("weekly");
 
-    $.ajax({
-      url: endpoints[period],
-      method: "GET",
-      success: function (response) {
-        // Update chart with new data
-        attendanceChart.updateOptions({
-          xaxis: {
-            categories: response.categories,
-          },
-          chart: {
-            animations: {
-              enabled: true,
+    /* --------------------------------------------------- Stats Card --------------------------------------------------- */
+
+    function fetchUserCount() {
+        if (!token) {
+            showAlert("danger", "Please login to the system to view users.");
+            return;
+        }
+
+        $.ajax({
+            url: "http://localhost:8080/api/v1/user/all",
+            type: "GET",
+            headers: {"Authorization": "Bearer " + token},
+            success: function (response) {
+                if (response.status === 200) {
+                    const users = response.data;
+                    const studentCount = users.filter(user => user.role === "STUDENT").length;
+                    const instructorCount = users.filter(user => user.role === "INSTRUCTOR").length;
+
+                    $("#student-count").text(studentCount.toString().padStart(2, '0'));
+                    $("#instructor-count").text(instructorCount.toString().padStart(2, '0'));
+                }
             },
-          },
+            error: function (xhr) {
+                showAlert("danger", "Error fetching users: " + (xhr.responseJSON?.message || xhr.statusText));
+            }
         });
+    }
 
-        attendanceChart.updateSeries([
-          {
-            data: response.data,
-          },
-        ]);
-      },
-      error: function (xhr, status, error) {
-        console.error("Error fetching attendance data:", error);
-        // Fallback to mock data in case of error
-        const mockData = {
-          weekly: {
-            categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-            data: [67, 85, 75, 90, 67, 85, 75],
-          },
-          monthly: {
-            categories: [
-              "Jan",
-              "Feb",
-              "Mar",
-              "Apr",
-              "May",
-              "Jun",
-              "Jul",
-              "Aug",
-              "Sep",
-              "Oct",
-              "Nov",
-              "Dec",
-            ],
-            data: [70, 82, 78, 85, 75, 88, 80, 82, 78, 85, 75, 88],
-          },
-          yearly: {
-            categories: [
-              "2018",
-              "2019",
-              "2020",
-              "2021",
-              "2022",
-              "2023",
-              "2024",
-            ],
-            data: [75, 80, 85, 88, 82, 85, 90],
-          },
-        };
+    function fetchCourseCount() {
+        if (!token) {
+            showAlert("danger", "Please login to the system to view users.");
+            return;
+        }
 
-        attendanceChart.updateOptions({
-          xaxis: {
-            categories: mockData[period].categories,
-          },
-          chart: {
-            animations: {
-              enabled: true,
+        $.ajax({
+            url: "http://localhost:8080/api/v1/course",
+            type: "GET",
+            headers: {"Authorization": "Bearer " + token},
+            success: function (response) {
+                if (response.status === 200) {
+                    const courses = response.data;
+                    const courseCount = courses.length;
+                    const totalEarnings = courses.reduce((sum, course) => sum + (course.price || 0), 0);
+
+                    $("#course-count").text(courseCount.toString().padStart(2, '0'));
+                    $("#earning-count").text(`$${Math.floor(totalEarnings).toString().padStart(2, '0')}`);
+                }
             },
-          },
+            error: function (xhr) {
+                showAlert("danger", "Error fetching courses: " + (xhr.responseJSON?.message || xhr.statusText));
+            }
         });
+    }
 
-        attendanceChart.updateSeries([
-          {
-            data: mockData[period].data,
-          },
-        ]);
-      },
-    });
-  }
-
-  // Chart Period Buttons
-  $(".btn-group .btn").click(function () {
-    $(".btn-group .btn").removeClass("active");
-    $(this).addClass("active");
-
-    const period = $(this).data("period");
-    fetchAttendanceData(period);
-  });
-
-  // Initial data fetch (weekly by default)
-  fetchAttendanceData("weekly");
+    fetchUserCount();
+    fetchCourseCount();
 });
