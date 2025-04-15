@@ -2,6 +2,7 @@ package lk.ijse.repository;
 
 import lk.ijse.dto.InstructorDetailsDTO;
 import lk.ijse.entity.Instructor;
+import lk.ijse.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -16,5 +17,7 @@ public interface InstructorRepo extends JpaRepository<Instructor, Long> {
             "i.instructorId, u.fullName, u.bio, u.profilePicture, i.availability, i.yearsOfExperience, u.email) " +
             "FROM Instructor i JOIN i.user u")
     List<InstructorDetailsDTO> findAllInstructorDetails();
+
+    Optional<Instructor> findByUser(User user);
 
 }

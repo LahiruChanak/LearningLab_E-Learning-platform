@@ -1,5 +1,6 @@
 package lk.ijse.repository;
 
+import lk.ijse.entity.Course;
 import lk.ijse.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,5 +17,10 @@ public interface ReviewRepo extends JpaRepository<Review, Long> {
 
     @Query("SELECT r FROM Review r WHERE r.course.courseId = :courseId AND r.student.userId = :studentId")
     Optional<Review> findByCourseCourseIdAndStudentId(@Param("courseId") Long courseId, @Param("studentId") Long studentId);
+
+    List<Review> findByCourseIn(List<Course> courses);
+
+    @Query("SELECT AVG(r.rating) FROM Review r WHERE r.course IN :courses")
+    Double calculateAverageRatingByCourses(List<Course> courses);
 
 }

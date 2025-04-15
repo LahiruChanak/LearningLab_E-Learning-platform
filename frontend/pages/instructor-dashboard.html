@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Guru - Instructor Dashboard</title>
+    <title>Instructor Dashboard - LearningLab</title>
     <link rel="icon" href="../assets/images/icons/favicon.png" />
 
     <link
@@ -138,15 +138,6 @@
                   <i class="hgi-stroke hgi-search-01 fs-5"></i>
                 </button>
               </div>
-              <!-- Notification icon -->
-              <div>
-                <button class="btn btn-light-orange">
-                  <i
-                    class="hgi hgi-stroke hgi-course me-2 fs-5 align-middle"
-                  ></i>
-                  New Course
-                </button>
-              </div>
               <!-- Profile -->
               <a href="user-profile.html" class="text-decoration-none text-dark d-flex align-items-center">
                 <img src="" alt="Profile" class="rounded-circle me-2 header-image" id="header-profile-image"/>
@@ -229,7 +220,7 @@
                     </div>
                     <div class="ms-3">
                       <h6>Your Students</h6>
-                      <h2>5,622</h2>
+                      <h2 id="student-count">5,622</h2>
                     </div>
                   </div>
                   <div class="trend-line mt-3" style="height: 40px">
@@ -247,7 +238,7 @@
                     </div>
                     <div class="ms-3">
                       <h6>Your Courses</h6>
-                      <h2>$168.2</h2>
+                      <h2 id="earnings-count">$168.2</h2>
                     </div>
                   </div>
                   <div class="trend-line mt-3" style="height: 40px">
@@ -265,7 +256,7 @@
                     </div>
                     <div class="ms-3">
                       <h6>Average Rating</h6>
-                      <h2>4.8/5</h2>
+                      <h2 id="rating-count">4.8/5</h2>
                     </div>
                   </div>
                   <div class="trend-line mt-3" style="height: 40px">
@@ -415,8 +406,8 @@
             crossorigin="anonymous"
     ></script>
     <script src="../assets/js/jquery-3.7.1.min.js"></script>
-    <script src="../assets/js/instructor-dashboard.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../assets/js/instructor-dashboard.js"></script>
     <script src="../assets/js/sidebar.js"></script>
     <script src="../assets/js/alert.js"></script>
     <script src="../assets/js/header.js"></script>
