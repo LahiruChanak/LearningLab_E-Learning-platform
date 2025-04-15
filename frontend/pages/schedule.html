@@ -155,34 +155,26 @@
     </div>
 
     <!-- Event Modal -->
-    <div
-      class="modal fade"
-      id="eventModal"
-      tabindex="-1"
-      aria-hidden="true"
-      data-bs-backdrop="static"
-      data-bs-keyboard="false"
+    <div class="modal fade" id="eventModal" tabindex="-1" aria-hidden="true"
+         data-bs-backdrop="static" data-bs-keyboard="false"
     >
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="modalTitle">Add New Course Event</h5>
-            <button
-              type="button"
-              class="btn-close shadow-none small"
-              data-bs-dismiss="modal"
-            ></button>
+            <button type="button" class="btn-close shadow-none small" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
-            <input type="hidden" id="eventIndex" />
+            <input type="hidden" id="eventId" />
+            <div class="mb-3">
+              <label for="eventCourse" class="form-label">Course</label>
+              <select id="eventCourse" class="form-control">
+                <!-- Populated dynamically -->
+              </select>
+            </div>
             <div class="mb-3">
               <label for="eventTitle" class="form-label">Event Title</label>
-              <input
-                type="text"
-                id="eventTitle"
-                class="form-control"
-                placeholder="Event Title (e.g., English Lesson)"
-              />
+              <input type="text" id="eventTitle" class="form-control" placeholder="Event Title (e.g., English Lesson)" />
             </div>
             <div class="d-flex align-items-center gap-2">
               <div class="mb-3 w-100">
@@ -191,37 +183,18 @@
               </div>
               <div class="mb-3 w-100">
                 <label for="eventTime" class="form-label">Time</label>
-                <input
-                  type="time"
-                  id="eventTime"
-                  class="form-control"
-                  value="08:30"
-                />
+                <input type="time" id="eventTime" class="form-control" value="08:00" />
               </div>
             </div>
-            <div class="d-flex align-items-center gap-2">
-              <div class="mb-3 w-100">
-                <label for="eventDuration" class="form-label">Duration</label>
-                <select id="eventDuration" class="form-control">
-                  <option value="1">1 Hour</option>
-                  <option value="1.5">1.5 Hours</option>
-                  <option value="2">2 Hours</option>
-                  <option value="3">3 Hours</option>
-                </select>
-              </div>
-
-              <div class="mb-3 w-100">
-                <label for="eventInstructor" class="form-label">
-                  Instructor
-                </label>
-                <select id="eventInstructor" class="form-control">
-                  <option value="instructor1">Instructor 1</option>
-                  <option value="instructor2">Instructor 2</option>
-                  <option value="instructor3">Instructor 3</option>
-                </select>
-              </div>
+            <div class="mb-3">
+              <label for="eventDuration" class="form-label">Duration</label>
+              <select id="eventDuration" class="form-control">
+                <option value="1">1 Hour</option>
+                <option value="1.5">1.5 Hours</option>
+                <option value="2">2 Hours</option>
+                <option value="3">3 Hours</option>
+              </select>
             </div>
-
             <div class="d-flex align-items-center gap-2">
               <div class="mb-3 w-100">
                 <label for="eventType" class="form-label">Event Type</label>
@@ -229,13 +202,11 @@
                   <option value="lecture">Live Lecture</option>
                   <option value="quiz">Quiz</option>
                   <option value="assignment">Assignment Deadline</option>
-                  <option value="workshop">Workshop</option>
+                  <option value="custom">Custom Event</option>
                 </select>
               </div>
               <div class="mb-3 w-100">
-                <label for="eventRecurrence" class="form-label">
-                  Recurrence
-                </label>
+                <label for="eventRecurrence" class="form-label">Recurrence</label>
                 <select id="eventRecurrence" class="form-control">
                   <option value="none">No Recurrence</option>
                   <option value="weekly">Weekly</option>
@@ -245,73 +216,40 @@
               </div>
             </div>
             <div class="mb-0">
-              <label for="eventDescription" class="form-label">
-                Description
-              </label>
-              <textarea
-                id="eventDescription"
-                class="form-control mb-0"
-                placeholder="Event Description (e.g., Zoom link, instructions)"
-              ></textarea>
+              <label for="eventDescription" class="form-label">Description</label>
+              <textarea id="eventDescription" class="form-control mb-0" placeholder="Event Description (e.g., Zoom link, instructions)"></textarea>
             </div>
           </div>
-
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-            <button type="button" id="saveEvent" class="btn btn-primary">
-              Save Event
-            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" id="saveEvent" class="btn btn-primary">Save Event</button>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Event Details Modal -->
-    <div
-      class="modal fade"
-      id="eventDetailsModal"
-      tabindex="-1"
-      aria-hidden="true"
-      data-bs-backdrop="static"
-      data-bs-keyboard="false"
+    <div class="modal fade" id="eventDetailsModal" tabindex="-1" aria-hidden="true"
+         data-bs-backdrop="static" data-bs-keyboard="false"
     >
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Event Details</h5>
-            <button
-              type="button"
-              class="btn-close shadow-none small"
-              data-bs-dismiss="modal"
-            ></button>
+            <button type="button" class="btn-close shadow-none small" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
+            <p><strong>Course:</strong><span id="detailCourse"></span></p>
             <p><strong>Title:</strong><span id="detailTitle"></span></p>
             <p><strong>Date:</strong><span id="detailDate"></span></p>
             <p><strong>Time:</strong><span id="detailTime"></span></p>
             <p><strong>Duration:</strong><span id="detailDuration"></span></p>
             <p><strong>Type:</strong><span id="detailType"></span></p>
-            <p>
-              <strong>Recurrence:</strong><span id="detailRecurrence"></span>
-            </p>
-            <p>
-              <strong>Description:</strong><span id="detailDescription"></span>
-            </p>
+            <p><strong>Recurrence:</strong><span id="detailRecurrence"></span></p>
+            <p><strong>Description:</strong><span id="detailDescription"></span></p>
           </div>
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
@@ -320,6 +258,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/jquery-3.7.1.min.js"></script>
     <script src="../assets/js/schedule.js"></script>
+<!--    <script src="../assets/js/new.js"></script>-->
     <script src="../assets/js/sidebar.js"></script>
     <script src="../assets/js/alert.js"></script>
   </body>

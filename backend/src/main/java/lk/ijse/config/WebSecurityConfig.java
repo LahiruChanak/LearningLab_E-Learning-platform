@@ -97,6 +97,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/v1/category/**").authenticated()
                         .requestMatchers("/api/v1/chat/**").authenticated()
                         .requestMatchers("/api/v1/enrollment/**").authenticated()
+                        .requestMatchers("/api/v1/schedule/**").authenticated()
                         .requestMatchers("/api/v1/admin/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )

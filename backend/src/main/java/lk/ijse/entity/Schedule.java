@@ -30,14 +30,22 @@ public class Schedule {
     @Column(name = "start_time", nullable = false)
     private LocalDateTime startTime;
 
-    @Column(name = "end_time")
+    @Column(name = "end_time", nullable = false)
     private LocalDateTime endTime;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "type")
-    private ScheduleType type;
+    @Column(name = "event_type")
+    private EventType eventType;
 
-    public enum ScheduleType {
-        LESSON, LIVE_SESSION, ASSIGNMENT, CUSTOM
+    @Enumerated(EnumType.STRING)
+    @Column(name = "recurrence")
+    private Recurrence recurrence;
+
+    public enum EventType {
+        LECTURE, QUIZ, ASSIGNMENT, CUSTOM
+    }
+
+    public enum Recurrence {
+        NONE, WEEKLY, BIWEEKLY, MONTHLY
     }
 }
