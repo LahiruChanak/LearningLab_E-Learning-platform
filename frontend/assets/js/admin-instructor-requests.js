@@ -7,11 +7,19 @@ $(document).ready(function () {
         (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
     );
 
+
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
+    if (!token && role !== "ADMIN") {
+        showAlert("danger", "Please login as admin to view requests.");
+        return;
+    }
+
     fetchInstructorRequests();
 
     // Fetch all instructor requests
     function fetchInstructorRequests() {
-        const token = localStorage.getItem("token");
         if (!token) {
             showAlert("danger", "Please login as admin to view requests.");
             return;
@@ -96,7 +104,11 @@ $(document).ready(function () {
 
     // Update request status
     function updateRequestStatus(requestId, status) {
-        const token = localStorage.getItem("token");
+
+        if (!token) {
+            showAlert("danger", "Please login as admin to view requests.");
+            return;
+        }
 
         $.ajax({
             url: `http://localhost:8080/api/v1/admin/instructor/requests/${requestId}/status?status=${encodeURIComponent(status)}`,
