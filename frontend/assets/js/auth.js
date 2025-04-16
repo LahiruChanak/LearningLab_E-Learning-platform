@@ -154,10 +154,11 @@ $(document).ready(function () {
                     $("#twoFactorModal").modal("hide");
                     $(".code-input").val("");
                     setTimeout(() => {
+                        console.log(response.data);
                         if (response.data.role === "INSTRUCTOR") {
                             window.location.href = "./pages/instructor-dashboard.html";
                         } else {
-                            window.location.href = "../pages/student-dashboard.html";
+                            window.location.href = "./pages/student-dashboard.html";
                         }
                     }, 1500);
                 } else {

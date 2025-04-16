@@ -133,7 +133,7 @@ public class AuthController {
             // Fetch the user to get the userId
             User user = userService.findByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-            AuthDTO authDTO = new AuthDTO(user.getUserId(), email, token);
+            AuthDTO authDTO = new AuthDTO(user.getUserId(), email, token, user.getRole().name());
             return ResponseEntity.ok(new ResponseDTO(200, "2FA verified, login successful", authDTO));
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
