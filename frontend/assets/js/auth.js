@@ -154,7 +154,6 @@ $(document).ready(function () {
                     $("#twoFactorModal").modal("hide");
                     $(".code-input").val("");
                     setTimeout(() => {
-                        console.log(response.data);
                         if (response.data.role === "INSTRUCTOR") {
                             window.location.href = "./pages/instructor-dashboard.html";
                         } else {
