@@ -680,20 +680,29 @@ $(document).ready(function() {
         }
         resources.forEach(resource => {
             const iconClass = getResourceIcon(resource.type);
+            const isAdmin = role === 'ADMIN';
+
+            const editButtonHtml = isAdmin ? '' : `
+        <button class="btn text-warning btn-sm me-2 btn-edit-resource">
+            <i class="hgi hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i> Edit
+        </button>`;
+
+            const deleteButtonHtml = isAdmin ? '' : `
+            <button class="btn text-danger btn-sm btn-delete-resource">
+                <i class="hgi hgi-stroke hgi-delete-01 fs-5 align-middle"></i> Delete
+            </button>`;
+
             const resourceHtml = `
-                <div class="resource-item d-flex align-items-center p-3 border rounded" data-resource-id="${resource.resourceId}">
-                    <i class="hgi hgi-stroke ${iconClass} fs-4 me-3"></i>
-                    <div class="flex-grow-1">
-                        <h6 class="mb-1">${resource.title}</h6>
-                        <small class="text-muted">${resource.type}${resource.type !== 'LINK' ? ', Uploaded' : ''}</small>
-                    </div>
-                    <button class="btn text-warning btn-sm me-2 btn-edit-resource">
-                        <i class="hgi hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i> Edit
-                    </button>
-                    <button class="btn text-danger btn-sm btn-delete-resource">
-                        <i class="hgi hgi-stroke hgi-delete-01 fs-5 align-middle"></i> Delete
-                    </button>
-                </div>`;
+        <div class="resource-item d-flex align-items-center p-3 border rounded" data-resource-id="${resource.resourceId}">
+            <i class="hgi hgi-stroke ${iconClass} fs-4 me-3"></i>
+            <div class="flex-grow-1">
+                <h6 class="mb-1">${resource.title}</h6>
+                <small class="text-muted">${resource.type}${resource.type !== 'LINK' ? ', Uploaded' : ''}</small>
+            </div>
+            ${editButtonHtml}
+            ${deleteButtonHtml}
+            
+        </div>`;
             $list.append(resourceHtml);
         });
     }
@@ -926,21 +935,25 @@ $(document).ready(function() {
                 minute: "2-digit"
             });
 
+            const isAdmin = role === "ADMIN";
+
             const announcementHtml = `
-                <div class="announcement-item d-flex align-items-center p-3 border rounded" data-announcement-id="${announcement.announcementId}">
-                    <i class="hgi hgi-stroke hgi-megaphone-02 fs-4 me-3 text-primary align-self-start"></i>
-                    <div class="flex-grow-1 me-3">
-                        <h6 class="mb-1">${announcement.title}</h6>
-                        <small class="text-muted">Posted on ${dateFormatted}</small>
-                        <p class="mb-0 mt-1">${announcement.description}</p>
-                    </div>
-                    <button class="btn text-warning btn-sm me-2 btn-edit-announcement text-nowrap">
-                        <i class="hgi hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i> Edit
-                    </button>
-                    <button class="btn text-danger btn-sm btn-delete-announcement text-nowrap">
-                        <i class="hgi hgi-stroke hgi-delete-01 fs-5 align-middle"></i> Delete
-                    </button>
-                </div>`;
+    <div class="announcement-item d-flex align-items-center p-3 border rounded" data-announcement-id="${announcement.announcementId}">
+        <i class="hgi hgi-stroke hgi-megaphone-02 fs-4 me-3 text-primary align-self-start"></i>
+        <div class="flex-grow-1 me-3">
+            <h6 class="mb-1">${announcement.title}</h6>
+            <small class="text-muted">Posted on ${dateFormatted}</small>
+            <p class="mb-0 mt-1">${announcement.description}</p>
+        </div>
+        ${isAdmin ? '' : `
+        <button class="btn text-warning btn-sm me-2 btn-edit-announcement text-nowrap">
+            <i class="hgi hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i> Edit
+        </button>
+        <button class="btn text-danger btn-sm btn-delete-announcement text-nowrap">
+            <i class="hgi hgi-stroke hgi-delete-01 fs-5 align-middle"></i> Delete
+        </button>
+        `}
+    </div>`;
             $list.append(announcementHtml);
         });
     }
@@ -1098,27 +1111,33 @@ $(document).ready(function() {
         faqs.forEach((faq, index) => {
             const isFirst = index === 0 ? "show" : "";
             const collapsed = index === 0 ? "" : "collapsed";
+
+            const isAdmin = role === 'ADMIN';
+
+            const buttonsHtml = isAdmin ? '' : `
+        <div class="d-flex justify-content-end align-items-center mt-2">
+            <button class="btn text-warning btn-sm btn-edit-faq me-2">
+                <i class="hgi hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i> Edit
+            </button>
+            <button class="btn text-danger btn-sm btn-delete-faq">
+                <i class="hgi hgi-stroke hgi-delete-01 fs-5 align-middle"></i> Delete
+            </button>
+        </div>`;
+
             const faqHtml = `
-                <div class="accordion-item pb-1" data-faq-id="${faq.faqId}">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button ${collapsed}" type="button" data-bs-toggle="collapse" data-bs-target="#faq${faq.faqId}">
-                            ${faq.question}
-                        </button>
-                    </h2>
-                    <div id="faq${faq.faqId}" class="accordion-collapse collapse ${isFirst}" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body pb-1">
-                            ${faq.answer ? faq.answer : '<em>Waiting for instructor response...</em>'}
-                            <div class="d-flex justify-content-end align-items-center mt-2">
-                                <button class="btn text-warning btn-sm btn-edit-faq me-2">
-                                    <i class="hgi hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i> Edit
-                                </button>
-                                <button class="btn text-danger btn-sm btn-delete-faq">
-                                    <i class="hgi hgi-stroke hgi-delete-01 fs-5 align-middle"></i> Delete
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
+        <div class="accordion-item pb-1" data-faq-id="${faq.faqId}">
+            <h2 class="accordion-header">
+                <button class="accordion-button ${collapsed}" type="button" data-bs-toggle="collapse" data-bs-target="#faq${faq.faqId}">
+                    ${faq.question}
+                </button>
+            </h2>
+            <div id="faq${faq.faqId}" class="accordion-collapse collapse ${isFirst}" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    ${faq.answer ? faq.answer : '<em>Waiting for instructor response...</em>'}
+                    ${buttonsHtml}
+                </div>
+            </div>
+        </div>`;
             $accordion.append(faqHtml);
         });
     }
@@ -1320,35 +1339,35 @@ $(document).ready(function() {
                 day: "numeric"
             })
             const quizHtml = `
-                <div class="quiz-item d-flex align-items-start p-3 border rounded" data-quiz-id="${quiz.quizId}">
-                    <i class="hgi hgi-stroke hgi-quiz fs-4 me-3 text-primary"></i>
-                    <div class="flex-grow-1">
-                        <div class="d-flex align-items-center">
-                            <h6 class="fw-bold mb-1">${quiz.title}</h6>
-                            <span class="badge rounded-pill quiz-status 
-                                ${quiz.published ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}">
-                                ${quiz.published ? 'Published' : 'Draft'}
-                            </span>
-                        </div>
-                        <p class="my-1">${quiz.description || 'No description'}</p>
-                        <small class="text-muted"><span class="fw-bold">Created on</span> ${createdAt} &nbsp;|&nbsp;
-                            <span class="fw-bold">Updated on</span> ${updatedAt} &emsp;&emsp;
-                            <span class="fw-bold">Total Marks:</span> ${quiz.totalMarks} &nbsp;|&nbsp; 
-                            <span class="fw-bold">Passing Marks:</span> ${quiz.passingMarks}
-                        </small>
-                    </div>
-                    <button class="btn btn-sm me-2 btn-toggle-publish ${quiz.published ? 'text-success' : 'text-danger'}">
-                        <i class="hgi hgi-stroke ${quiz.published ? 'hgi-toggle-on' : 'hgi-toggle-off'} fs-5 align-middle"></i>
-                        ${quiz.published ? 'Publish' : 'Draft'}
-                    </button>
-
-                    <button class="btn text-warning btn-sm me-2 btn-edit-quiz">
-                        <i class="hgi hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i> Edit
-                    </button>
-                    <button class="btn text-danger btn-sm btn-delete-quiz">
-                        <i class="hgi hgi-stroke hgi-delete-01 fs-5 align-middle"></i> Delete
-                    </button>
-                </div>`;
+    <div class="quiz-item d-flex align-items-start p-3 border rounded" data-quiz-id="${quiz.quizId}">
+        <i class="hgi hgi-stroke hgi-quiz fs-4 me-3 text-primary"></i>
+        <div class="flex-grow-1">
+            <div class="d-flex align-items-center">
+                <h6 class="fw-bold mb-1">${quiz.title}</h6>
+                <span class="badge rounded-pill quiz-status 
+                    ${quiz.published ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}">
+                    ${quiz.published ? 'Published' : 'Draft'}
+                </span>
+            </div>
+            <p class="my-1">${quiz.description || 'No description'}</p>
+            <small class="text-muted"><span class="fw-bold">Created on</span> ${createdAt}  | 
+                <span class="fw-bold">Updated on</span> ${updatedAt}   
+                <span class="fw-bold">Total Marks:</span> ${quiz.totalMarks}  |  
+                <span class="fw-bold">Passing Marks:</span> ${quiz.passingMarks}
+            </small>
+        </div>
+        ${role === 'ADMIN' ? '' : `
+        <button class="btn btn-sm me-2 btn-toggle-publish ${quiz.published ? 'text-success' : 'text-danger'}">
+            <i class="hgi hgi-stroke ${quiz.published ? 'hgi-toggle-on' : 'hgi-toggle-off'} fs-5 align-middle"></i>
+            ${quiz.published ? 'Publish' : 'Draft'}
+        </button>
+        <button class="btn text-warning btn-sm me-2 btn-edit-quiz">
+            <i class="hgi hgi-stroke hgi-pencil-edit-02 fs-5 align-middle"></i> Edit
+        </button>
+        <button class="btn text-danger btn-sm btn-delete-quiz">
+            <i class="hgi hgi-stroke hgi-delete-01 fs-5 align-middle"></i> Delete
+        </button>`}
+    </div>`;
             $list.append(quizHtml);
         });
     }
@@ -1578,7 +1597,7 @@ $(document).ready(function() {
 
     // check the user role and show admin-only features
     if (role === "ADMIN") {
-        $("#addLessonBtn, #manageBtn, #addVideoBtn, #updateModalManageBtn, #saveLessonBtn").hide();
+        $("#addLessonBtn, #manageBtn, #addVideoBtn, #updateModalManageBtn, #saveLessonBtn, #addResourceBtn, #addAnnouncementBtn, #addFAQBtn, #addQuizBtn").hide();
 
         $("#newLessonModal, #lessonModal").find(".form-control, .form-select").prop("disabled", true);
         $("#videoList, #newVideoList").addClass("disabled");
