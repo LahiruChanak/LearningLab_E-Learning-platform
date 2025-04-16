@@ -101,6 +101,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public void saveOAuth2User(User user) {
+        if (userRepo.existsByEmail(user.getEmail())) {
+            return;
+        }
+        userRepo.save(user);
+    }
+
+    @Override
     public int resetPassword(UserDTO userDTO) throws UsernameNotFoundException {
         User user = userRepo.findByEmail(userDTO.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + userDTO.getEmail()));

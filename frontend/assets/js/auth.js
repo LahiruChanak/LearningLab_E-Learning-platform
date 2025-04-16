@@ -174,69 +174,53 @@ $(document).ready(function () {
 
 /* ---------------------------------------------- Google through login ---------------------------------------------- */
 
-    // // Add an AJAX interceptor to include the token in all requests
-    // $.ajaxSetup({
-    //     beforeSend: function (xhr) {
-    //         const token = localStorage.getItem("token");
-    //         if (token) {
-    //             xhr.setRequestHeader("Authorization", "Bearer " + token);
-    //         }
-    //     },
-    //     error: function (xhr, status, error) {
-    //         if (xhr.status === 401) {
-    //             // Handle unauthorized access (e.g., redirect to login)
-    //             showAlert("danger", "Session expired. Please login again to continue.");
-    //             setTimeout(() => {
-    //                 window.location.href = "../../../../frontend/index.html";
-    //             }, 1500);
-    //         }
-    //     }
-    // });
-    //
-    // $("#google-login-btn").on("click", function (e) {
-    //     e.preventDefault();
-    //     window.location.href = "http://localhost:8080/api/v1/auth/google";
-    // });
-    //
-    // // Handle Google OAuth2 callback
-    // function handleGoogleCallback() {
-    //     const urlParams = new URLSearchParams(window.location.search);
-    //     const token = urlParams.get("token");
-    //     const error = urlParams.get("error");
-    //
-    //     if (token) {
-    //         localStorage.setItem("token", token);
-    //         showAlert("success", "Google login successful!");
-    //         setTimeout(() => {
-    //             window.location.href = "../../../../frontend/pages/student/student-dashboard.html";
-    //         }, 1500);
-    //     } else if (error) {
-    //         showAlert("danger", "Google login failed: " + error);
-    //     } else {
-    //         // Fetch token from callback endpoint if not in URL
-    //         $.ajax({
-    //             url: "http://localhost:8080/api/v1/auth/google/callback",
-    //             method: "GET",
-    //             success: function (response) {
-    //                 if (response.token) {
-    //                     localStorage.setItem("token", response.token);
-    //                     showAlert("success", "Google login successful!");
-    //                     setTimeout(() => {
-    //                         window.location.href = "../../../../frontend/pages/student/student-dashboard.html";
-    //                     }, 1500);
-    //                 }
-    //             },
-    //             error: function (xhr) {
-    //                 showAlert("danger", "Google login failed: " + xhr.responseJSON.error);
-    //             }
-    //         });
-    //     }
-    // }
-    //
-    // // Call this on page load if on the callback page
-    // if (window.location.pathname.includes("callback")) {
-    //     handleGoogleCallback();
-    // }
+    // Add an AJAX interceptor to include the token in all requests
+    $.ajaxSetup({
+        beforeSend: function (xhr) {
+            const token = localStorage.getItem("token");
+            if (token) {
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            }
+        },
+        error: function (xhr, status, error) {
+            if (xhr.status === 401) {
+                showAlert("danger", "Session expired. Please login again to continue.");
+                setTimeout(() => {
+                    window.location.href = "../index.html";
+                }, 1500);
+            }
+        }
+    });
+
+    $("#google-login-btn").on("click", function (e) {
+        e.preventDefault();
+        window.location.href = "http://localhost:8080/api/v1/auth/google";
+    });
+
+    // Handle Google OAuth2 callback
+    function handleGoogleCallback() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get("token");
+        const error = urlParams.get("error");
+
+        if (token) {
+            localStorage.setItem("token", token);
+            showAlert("success", "Google login successful!");
+            setTimeout(() => {
+                window.location.href = "../student-dashboard.html";
+            }, 1500);
+        } else if (error) {
+            showAlert("danger", "Google login failed: " + error);
+            setTimeout(() => {
+                window.location.href = "../index.html";
+            }, 1500);
+        }
+    }
+
+    // Call this on page load if on the callback page
+    if (window.location.pathname.includes("callback")) {
+        handleGoogleCallback();
+    }
 
 /* ----------------------------------------------------- Signup ----------------------------------------------------- */
 

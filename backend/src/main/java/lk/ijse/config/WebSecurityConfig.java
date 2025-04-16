@@ -1,7 +1,9 @@
 package lk.ijse.config;
 
+import jakarta.servlet.http.Cookie;
 import lk.ijse.service.UserService;
 //import lk.ijse.service.impl.CustomOAuth2UserService;
+import lk.ijse.service.impl.CustomOAuth2UserService;
 import lk.ijse.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,14 +18,22 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
@@ -39,11 +49,11 @@ public class WebSecurityConfig {
     @Autowired
     private final JwtUtil jwtUtil;
 
-//    @Autowired
-//    private CustomOAuth2UserService customOAuth2UserService;
+    @Autowired
+    private CustomOAuth2UserService customOAuth2UserService;
 
-//    @Autowired
-//    private ClientRegistrationRepository clientRegistrationRepository;
+    @Autowired
+    private ClientRegistrationRepository clientRegistrationRepository;
 
     public WebSecurityConfig(UserService userService, JwtFilter jwtFilter, JwtUtil jwtUtil) {
         this.userService = userService;
@@ -61,19 +71,19 @@ public class WebSecurityConfig {
         return config.getAuthenticationManager();
     }
 
-//    @Bean
-//    public OAuth2AuthorizationRequestResolver authorizationRequestResolver() {
-//        DefaultOAuth2AuthorizationRequestResolver resolver =
-//                new DefaultOAuth2AuthorizationRequestResolver(clientRegistrationRepository, "/oauth2/authorization");
-//        resolver.setAuthorizationRequestCustomizer(
-//                request -> {
-//                    Map<String, Object> additionalParams = new HashMap<>();
-//                    additionalParams.put("prompt", "consent");
-//                    request.additionalParameters(additionalParams);
-//                }
-//        );
-//        return resolver;
-//    }
+    @Bean
+    public OAuth2AuthorizationRequestResolver authorizationRequestResolver() {
+        DefaultOAuth2AuthorizationRequestResolver resolver =
+                new DefaultOAuth2AuthorizationRequestResolver(clientRegistrationRepository, "/oauth2/authorization");
+        resolver.setAuthorizationRequestCustomizer(
+                request -> {
+                    Map<String, Object> additionalParams = new HashMap<>();
+                    additionalParams.put("prompt", "consent");
+                    request.additionalParameters(additionalParams);
+                }
+        );
+        return resolver;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -102,27 +112,27 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/v1/admin/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
-//                .oauth2Login(oauth2 -> oauth2
-//                        .authorizationEndpoint(authorization -> authorization
-//                                .baseUri("/oauth2/authorization")
-//                                .authorizationRequestResolver(authorizationRequestResolver())
-//                        )
-//                        .redirectionEndpoint(redirection -> redirection
-//                                .baseUri("/api/v1/auth/google/callback")
-//                        )
-//                        .userInfoEndpoint(userInfo -> userInfo
-//                                .userService(customOAuth2UserService)
-//                        )
-//                        .successHandler((request, response, authentication) -> {
-//                            OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-//                            String email = oAuth2User.getAttribute("email");
-//                            String token = jwtUtil.generateToken(userService.loadUserByUsername(email));
-//                            response.sendRedirect("http://localhost:5500/frontend/pages/student/student-dashboard.html?token=" + token);
-//                        })
-//                        .failureHandler((request, response, exception) -> {
-//                            response.sendRedirect("http://localhost:5500/frontend/index.html?error=" + exception.getMessage());
-//                        })
-//                )
+                .oauth2Login(oauth2 -> oauth2
+                        .authorizationEndpoint(authorization -> authorization
+                                .baseUri("/oauth2/authorization")
+                                .authorizationRequestResolver(authorizationRequestResolver())
+                        )
+                        .redirectionEndpoint(redirection -> redirection
+                                .baseUri("/api/v1/auth/google/callback")
+                        )
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)
+                        )
+                        .successHandler((request, response, authentication) -> {
+                            OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+                            String email = oAuth2User.getAttribute("email");
+                            String token = jwtUtil.generateToken(userService.loadUserByUsername(email));
+                            response.sendRedirect("http://localhost:63342/LMS%20-%20LearningLab/frontend/pages/student-dashboard.html?token=" + token);
+                        })
+                        .failureHandler((request, response, exception) -> {
+                            response.sendRedirect("http://localhost:63342/LMS%20-%20LearningLab/frontend/index.html?error=" + exception.getMessage());
+                        })
+                )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )

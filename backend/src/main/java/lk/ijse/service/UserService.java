@@ -48,4 +48,7 @@ public interface UserService {
     List<UserDTO> getAllUsers();
 
     Optional<User> findById(Long userId);
+
+    void saveOAuth2User(User user);
+
 }
