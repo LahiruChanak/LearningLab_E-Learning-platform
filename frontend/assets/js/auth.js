@@ -154,7 +154,11 @@ $(document).ready(function () {
                     $("#twoFactorModal").modal("hide");
                     $(".code-input").val("");
                     setTimeout(() => {
-                        window.location.href = "../pages/student-dashboard.html";
+                        if (response.data.role === "INSTRUCTOR") {
+                            window.location.href = "./pages/instructor-dashboard.html";
+                        } else {
+                            window.location.href = "../pages/student-dashboard.html";
+                        }
                     }, 1500);
                 } else {
                     errorMessage.text(response.message || "Invalid 2FA code. Please try again.");

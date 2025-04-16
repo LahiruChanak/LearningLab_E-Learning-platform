@@ -8,179 +8,6 @@ $(document).ready(function () {
     return;
   }
 
-  // Revenue Chart
-  // const revenueCtx = document.getElementById("revenueChart").getContext("2d");
-  //
-  // new Chart(revenueCtx, {
-  //   type: "line",
-  //   data: {
-  //     labels: [
-  //       "Jan",
-  //       "Feb",
-  //       "Mar",
-  //       "Apr",
-  //       "May",
-  //       "Jun",
-  //       "Jul",
-  //       "Aug",
-  //       "Sep",
-  //       "Oct",
-  //       "Nov",
-  //       "Dec",
-  //     ],
-  //     datasets: [
-  //       {
-  //         label: "Course Visits",
-  //         data: [30, 45, 35, 50, 40, 60, 45, 55, 45, 60, 50, 65],
-  //         borderColor: "#4CAF50",
-  //         backgroundColor: "rgba(76, 175, 80, 0.1)",
-  //         fill: true,
-  //         tension: 0.4,
-  //       },
-  //       {
-  //         label: "Course Sales",
-  //         data: [20, 35, 25, 40, 30, 50, 35, 45, 35, 50, 40, 55],
-  //         borderColor: "#FFA726",
-  //         backgroundColor: "rgba(255, 167, 38, 0.1)",
-  //         fill: true,
-  //         tension: 0.4,
-  //       },
-  //     ],
-  //   },
-  //   options: {
-  //     responsive: true,
-  //     maintainAspectRatio: false,
-  //     plugins: {
-  //       legend: {
-  //         display: false,
-  //       },
-  //     },
-  //     scales: {
-  //       y: {
-  //         beginAtZero: true,
-  //         grid: {
-  //           display: true,
-  //           color: "rgba(0, 0, 0, 0.05)",
-  //         },
-  //       },
-  //       x: {
-  //         grid: {
-  //           display: false,
-  //         },
-  //       },
-  //     },
-  //   },
-  // });
-  //
-  // // Trend Line Charts
-  // const createTrendLine = (ctx, color, data) => {
-  //   return new Chart(ctx, {
-  //     type: "line",
-  //     data: {
-  //       labels: new Array(10).fill(""),
-  //       datasets: [
-  //         {
-  //           data: data,
-  //           borderColor: color,
-  //           borderWidth: 2,
-  //           tension: 0.4,
-  //           pointRadius: 0,
-  //         },
-  //       ],
-  //     },
-  //     options: {
-  //       responsive: true,
-  //       maintainAspectRatio: false,
-  //       plugins: {
-  //         legend: {
-  //           display: false,
-  //         },
-  //       },
-  //       scales: {
-  //         x: {
-  //           display: false,
-  //         },
-  //         y: {
-  //           display: false,
-  //         },
-  //       },
-  //     },
-  //   });
-  // };
-  //
-  // // Revenue Trend
-  // createTrendLine(
-  //   document.getElementById("revenueTrend").getContext("2d"),
-  //   "#4CAF50",
-  //   [30, 40, 35, 45, 40, 50, 45, 55, 50, 60]
-  // );
-  //
-  // // Rating Trend
-  // createTrendLine(
-  //   document.getElementById("ratingTrend").getContext("2d"),
-  //   "#4CAF50",
-  //   [4.2, 4.4, 4.3, 4.5, 4.4, 4.6, 4.5, 4.7, 4.6, 4.8]
-  // );
-  //
-  // // Students Trend
-  // createTrendLine(
-  //   document.getElementById("studentsTrend").getContext("2d"),
-  //   "#4CAF50",
-  //   [1000, 2000, 1800, 2500, 2300, 3000, 2800, 3500, 3300, 4000]
-  // );
-  //
-  // // Course Stats Chart
-  // const courseStatsCtx = document
-  //   .getElementById("courseStatsChart")
-  //   .getContext("2d");
-  // new Chart(courseStatsCtx, {
-  //   type: "doughnut",
-  //   data: {
-  //     labels: ["Course Sale", "Course Watched"],
-  //     datasets: [
-  //       {
-  //         data: [40, 30],
-  //         backgroundColor: ["#4CAF50", "#FFA726"],
-  //         borderWidth: 0,
-  //       },
-  //     ],
-  //   },
-  //   options: {
-  //     responsive: true,
-  //     maintainAspectRatio: false,
-  //     cutout: "70%",
-  //     plugins: {
-  //       legend: {
-  //         display: false,
-  //       },
-  //     },
-  //   },
-  // });
-  //
-  // // Counter Animation
-  // $(".counter").each(function () {
-  //   $(this)
-  //     .prop("Counter", 0)
-  //     .animate(
-  //       {
-  //         Counter: $(this).text(),
-  //       },
-  //       {
-  //         duration: 2000,
-  //         easing: "swing",
-  //         step: function (now) {
-  //           $(this).text(Math.ceil(now));
-  //         },
-  //       }
-  //     );
-  // });
-  //
-  // // Button Interactions
-  // $(".btn-filter").click(function () {
-  //   $(".btn-filter").removeClass("active");
-  //   $(this).addClass("active");
-  // });
-
 /* --------------------------------------------------- Stat Cards --------------------------------------------------- */
 
   function fetchInstructorStats() {
@@ -194,17 +21,34 @@ $(document).ready(function () {
       type: "GET",
       headers: { "Authorization": "Bearer " + token },
       success: function (response) {
-        const stats = response;
 
-        console.log("Instructor Stats:", stats);
+        const stats = response.data || response;
 
-        // Update "Your Students"
-        $("#student-count").text(stats.studentCount.toLocaleString());
+        if (!stats || typeof stats.studentCount === "undefined") {
+          showAlert("danger", "Invalid stats data received.");
+          return;
+        }
+
+        renderStatsChart(stats);
+
+        // Update "Students Count"
+        $("#student-count").text(stats.studentCount.toLocaleString().padStart(2, '0'));
         renderTrendChart("studentsTrend", [50, 120, 200, 250, 500, stats.studentCount]);
 
-        // Update "Your Courses" (total earnings)
-        $("#earnings-count").text(`$${stats.totalEarnings.toFixed(1)}`);
+        // Update "Total Earnings"
+        const totalEarnings = stats.totalEarnings.toFixed(1);
+        $("#total-earnings").text(`$${totalEarnings.padStart(4, '0')}`);
         renderTrendChart("revenueTrend", [150, 100, 160, 165, 270, stats.totalEarnings]);
+
+        // Pending and In-Review Earnings
+        const pendingEarnings = (stats.totalEarnings * 0.75).toFixed(1);
+        const inReviewEarnings = (stats.totalEarnings * 0.25).toFixed(1);
+        $("#pending-earnings").text(`$${pendingEarnings.padStart(4, '0')}`);
+        $("#in-review-earnings").text(`$${inReviewEarnings.padStart(4, '0')}`);
+
+        // Update "Course Count"
+        $("#course-count").text(stats.courseCount.toString().padStart(2, '0'));
+        renderTrendChart("coursesTrend", [10, 20, 30, 40, 50, stats.courseCount]);
 
         // Update "Average Rating"
         const avgRating = stats.averageRating > 0 ? stats.averageRating.toFixed(1) : "N/A";
@@ -212,14 +56,21 @@ $(document).ready(function () {
         renderTrendChart("ratingTrend", [4.5, 4.6, 4.7, 4.7, 4.8, stats.averageRating || 0]);
       },
       error: function (xhr) {
+        console.error("Error fetching stats:", xhr);
         showAlert("danger", "Error fetching stats: " + (xhr.responseJSON?.message || xhr.statusText));
       }
     });
   }
 
-  // Function to render trend chart using Chart.js
+  // Stat cards charts
   function renderTrendChart(canvasId, data) {
-    const ctx = document.getElementById(canvasId).getContext("2d");
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) {
+      console.error(`Canvas element with id "${canvasId}" not found.`);
+      return;
+    }
+
+    const ctx = canvas.getContext("2d");
     new Chart(ctx, {
       type: "line",
       data: {
@@ -238,6 +89,60 @@ $(document).ready(function () {
         scales: {
           x: { display: false },
           y: { display: false }
+        }
+      }
+    });
+  }
+
+  // Stats Overview bar chart
+  function renderStatsChart(stats) {
+    const ctx = document.getElementById("statsChart").getContext("2d");
+
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: ["Students", "Courses", "Earnings ($)", "Rating (out of 5)"],
+        datasets: [{
+          label: "Instructor Stats",
+          data: [
+            stats.studentCount,
+            stats.courseCount,
+            stats.totalEarnings,
+            stats.averageRating
+          ],
+          backgroundColor: [
+            "rgba(54, 162, 235, 0.6)",
+            "rgba(255, 206, 86, 0.6)",
+            "rgba(75, 192, 192, 0.6)",
+            "rgba(255, 99, 132, 0.6)"
+          ],
+          borderColor: [
+            "rgba(54, 162, 235, 1)",
+            "rgba(255, 206, 86, 1)",
+            "rgba(75, 192, 192, 1)",
+            "rgba(255, 99, 132, 1)"
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: "Value"
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: "Metrics"
+            }
+          }
         }
       }
     });

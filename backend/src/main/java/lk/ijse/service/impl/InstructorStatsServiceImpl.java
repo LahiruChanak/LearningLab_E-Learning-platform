@@ -48,10 +48,13 @@ public class InstructorStatsServiceImpl implements InstructorStatsService {
                 .mapToDouble(Course::getPrice)
                 .sum();
 
+        // Course Count
+        long courseCount = courses.size();
+
         // Average Rating
         Double averageRating = reviewRepo.calculateAverageRatingByCourses(courses);
         double finalAverageRating = averageRating != null ? averageRating : 0.0;
 
-        return new InstructorStatsDTO(studentCount, totalEarnings, finalAverageRating);
+        return new InstructorStatsDTO(studentCount, totalEarnings, finalAverageRating, courseCount);
     }
 }

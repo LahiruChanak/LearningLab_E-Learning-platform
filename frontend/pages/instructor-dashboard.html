@@ -56,7 +56,7 @@
             </a>
             <a
               class="nav-link"
-              href="admin-course.html"
+              href="#"
               data-bs-toggle="tooltip"
               data-bs-placement="right"
               data-bs-title="Courses"
@@ -76,10 +76,10 @@
             </a>
             <a
               class="nav-link"
-              href="leaderboard.html"
+              href="#"
               data-bs-toggle="tooltip"
               data-bs-placement="right"
-              data-bs-title="Grades"
+              data-bs-title="Leaderboard"
             >
               <i class="hgi-stroke hgi-analytics-01 fs-5 align-middle"></i>
               <span class="ms-2">Leaderboard</span>
@@ -152,22 +152,11 @@
           <!-- Stats Row -->
           <div class="row g-4 my-4">
             <div class="col-md-8 mt-2 p-0">
-              <!-- Revenue Chart -->
               <div class="card stats-card h-100">
                 <div class="card-body">
-                  <div class="d-flex justify-content-between mb-4">
-                    <div class="chart-filters">
-                      <button class="btn btn-sm btn-filter active">
-                        Course Visit
-                      </button>
-                      <button class="btn btn-sm btn-filter">Course Sale</button>
-                    </div>
-                    <div class="period-selector">
-                      Last 12 Month <i class="bi bi-chevron-down"></i>
-                    </div>
-                  </div>
-                  <div class="chart-container" style="height: 200px">
-                    <canvas id="revenueChart"></canvas>
+                  <h5 class="card-title mb-4">Your Stats Overview</h5>
+                  <div class="chart-container" style="height: 300px">
+                    <canvas id="statsChart"></canvas>
                   </div>
                 </div>
               </div>
@@ -176,31 +165,20 @@
               <!-- Earnings Card -->
               <div class="card stats-card h-100">
                 <div class="card-body">
-                  <h5 class="card-title">Your Earnings</h5>
+                  <h5 class="card-title mb-4">Your Earnings</h5>
                   <div class="earnings-stats">
-                    <div class="today-earning mb-3">
-                      <label>Today Earning</label>
-                      <h2>$15,010</h2>
+                    <div class="total-earnings mb-4">
+                      <label class="mb-3">Total Earnings</label>
+                      <h2 id="total-earnings"></h2>
                     </div>
                     <div class="d-flex justify-content-between mb-3">
                       <div class="pending">
-                        <label>Pending</label>
-                        <h3>$58</h3>
+                        <label class="mb-3">Pending</label>
+                        <h3 id="pending-earnings"></h3>
                       </div>
                       <div class="in-review">
-                        <label>In Review</label>
-                        <h3>$70</h3>
-                      </div>
-                    </div>
-                    <div class="available-balance">
-                      <div
-                        class="d-flex justify-content-between align-items-center"
-                      >
-                        <div>
-                          <label>Available</label>
-                          <h3>$167</h3>
-                        </div>
-                        <button class="btn btn-withdraw">Withdraw</button>
+                        <label class="mb-3">In Review</label>
+                        <h3 id="in-review-earnings"></h3>
                       </div>
                     </div>
                   </div>
@@ -220,7 +198,7 @@
                     </div>
                     <div class="ms-3">
                       <h6>Your Students</h6>
-                      <h2 id="student-count">5,622</h2>
+                      <h2 id="student-count"></h2>
                     </div>
                   </div>
                   <div class="trend-line mt-3" style="height: 40px">
@@ -238,11 +216,11 @@
                     </div>
                     <div class="ms-3">
                       <h6>Your Courses</h6>
-                      <h2 id="earnings-count">$168.2</h2>
+                      <h2 id="course-count"></h2>
                     </div>
                   </div>
                   <div class="trend-line mt-3" style="height: 40px">
-                    <canvas id="revenueTrend"></canvas>
+                    <canvas id="coursesTrend"></canvas>
                   </div>
                 </div>
               </div>
@@ -256,141 +234,11 @@
                     </div>
                     <div class="ms-3">
                       <h6>Average Rating</h6>
-                      <h2 id="rating-count">4.8/5</h2>
+                      <h2 id="rating-count"></h2>
                     </div>
                   </div>
                   <div class="trend-line mt-3" style="height: 40px">
                     <canvas id="ratingTrend"></canvas>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Course Stats -->
-          <div class="row g-4">
-            <div class="col-md-6 p-0">
-              <div class="card stats-card">
-                <div class="card-body">
-                  <h5 class="card-title mb-4">Weekly Sales Stats</h5>
-                  <div class="table-responsive">
-                    <table class="table table-borderless">
-                      <thead>
-                        <tr>
-                          <th>Course</th>
-                          <th>Sale</th>
-                          <th>Earnings</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <div class="course-icon me-2">P</div>
-                              <div>UI/UX Prototyping with Proto.io</div>
-                            </div>
-                          </td>
-                          <td>10</td>
-                          <td class="text-success">$150.8</td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <div class="course-icon bg-success me-2">
-                                <i class="bi bi-book"></i>
-                              </div>
-                              <div>How to Make UX Case Study for Beginner</div>
-                            </div>
-                          </td>
-                          <td>22</td>
-                          <td class="text-success">$245</td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <div class="course-icon bg-warning me-2">
-                                <i class="bi bi-person"></i>
-                              </div>
-                              <div>
-                                How to Conduct User Research from Scratch
-                              </div>
-                            </div>
-                          </td>
-                          <td>12</td>
-                          <td class="text-success">$109</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 pe-2">
-              <div class="row g-4">
-                <div class="col-12">
-                  <div class="card stats-card">
-                    <div class="card-body">
-                      <h5 class="card-title mb-4">Top Student Countries</h5>
-                      <div class="location-stats">
-                        <div
-                          class="location-item d-flex justify-content-between align-items-center mb-3"
-                        >
-                          <div class="d-flex align-items-center">
-                            <img
-                              src="https://flagcdn.com/w20/lk.png"
-                              alt="Indonesia"
-                              class="me-2"
-                            />
-                            <span>Sri Lanka</span>
-                          </div>
-                          <div class="progress flex-grow-1 mx-3">
-                            <div
-                              class="progress-bar bg-success"
-                              style="width: 30%"
-                            ></div>
-                          </div>
-                          <span>3,545</span>
-                        </div>
-                        <div
-                          class="location-item d-flex justify-content-between align-items-center mb-3"
-                        >
-                          <div class="d-flex align-items-center">
-                            <img
-                              src="https://flagcdn.com/w20/vn.png"
-                              alt="Vietnam"
-                              class="me-2"
-                            />
-                            <span>Vietnam</span>
-                          </div>
-                          <div class="progress flex-grow-1 mx-3">
-                            <div
-                              class="progress-bar bg-success"
-                              style="width: 20%"
-                            ></div>
-                          </div>
-                          <span>2,251</span>
-                        </div>
-                        <div
-                          class="location-item d-flex justify-content-between align-items-center"
-                        >
-                          <div class="d-flex align-items-center">
-                            <img
-                              src="https://flagcdn.com/w20/us.png"
-                              alt="United States"
-                              class="me-2"
-                            />
-                            <span>United States</span>
-                          </div>
-                          <div class="progress flex-grow-1 mx-3">
-                            <div
-                              class="progress-bar bg-success"
-                              style="width: 15%"
-                            ></div>
-                          </div>
-                          <span>1,725</span>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>

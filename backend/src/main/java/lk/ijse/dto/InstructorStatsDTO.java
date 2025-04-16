@@ -11,4 +11,5 @@ public class InstructorStatsDTO {
     private long studentCount;
     private double totalEarnings;
     private double averageRating;
+    private long courseCount;
 }
