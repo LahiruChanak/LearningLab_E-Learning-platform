@@ -9,6 +9,16 @@ $(document).ready(function () {
         loadUserProfile();
     }
 
+    /* ---------------------------------------------- Search Functions ---------------------------------------------- */
+
+    // Handle click on the search button in the search-box
+    $('.search-box .search-btn').on('click', function () {
+        const searchQuery = $('.search-box input').val().trim();
+        if (searchQuery) {
+            window.location.href = `./student-course.html?search=${encodeURIComponent(searchQuery)}`;
+        }
+    });
+
     /* ---------------------------------- User Profile Functions ---------------------------------- */
 
     // load user profile details

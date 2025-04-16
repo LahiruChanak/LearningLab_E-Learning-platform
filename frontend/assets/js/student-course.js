@@ -420,8 +420,6 @@ $(document).ready(function () {
         // Duration filter
         if (activeFilters.duration) {
             filteredCourses = filteredCourses.filter(course => {
-                // Note: duration is not in provided data structure
-                // Assuming course.duration exists in hours
                 const duration = course.duration || 0;
                 return activeFilters.duration.some(range => {
                     if (range === '0-2') return duration <= 2;
@@ -483,8 +481,25 @@ $(document).ready(function () {
             }
         });
 
-        // Render filtered and sorted courses
         renderCourses(filteredCourses, $('.layout-btn.active').data('view') || 'grid');
+    }
+
+    // Function to get URL parameters
+    function getUrlParameter(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name) || '';
+    }
+
+    // Get the search query from the URL
+    const searchQuery = getUrlParameter('search');
+
+    // Populate the course page search bar with the search query
+    if (searchQuery) {
+        $('#courseSearch').val(decodeURIComponent(searchQuery));
+
+        // Clear the URL by removing the query parameter
+        const cleanUrl = window.location.pathname;
+        history.replaceState(null, '', cleanUrl);
     }
 
     initializeFilterAndSort();
