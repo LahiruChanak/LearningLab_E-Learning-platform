@@ -1,5 +1,8 @@
 $(document).ready(function () {
 
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
     // if page not user profile, calls the loadUserProfile function. else do nothing
     if (window.location.pathname !== "/user-profile.html") {
         console.log("Not on user profile page. Calling loadUserProfile()");
@@ -10,7 +13,6 @@ $(document).ready(function () {
 
     // load user profile details
     function loadUserProfile() {
-        const token = localStorage.getItem("token");
 
         if (!token) {
             showAlert("danger", "You are not logged in. Please login to view your profile.");
@@ -73,4 +75,11 @@ $(document).ready(function () {
 
     // Initialize tooltips for delete buttons
     $('[data-bs-toggle="tooltip"]').tooltip();
+
+/* -------------------------------------------------- Admin Codes --------------------------------------------------- */
+
+    if (role === "ADMIN") {
+        $(".header-text, .search-box, .notification-icon, .header-profile").addClass("d-none");
+        $(".header-container").addClass("card").removeClass("mx-4")
+    }
 });

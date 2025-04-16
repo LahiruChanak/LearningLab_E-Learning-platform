@@ -51,6 +51,7 @@ body {
   font-family: "Roboto", sans-serif;
   color: var(--gray-800);
   min-height: 100vh;
+  overflow-y: hidden;
 }
 
 /* Header Styles */

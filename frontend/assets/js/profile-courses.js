@@ -4,6 +4,7 @@ $(document).ready(function () {
     const progressCircles = $(".progress");
     let showingAllCourses = false;
     const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
 
     viewAll.on("click", function () {
         showingAllCourses = !showingAllCourses;
@@ -101,5 +102,9 @@ $(document).ready(function () {
         });
     }
 
-    loadMyCourses();
+    if (role === "STUDENT") {
+        loadMyCourses();
+    } else if (role === "INSTRUCTOR") {
+        $('li[data-page="courses"], li[data-page="billing"], li[data-page="achievements"]').addClass("d-none");
+    }
 });

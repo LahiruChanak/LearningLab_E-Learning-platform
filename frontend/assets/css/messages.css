@@ -8,6 +8,7 @@
 :root {
   --primary-color: #8b72ee;
   --secondary-color: #e9e3ff;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 ::-webkit-scrollbar {
@@ -305,7 +306,7 @@ body {
   background: #fff;
   border-radius: 16px;
   height: 80vh;
-  margin: 15px;
+  margin: 15px 0 15px 15px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   width: 300px;
   display: flex;
