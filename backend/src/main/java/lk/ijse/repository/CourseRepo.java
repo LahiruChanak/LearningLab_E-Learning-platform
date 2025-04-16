@@ -35,4 +35,9 @@ public interface CourseRepo extends JpaRepository<Course, Long> {
             @Param("isPublished") Boolean isPublished,
             @Param("title") String title);
 
+    List<Course> findByCourseIdIn(List<Long> courseIds);
+
+    @Query("SELECT c FROM Course c WHERE c.isPublished = true AND c.courseId NOT IN :enrolledCourseIds")
+    List<Course> findByIsPublishedTrueAndCourseIdNotIn(List<Long> enrolledCourseIds);
+
 }

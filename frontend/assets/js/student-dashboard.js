@@ -4,6 +4,8 @@ $(document).ready(function () {
     new bootstrap.Tooltip(this);
   });
 
+  const token = localStorage.getItem("token");
+
   // ------------------------ progress card ------------------------
   const $circle = $(".progress");
   const $text = $(".progress-text");
@@ -259,4 +261,88 @@ $(document).ready(function () {
   })
 
   fetchUserData();
+
+// --------------------------------------------------------------------------------------------------------
+
+  function loadMyCourses() {
+    if (!token) {
+      showAlert("danger", "Please login to view your courses.");
+      return;
+    }
+
+    $.ajax({
+      url: "http://localhost:8080/api/v1/student/course",
+      type: "GET",
+      headers: { "Authorization": "Bearer " + token },
+      success: function (response) {
+
+        const data = response.data || response;
+
+        if (!data || !data.enrolledCourses) {
+          showAlert("danger", "No enrolled courses found.");
+          return;
+        }
+
+        const enrolledCourses = data.enrolledCourses;
+        const tbody = $(".courses-table tbody");
+        tbody.empty();
+
+        const notEnrolledCourses = data.notEnrolledCourses;
+        const newCoursesContainer = $(".new-course-container").parent();
+        newCoursesContainer.empty();
+
+        // Shuffle and select 3 random courses
+        const shuffledCourses = notEnrolledCourses.sort(() => 0.5 - Math.random());
+        const selectedCourses = shuffledCourses.slice(0, 3);
+
+        enrolledCourses.forEach(course => {
+
+        const levelClass = course.level === 'BEGINNER' ? 'bg-warning-subtle text-warning' :
+                course.level === 'INTERMEDIATE' ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger';
+        const formattedLevel = course.level.charAt(0).toUpperCase() + course.level.slice(1).toLowerCase();
+
+          const row = `
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="${course.thumbnail}" class="img-fluid course-thumbnail" alt="course thumbnail">
+                            <div class="text-start text-wrap">
+                                <h6 class="mb-0">${course.title}</h6>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${new Date(course.createdAt).toLocaleDateString('en-US', {month: 'short', day: 'numeric'})}</td>
+                    <td>$${(course.price).toFixed(2)}</td>
+                    <td><span class="badge rounded-pill px-2 ${levelClass}">${formattedLevel}</span></td>
+                </tr>
+            `;
+          tbody.append(row);
+        });
+
+        selectedCourses.forEach(course => {
+
+            const card = `
+                      <div class="col">
+                          <div class="course-card">
+                              <img src="${course.thumbnail}" alt="course thumbnail" class="img-fluid new-course-thumbnail"/>
+                              <h6>${course.title}</h6>
+                              <div class="d-flex justify-content-end align-items-center">
+                                  <button class="btn bg-warning" onclick="window.location.href='course-content.html?courseId=${course.courseId}'">
+                                      <i class="hgi-stroke hgi-arrow-right-01 fs-5 fw-bold"></i>
+                                  </button>
+                              </div>
+                          </div>
+                      </div>
+                  `;
+            newCoursesContainer.append(card);
+        });
+      },
+      error: function (xhr) {
+        console.error("Error fetching courses:", xhr);
+        showAlert("danger", "Error fetching courses: " + (xhr.responseJSON?.message || xhr.statusText));
+      }
+    });
+  }
+
+  loadMyCourses();
 });

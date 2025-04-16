@@ -58,7 +58,6 @@ body {
   padding: 15px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   width: 280px;
-  text-wrap: nowrap;
   height: 96vh;
   transition: all 0.4s ease;
   margin: 15px;
@@ -78,6 +77,7 @@ body {
   margin: 4px 0;
   border-radius: 12px;
   border: 2px solid transparent;
+  text-wrap: nowrap;
   display: flex;
   align-items: center;
   gap: 12px;

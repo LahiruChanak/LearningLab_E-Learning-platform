@@ -1,113 +1,115 @@
-const viewHistoryBtn = $("#viewHistory");
-const billingInfo = $("#billingInfo");
-const billingHistory = $("#billingHistory");
-const cardNumber = $("#card-number");
-const cvvCode = $("#cvv-code");
-let isHistoryVisible = false;
+$(document).ready(function () {
+
+    const viewHistoryBtn = $("#viewHistory");
+    const billingInfo = $("#billingInfo");
+    const billingHistory = $("#billingHistory");
+    const cardNumber = $("#card-number");
+    const cvvCode = $("#cvv-code");
+    let isHistoryVisible = false;
 
 // ------------ Mask card number ------------
-const cardOriginal = cardNumber.attr("data-original");
-const cardParts = cardOriginal.split(" ");
-const maskedParts = cardParts.map((part, index) =>
-    index < 3 ? "****" : part
-);
-cardNumber.text(maskedParts.join(" "));
+    const cardOriginal = cardNumber.attr("data-original");
+    const cardParts = cardOriginal.split(" ");
+    const maskedParts = cardParts.map((part, index) =>
+        index < 3 ? "****" : part
+    );
+    cardNumber.text(maskedParts.join(" "));
 
 // ------------ Mask CVV ------------
-const cvvOriginal = cvvCode.attr("data-original");
-cvvCode.text("*".repeat(cvvOriginal.length));
+    const cvvOriginal = cvvCode.attr("data-original");
+    cvvCode.text("*".repeat(cvvOriginal.length));
 
 // Initially hide billing history
-billingHistory.css("display", "none");
+    billingHistory.css("display", "none");
 
-viewHistoryBtn.on("click", function () {
-    isHistoryVisible = !isHistoryVisible;
+    viewHistoryBtn.on("click", function () {
+        isHistoryVisible = !isHistoryVisible;
 
-    if (isHistoryVisible) {
-        billingInfo.css("display", "none");
-        billingHistory.css("display", "block");
-        viewHistoryBtn.text("Back");
-        viewHistoryBtn.addClass("me-5");
-    } else {
-        billingInfo.css("display", "block");
-        billingHistory.css("display", "none");
-        viewHistoryBtn.text("Payment history");
-        viewHistoryBtn.removeClass("me-5");
-    }
-});
+        if (isHistoryVisible) {
+            billingInfo.css("display", "none");
+            billingHistory.css("display", "block");
+            viewHistoryBtn.text("Back");
+            viewHistoryBtn.addClass("me-5");
+        } else {
+            billingInfo.css("display", "block");
+            billingHistory.css("display", "none");
+            viewHistoryBtn.text("Payment history");
+            viewHistoryBtn.removeClass("me-5");
+        }
+    });
 
 // Toggle Manage Mode
-$("#manageCards").on("click", function () {
-    const isManageMode = $(this).text() === "Done";
+    $("#manageCards").on("click", function () {
+        const isManageMode = $(this).text() === "Done";
 
-    $(this).css("transition", "none");
+        $(this).css("transition", "none");
 
-    if (!isManageMode) {
-        // Enter manage mode
-        const removeButtons = $(".remove-card-btn");
-        removeButtons.each(function () {
-            $(this).css("display", "block");
-        });
-
-        // Disable card flip for all cards
-        const flipCardInners = $(".flip-card-inner");
-        flipCardInners.each(function () {
-            $(this).css({
-                transform: "rotateY(0deg)",
-                transition: "none",
+        if (!isManageMode) {
+            // Enter manage mode
+            const removeButtons = $(".remove-card-btn");
+            removeButtons.each(function () {
+                $(this).css("display", "block");
             });
-        });
 
-        // Show Add Card button
-        const addCardBtn = $("#addCard");
-        addCardBtn.css("display", "block");
-
-        $(this).text("Done");
-        $(this).attr("class", "text-secondary border-0 bg-transparent");
-    } else {
-        // Exit manage mode
-        const removeButtons = $(".remove-card-btn");
-        removeButtons.each(function () {
-            $(this).css("display", "none");
-        });
-
-        // Restore card flip for all cards
-        const flipCardInners = $(".flip-card-inner");
-        flipCardInners.each(function () {
-            $(this).css({
-                transition: "",
-                transform: "",
+            // Disable card flip for all cards
+            const flipCardInners = $(".flip-card-inner");
+            flipCardInners.each(function () {
+                $(this).css({
+                    transform: "rotateY(0deg)",
+                    transition: "none",
+                });
             });
-        });
 
-        // Hide Add Card button
-        const addCardBtn = $("#addCard");
-        addCardBtn.css("display", "none");
+            // Show Add Card button
+            const addCardBtn = $("#addCard");
+            addCardBtn.css("display", "block");
 
-        $(this).text("Manage Cards");
-        $(this).attr("class", "text-primary border-0 bg-transparent");
-    }
+            $(this).text("Done");
+            $(this).attr("class", "text-secondary border-0 bg-transparent");
+        } else {
+            // Exit manage mode
+            const removeButtons = $(".remove-card-btn");
+            removeButtons.each(function () {
+                $(this).css("display", "none");
+            });
 
-    void this.offsetWidth;
-    $(this).css("transition", "");
-});
+            // Restore card flip for all cards
+            const flipCardInners = $(".flip-card-inner");
+            flipCardInners.each(function () {
+                $(this).css({
+                    transition: "",
+                    transform: "",
+                });
+            });
+
+            // Hide Add Card button
+            const addCardBtn = $("#addCard");
+            addCardBtn.css("display", "none");
+
+            $(this).text("Manage Cards");
+            $(this).attr("class", "text-primary border-0 bg-transparent");
+        }
+
+        void this.offsetWidth;
+        $(this).css("transition", "");
+    });
 
 // Add new card functionality
-$("#saveCardBtn").on("click", function () {
-    const cardNumber = $("#newCardNumber").val();
-    const cardName = $("#newCardName").val();
-    const expDate = $("#newExpDate").val();
-    const cvvCode = $("#newCvvCode").val();
+    $("#saveCardBtn").on("click", function () {
+        const cardNumber = $("#newCardNumber").val();
+        const cardName = $("#newCardName").val();
+        const expDate = $("#newExpDate").val();
+        const cvvCode = $("#newCvvCode").val();
 
-    if (!cardNumber || !cardName || !expDate || !cvvCode) {
-        showAlert("warning", "Please fill in all card details.");
-        return;
-    }
+        if (!cardNumber || !cardName || !expDate || !cvvCode) {
+            showAlert("warning", "Please fill in all card details.");
+            return;
+        }
 
-    const newCard = $(
-        '<div class="flip-card d-flex flex-row align-items-center"></div>'
-    );
-    newCard.html(`
+        const newCard = $(
+            '<div class="flip-card d-flex flex-row align-items-center"></div>'
+        );
+        newCard.html(`
     <div class="flip-card-inner flex-grow-1">
         <div class="flip-card-front">
             <div class="card-content">
@@ -163,94 +165,93 @@ $("#saveCardBtn").on("click", function () {
     </div>
 `);
 
-    // Append new card to the card container div
-    const cardContainer = $("#cardContainer");
-    if (cardContainer.length) {
-        cardContainer.append(newCard);
-    } else {
-        showAlert("danger", "Error adding card. Please try again.");
-        $("#paymentMethod").append(newCard);
-    }
-});
+        // Append new card to the card container div
+        const cardContainer = $("#cardContainer");
+        if (cardContainer.length) {
+            cardContainer.append(newCard);
+        } else {
+            showAlert("danger", "Error adding card. Please try again.");
+            $("#paymentMethod").append(newCard);
+        }
+    });
 
 // Add event listener to the new remove button
-const newRemoveBtn = newCard.find(".remove-card-btn");
-newRemoveBtn.on("click", function (e) {
-    e.stopPropagation();
-    const card = $(this).closest(".flip-card");
-    card.remove();
-});
+    const newRemoveBtn = newCard.find(".remove-card-btn");
+    newRemoveBtn.on("click", function (e) {
+        e.stopPropagation();
+        const card = $(this).closest(".flip-card");
+        card.remove();
+    });
 
 // If no cards remain, exit manage mode
-const remainingCards = $(".flip-card");
-const manageBtn = $("#manageCards");
-if (
-    !remainingCards.length &&
-    manageBtn.length &&
-    manageBtn.text() === "Done"
-) {
-    manageBtn.css("transition", "none");
-    manageBtn.text("Manage Cards");
-    manageBtn.attr("class", "text-primary border-0 bg-transparent");
-    const addCardBtn = $("#addCard");
-    addCardBtn.css("display", "none");
-    // Hide all remove buttons
-    const removeButtons = $(".remove-card-btn");
-    removeButtons.each(function () {
-        $(this).css("display", "none");
-    });
-    // Restore all card flips
-    const flipCardInners = $(".flip-card-inner");
-    flipCardInners.each(function () {
-        $(this).css({
-            transition: "",
-            transform: "",
+    const remainingCards = $(".flip-card");
+    const manageBtn = $("#manageCards");
+    if (
+        !remainingCards.length &&
+        manageBtn.length &&
+        manageBtn.text() === "Done"
+    ) {
+        manageBtn.css("transition", "none");
+        manageBtn.text("Manage Cards");
+        manageBtn.attr("class", "text-primary border-0 bg-transparent");
+        const addCardBtn = $("#addCard");
+        addCardBtn.css("display", "none");
+        // Hide all remove buttons
+        const removeButtons = $(".remove-card-btn");
+        removeButtons.each(function () {
+            $(this).css("display", "none");
         });
-    });
-    void manageBtn[0].offsetWidth;
-    manageBtn.css("transition", "");
-}
+        // Restore all card flips
+        const flipCardInners = $(".flip-card-inner");
+        flipCardInners.each(function () {
+            $(this).css({
+                transition: "",
+                transform: "",
+            });
+        });
+        void manageBtn[0].offsetWidth;
+        manageBtn.css("transition", "");
+    }
 
 // Check if in manage mode and show remove button immediately
-const manageBtnCheck = $("#manageCards");
-if (manageBtnCheck.length && manageBtnCheck.text() === "Done") {
-    newRemoveBtn.css("display", "block");
+    const manageBtnCheck = $("#manageCards");
+    if (manageBtnCheck.length && manageBtnCheck.text() === "Done") {
+        newRemoveBtn.css("display", "block");
 
-    // Disable flip for new card same as others
-    const newFlipCardInner = newCard.find(".flip-card-inner");
-    if (newFlipCardInner.length) {
-        newFlipCardInner.css({
-            transform: "rotateY(0deg)",
-            transition: "none",
-        });
+        // Disable flip for new card same as others
+        const newFlipCardInner = newCard.find(".flip-card-inner");
+        if (newFlipCardInner.length) {
+            newFlipCardInner.css({
+                transform: "rotateY(0deg)",
+                transition: "none",
+            });
+        }
     }
-}
 
 // Clear form and close modal
-$("#newCardNumber").val("");
-$("#newCardName").val("");
-$("#newExpDate").val("");
-$("#newCvvCode").val("");
-const modal = bootstrap.Modal.getInstance($("#addCardModal")[0]);
-modal.hide();
+    $("#newCardNumber").val("");
+    $("#newCardName").val("");
+    $("#newExpDate").val("");
+    $("#newCvvCode").val("");
+    const modal = bootstrap.Modal.getInstance($("#addCardModal")[0]);
+    modal.hide();
 
-// Card flip for new card modal
-$("#flipCardBtn").on("click", function () {
-    const newCardInner = $("#newCardInner");
-    const isFlipped = newCardInner.css("transform") === "rotateY(180deg)";
-    newCardInner.css(
-        "transform",
-        isFlipped ? "rotateY(0deg)" : "rotateY(180deg)"
-    );
-});
+    // Card flip for new card modal
+    let isFlipped = false;
+    $("#flipCardBtn").on("click", function () {
+        const newCardInner = $("#newCardInner");
+        isFlipped = !isFlipped;
+        newCardInner.css("transform", isFlipped ? "rotateY(180deg)" : "rotateY(0deg)");
+    });
 
 // Handle expiry date input formatting
-$("#newExpDate").on("input", function (e) {
-    let value = $(e.target).val().replace(/\D/g, "");
-    if (value.length >= 2) {
-        const month = parseInt(value.substring(0, 2));
-        if (month > 12) value = "12" + value.substring(2);
-        value = value.substring(0, 2) + "/" + value.substring(2);
-    }
-    $(e.target).val(value.substring(0, 5));
+    $("#newExpDate").on("input", function (e) {
+        let value = $(e.target).val().replace(/\D/g, "");
+        if (value.length >= 2) {
+            const month = parseInt(value.substring(0, 2));
+            if (month > 12) value = "12" + value.substring(2);
+            value = value.substring(0, 2) + "/" + value.substring(2);
+        }
+        $(e.target).val(value.substring(0, 5));
+    });
 });

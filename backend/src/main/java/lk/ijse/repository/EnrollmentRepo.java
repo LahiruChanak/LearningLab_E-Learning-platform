@@ -2,6 +2,7 @@ package lk.ijse.repository;
 
 import lk.ijse.entity.Course;
 import lk.ijse.entity.Enrollment;
+import lk.ijse.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,5 +19,7 @@ public interface EnrollmentRepo extends JpaRepository<Enrollment, Long> {
 
     @Query("SELECT COUNT(e) FROM Enrollment e WHERE e.course IN :courses")
     long countByCourseIn(List<Course> courses);
+
+    List<Enrollment> findByStudent(User student);
 
 }

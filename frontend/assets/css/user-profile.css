@@ -511,6 +511,9 @@ body {
   margin-top: 20px;
   overflow: auto;
   max-height: 465px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .course-item {
